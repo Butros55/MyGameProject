@@ -9,16 +9,23 @@
 
 ]]
 
-
+-- Get all required essets from game
 push = require 'push'
 Class = require 'class'
 
+--requre StateMachine
 require 'src/states/StateMachine'
 
+--require all States
 require 'src/states/BaseState'
 require 'src/states/PlayState'
 
+--requre Constants
 require 'src/states/Constants'
+
+--requre All players and enemys
+require 'player'
+
 
 
 -- Loads all content we need for this Game
@@ -32,12 +39,22 @@ function love.load()
     -- Sets Windowes Title to some Name
     love.window.setTitle('Test Project')
 
-    love.window.setMode(0, 0)
-    screen_height = love.graphics.getHeight()
-    screen_width = love.graphics.getWidth()
+    -- loads graphic Elements and assets
+    gbackgrounds = {
+        ['background_0'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_0.png'),
+        ['background_1'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_1.png'),
+        ['background_2'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_2.png')
+    }
+
+    gmaincharacter = {
+        ['idle_0'] = love.graphics.newImage('graphics/maincharacter/idle/adventurer-idle-00.png')
+    }
+
 
     -- Setting Screen and resolution to Players Screen
-    push:setupScreen(VIRTUAL_WINDOW_WIDTH, VIRTUAL_WINDOW_HEIGHT, screen_width, screen_height, {
+    screen_width = love.graphics.getWidth()
+    screen_height = love.graphics.getWidth()
+    push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, screen_width, screen_height,{
         resizable = true,
         fullscreen = true,
         vsync = true
@@ -61,19 +78,14 @@ function love.resize(w, h)
 end
 
 
-function love.update(dt)
-    -- Updates currents StateMachine State
-    gStateMachine:update(dt)
-
-    -- reset keysPressed table for new input
-    love.keyboard.keysPressed = {}
-end
-
-
 -- Get users input and give it to the keysPressed table
-function love.keysPressed(key)
+function love.keypressed(key)
     -- adding to keysPressed table the user input
     love.keyboard.keysPressed[key] = true
+
+    if key == 'escape' then
+        love.event.quit()
+    end
 end
 
 
@@ -86,4 +98,57 @@ function love.keyboard.wasPressed(key)
     else
         return false
     end
+end
+
+function love.update(dt)
+    -- Updates currents StateMachine State
+    gStateMachine:update(dt)
+
+    -- reset keysPressed table for new input
+    love.keyboard.keysPressed = {}
+end
+
+
+function love.draw()
+    -- draw with push at virtual resolution
+    push:apply('start')
+
+    -- scale backround to Virtual resolution
+    backgroundWidth = gbackgrounds['background_0']:getWidth()
+    backgroundHeight = gbackgrounds['background_0']:getHeight()
+    backgroundWidth = gbackgrounds['background_1']:getWidth()
+    backgroundHeight = gbackgrounds['background_1']:getHeight()
+    backgroundWidth = gbackgrounds['background_2']:getWidth()
+    backgroundHeight = gbackgrounds['background_2']:getHeight()
+
+    love.graphics.draw(gbackgrounds['background_0'],
+        -- draw at x, y
+        0, 0,
+        -- no rotation
+        0,
+
+        VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
+    
+    love.graphics.draw(gbackgrounds['background_1'],
+        -- draw at x, y
+        0, 0,
+        -- no rotation
+        0,
+
+        VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
+    
+    love.graphics.draw(gbackgrounds['background_2'],
+        -- draw at x, y
+        0, 0,
+        -- no rotation
+        0,
+
+        VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
+
+    love.graphics.rectangle('fill', 0, VIRTUAL_HEIGHT - 10, VIRTUAL_WIDTH, 10)
+    
+    gStateMachine:render()
+
+
+    push:apply('end')
 end
