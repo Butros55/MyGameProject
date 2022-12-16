@@ -1,3 +1,13 @@
+--[[
+
+    -- Player --
+
+    Author: Geret Wessling
+    geret.w@web.de
+
+    Renders and updates main Character
+]]
+
 
 Player = Class{}
 doublejump = 0

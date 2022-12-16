@@ -1,4 +1,12 @@
+--[[
 
+    -- PlayState --
+
+    Author: Geret Wessling
+    geret.w@web.de
+
+    State for the Gameplay
+]]
 
 PlayState = Class{__includes = BaseState}
 

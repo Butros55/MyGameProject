@@ -9,24 +9,7 @@
 
 ]]
 
--- Get all required essets from game
-push = require 'push'
-Class = require 'class'
-
---requre StateMachine
-require 'src/states/StateMachine'
-
---require all States
-require 'src/states/BaseState'
-require 'src/states/PlayState'
-
---requre Constants
-require 'src/states/Constants'
-
---requre All players and enemys
-require 'player'
-
-
+require 'src/Dependencies'
 
 -- Loads all content we need for this Game
 function love.load()
