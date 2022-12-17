@@ -10,6 +10,7 @@
 
 push = require 'lib/push'
 Class = require 'lib/class'
+sti = require 'lib/sti'
 
 --requre StateMachine
 require 'src/StateMachine'

@@ -41,19 +41,8 @@ function Player:update(dt)
         end
 
     self.y = self.y + self.dy * dt
-
     self:collision()
 end
-
--- Checks for keyinput and changes x
-function Player:move(dt)
-    if love.keyboard.isDown('right') then
-        self.x = self.x + self.dx * dt
-    elseif love.keyboard.isDown('left') then
-        self.x = self.x - self.dx * dt
-    end
-end
-
 
 --Checks for collision with screen(window)
 function Player:collision()
@@ -72,6 +61,16 @@ function Player:collision()
         self.x = 0
     end
 end
+
+-- Checks for keyinput and changes x
+function Player:move(dt)
+    if love.keyboard.isDown('right') then
+        self.x = self.x + self.dx * dt
+    elseif love.keyboard.isDown('left') then
+        self.x = self.x - self.dx * dt
+    end
+end
+
 
 --Renders Player img at position
 function Player:render()

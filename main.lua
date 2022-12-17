@@ -13,6 +13,7 @@ require 'src/Dependencies'
 
 -- Loads all content we need for this Game
 function love.load()
+
     -- Deafult Filter for better 2d pixel looks
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
@@ -23,6 +24,7 @@ function love.load()
     love.window.setTitle('Test Project')
 
     -- loads graphic Elements and assets
+
     gbackgrounds = {
         ['background_0'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_0.png'),
         ['background_1'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_1.png'),
@@ -33,6 +35,9 @@ function love.load()
         ['idle_0'] = love.graphics.newImage('graphics/maincharacter/idle/adventurer-idle-00.png')
     }
 
+
+    --loading tiled map into
+    GameMap = sti('map/test.lua')
 
     -- Setting Screen and resolution to Players Screen
     screen_width = love.graphics.getWidth()
@@ -83,17 +88,22 @@ function love.keyboard.wasPressed(key)
     end
 end
 
+player = Player()
+
 function love.update(dt)
     -- Updates currents StateMachine State
     gStateMachine:update(dt)
 
     -- reset keysPressed table for new input
     love.keyboard.keysPressed = {}
+
 end
 
 
 function love.draw()
     -- draw with push at virtual resolution
+
+
     push:apply('start')
 
     -- scale backround to Virtual resolution
@@ -128,10 +138,9 @@ function love.draw()
 
         VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
 
-    love.graphics.rectangle('fill', 0, VIRTUAL_HEIGHT - 10, VIRTUAL_WIDTH, 10)
-    
-    gStateMachine:render()
 
+        GameMap:draw()
+        gStateMachine:render()
 
     push:apply('end')
 end
