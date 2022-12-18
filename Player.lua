@@ -74,11 +74,5 @@ end
 
 --Renders Player img at position
 function Player:render()
-    if love.keyboard.isDown('right') then
-        love.graphics.draw(self.img, self.x, self.y)
-    elseif love.keyboard.isDown('left') then
-        love.graphics.draw(self.img, self.x, self.y, 0, -1, 1)
-    else
-        love.graphics.draw(self.img, self.x, self.y)
-    end
+    love.graphics.draw(self.img, self.x, self.y)
 end
