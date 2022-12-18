@@ -88,7 +88,6 @@ function love.keyboard.wasPressed(key)
     end
 end
 
-player = Player()
 
 function love.update(dt)
     -- Updates currents StateMachine State
