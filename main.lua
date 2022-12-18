@@ -9,10 +9,10 @@
 
 ]]
 
-require 'src/Dependencies'
-
 -- Loads all content we need for this Game
 function love.load()
+
+    require 'src/Dependencies'
 
     -- Deafult Filter for better 2d pixel looks
     love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -55,6 +55,16 @@ function love.load()
     }
     gStateMachine:change('play')
 
+
+    grounds = {}
+    if GameMap.layers['Ground'] then
+        for i, obj in pairs(GameMap.layers['Ground'].objects) do
+            local ground = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+            ground:setType('static')
+            table.insert(grounds, ground)
+        end
+    end
+    
     -- empty table to track which keys have been pressed
     love.keyboard.keysPressed = {}
 
@@ -89,15 +99,14 @@ function love.keyboard.wasPressed(key)
 end
 
 
+
 function love.update(dt)
     -- Updates currents StateMachine State
     gStateMachine:update(dt)
 
     -- reset keysPressed table for new input
     love.keyboard.keysPressed = {}
-
 end
-
 
 function love.draw()
     -- draw with push at virtual resolution
@@ -105,42 +114,44 @@ function love.draw()
 
     push:apply('start')
 
-    -- scale backround to Virtual resolution
-    backgroundWidth = gbackgrounds['background_0']:getWidth()
-    backgroundHeight = gbackgrounds['background_0']:getHeight()
-    backgroundWidth = gbackgrounds['background_1']:getWidth()
-    backgroundHeight = gbackgrounds['background_1']:getHeight()
-    backgroundWidth = gbackgrounds['background_2']:getWidth()
-    backgroundHeight = gbackgrounds['background_2']:getHeight()
+        -- scale backround to Virtual resolution
+        backgroundWidth = gbackgrounds['background_0']:getWidth()
+        backgroundHeight = gbackgrounds['background_0']:getHeight()
+        backgroundWidth = gbackgrounds['background_1']:getWidth()
+        backgroundHeight = gbackgrounds['background_1']:getHeight()
+        backgroundWidth = gbackgrounds['background_2']:getWidth()
+        backgroundHeight = gbackgrounds['background_2']:getHeight()
 
-    love.graphics.draw(gbackgrounds['background_0'],
-        -- draw at x, y
-        0, 0,
-        -- no rotation
-        0,
+        love.graphics.draw(gbackgrounds['background_0'],
+            -- draw at x, y
+            0, 0,
+            -- no rotation
+            0,
 
-        VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
-    
-    love.graphics.draw(gbackgrounds['background_1'],
-        -- draw at x, y
-        0, 0,
-        -- no rotation
-        0,
+            VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
+        
+        love.graphics.draw(gbackgrounds['background_1'],
+            -- draw at x, y
+            0, 0,
+            -- no rotation
+            0,
 
-        VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
-    
-    love.graphics.draw(gbackgrounds['background_2'],
-        -- draw at x, y
-        0, 0,
-        -- no rotation
-        0,
+            VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
+        
+        love.graphics.draw(gbackgrounds['background_2'],
+            -- draw at x, y
+            0, 0,
+            -- no rotation
+            0,
 
-        VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
+            VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
 
-    cam:attach(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
-        GameMap:drawLayer(GameMap.layers['neue'])
-        gStateMachine:render()
-    cam:detach()
+        cam:attach(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+            GameMap:drawLayer(GameMap.layers['neue'])
+            gStateMachine:render()
+        cam:detach()
+
+
 
     push:apply('end')
 end

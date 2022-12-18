@@ -11,8 +11,7 @@
 
 Player = Class{}
 doublejump = 0
-gravity = 1000
-
+gravity = 400000
 -- initilases Player
 function Player:init()
     self.img = love.graphics.newImage('graphics/maincharacter/idle/adventurer-idle-00.png')
@@ -20,53 +19,49 @@ function Player:init()
     self.width = self.img:getWidth()
     self.height = self.img:getHeight()
 
-    self.x = VIRTUAL_WIDTH / 2
-    self.y = VIRTUAL_HEIGHT - 10 - self.height
+    self.dx = 100
+    self.dy = 100
 
-    self.dx = 200
-    self.dy = 200
+    self.collider = world:newRectangleCollider(100, 100, self.width, self.height)
+    self.collider:setFixedRotation(true)
+
 end
+
 
 --updates Player for move jump or collision
 function Player:update(dt)
-    self:move(dt)
+    world:update(dt)
+
+    local vx = 0
+    local vy = 0
+
     self.dy = self.dy + gravity * dt
+
+    if love.keyboard.isDown('d') then
+        vx = self.dx
+    elseif love.keyboard.isDown('a') then
+        vx = self.dx * -1
+    end
+
+    self.x = self.collider:getX() - (self.width / 2)
+    self.y = self.collider:getY() - (self.height / 2)
     cam:lookAt(self.x + (self.width / 2), self.y)
-    -- limit jump to doublejump
-        if love.keyboard.wasPressed('space') then
-            if doublejump < 2 then
-                self.dy = -250
-                doublejump = doublejump + 1
-            end
-        end
 
-    self.y = self.y + self.dy * dt
-    self:collision()
-end
-
---Checks for collision with screen(window)
-function Player:collision()
-    if self.y < 0 then
-        self.y = 0
-    elseif self.y > VIRTUAL_HEIGHT - 10 - self.height then
-        self.y = VIRTUAL_HEIGHT - 10 - self.height
-
-        -- reset double jump
-        doublejump = 0
+    if love.keyboard.wasPressed('space') then
+        self.dy = -170000
     end
+
+    vy = vy + self.dy * dt
+
+    self.collider.is_on_ground = true
+
+    self.collider:setLinearVelocity(vx, vy)
 end
 
--- Checks for keyinput and changes x
-function Player:move(dt)
-    if love.keyboard.isDown('right') then
-        self.x = self.x + self.dx * dt
-    elseif love.keyboard.isDown('left') then
-        self.x = self.x - self.dx * dt
-    end
-end
 
 
 --Renders Player img at position
 function Player:render()
     love.graphics.draw(self.img, self.x, self.y)
+    world:draw()
 end
