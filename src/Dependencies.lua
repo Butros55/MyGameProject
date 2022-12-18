@@ -11,6 +11,10 @@
 push = require 'lib/push'
 Class = require 'lib/class'
 sti = require 'lib/sti'
+camera = require 'lib/camera'
+cam = camera()
+win = require 'lib/windfield'
+world = win(0, 0)
 
 --requre StateMachine
 require 'src/StateMachine'

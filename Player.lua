@@ -31,7 +31,7 @@ end
 function Player:update(dt)
     self:move(dt)
     self.dy = self.dy + gravity * dt
-
+    cam:lookAt(self.x + (self.width / 2), self.y)
     -- limit jump to doublejump
         if love.keyboard.wasPressed('space') then
             if doublejump < 2 then
@@ -53,12 +53,6 @@ function Player:collision()
 
         -- reset double jump
         doublejump = 0
-    end
-
-    if self.x > VIRTUAL_WIDTH - self.width then
-        self.x = VIRTUAL_WIDTH - self.width
-    elseif self.x < 0 then
-        self.x = 0
     end
 end
 
