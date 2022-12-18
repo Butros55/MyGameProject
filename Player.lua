@@ -75,6 +75,4 @@ end
 --Renders Player img at position
 function Player:render()
     love.graphics.draw(self.img, self.x, self.y)
-
-    testttt
 end
