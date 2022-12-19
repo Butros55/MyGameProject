@@ -11,7 +11,6 @@
 
 Player = Class{}
 doublejump = 0
-gravity = 400000
 -- initilases Player
 function Player:init()
     self.img = love.graphics.newImage('graphics/maincharacter/idle/adventurer-idle-00.png')
@@ -19,10 +18,8 @@ function Player:init()
     self.width = self.img:getWidth()
     self.height = self.img:getHeight()
 
-    self.dx = 100
-    self.dy = 100
-
     self.collider = world:newRectangleCollider(100, 100, self.width, self.height)
+    self.collider:setCollisionClass('Player')
     self.collider:setFixedRotation(true)
 
 end
@@ -30,32 +27,38 @@ end
 
 --updates Player for move jump or collision
 function Player:update(dt)
-    world:update(dt)
 
-    local vx = 0
-    local vy = 0
-
-    self.dy = self.dy + gravity * dt
+    dx , dy = self.collider:getLinearVelocity()
 
     if love.keyboard.isDown('d') then
-        vx = self.dx
+        self.collider:setLinearVelocity(200, dy)
     elseif love.keyboard.isDown('a') then
-        vx = self.dx * -1
+        self.collider:setLinearVelocity(-200, dy)
+    end
+
+    if doublejump < 2 then
+        if love.keyboard.wasPressed('space') then
+            self.collider:applyLinearImpulse(0, -350)
+            doublejump = doublejump + 1
+        end
+    end
+
+    if self.collider:enter('Platform') then
+        doublejump = 0
     end
 
     self.x = self.collider:getX() - (self.width / 2)
     self.y = self.collider:getY() - (self.height / 2)
+
     cam:lookAt(self.x + (self.width / 2), self.y)
 
-    if love.keyboard.wasPressed('space') then
-        self.dy = -170000
+    function love.keyreleased(key)
+        if key == 'd' or key == 'a' then
+            dx , dy = self.collider:getLinearVelocity()
+            self.collider:setLinearVelocity(0,dy)
+        end
     end
 
-    vy = vy + self.dy * dt
-
-    self.collider.is_on_ground = true
-
-    self.collider:setLinearVelocity(vx, vy)
 end
 
 

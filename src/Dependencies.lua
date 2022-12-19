@@ -14,7 +14,7 @@ sti = require 'lib/sti'
 camera = require 'lib/camera'
 cam = camera()
 wf = require 'lib/windfield'
-world = wf.newWorld(0, 0)
+
 
 --requre StateMachine
 require 'src/StateMachine'

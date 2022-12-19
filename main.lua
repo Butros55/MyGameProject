@@ -13,6 +13,7 @@
 function love.load()
 
     require 'src/Dependencies'
+    world = wf.newWorld(0, 900, true)
 
     -- Deafult Filter for better 2d pixel looks
     love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -35,6 +36,9 @@ function love.load()
         ['idle_0'] = love.graphics.newImage('graphics/maincharacter/idle/adventurer-idle-00.png')
     }
 
+    --Add colission classes
+    world:addCollisionClass('Player')
+    world:addCollisionClass('Platform')
 
     --loading tiled map into
     GameMap = sti('map/test.lua')
@@ -61,6 +65,7 @@ function love.load()
         for i, obj in pairs(GameMap.layers['Ground'].objects) do
             local ground = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
             ground:setType('static')
+            ground:setCollisionClass('Platform')
             table.insert(grounds, ground)
         end
     end
@@ -99,13 +104,14 @@ function love.keyboard.wasPressed(key)
 end
 
 
-
 function love.update(dt)
     -- Updates currents StateMachine State
     gStateMachine:update(dt)
 
     -- reset keysPressed table for new input
     love.keyboard.keysPressed = {}
+
+    world:update(dt)
 end
 
 function love.draw()
