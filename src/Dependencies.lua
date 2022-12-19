@@ -10,10 +10,8 @@
 
 push = require 'lib/push'
 Class = require 'lib/class'
-sti = require 'lib/sti'
 camera = require 'lib/camera'
 cam = camera()
-wf = require 'lib/windfield'
 
 
 --requre StateMachine
@@ -27,4 +25,7 @@ require 'src/states/PlayState'
 require 'src/Constants'
 
 --requre All players and enemys
-require 'player'
+require 'characters/player'
+
+--requre map to load
+require 'map/loadMap'
