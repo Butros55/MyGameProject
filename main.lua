@@ -13,7 +13,6 @@
 function love.load()
 
     require 'src/Dependencies'
-    world = wf.newWorld(0, 900, true)
 
     -- Deafult Filter for better 2d pixel looks
     love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -23,25 +22,6 @@ function love.load()
 
     -- Sets Windowes Title to some Name
     love.window.setTitle('Test Project')
-
-    -- loads graphic Elements and assets
-
-    gbackgrounds = {
-        ['background_0'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_0.png'),
-        ['background_1'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_1.png'),
-        ['background_2'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_2.png')
-    }
-
-    gmaincharacter = {
-        ['idle_0'] = love.graphics.newImage('graphics/maincharacter/idle/adventurer-idle-00.png')
-    }
-
-    --Add colission classes
-    world:addCollisionClass('Player')
-    world:addCollisionClass('Platform')
-
-    --loading tiled map into
-    GameMap = sti('map/test.lua')
 
     -- Setting Screen and resolution to Players Screen
     screen_width = love.graphics.getWidth()
@@ -58,17 +38,6 @@ function love.load()
         ['play'] = function() return PlayState() end
     }
     gStateMachine:change('play')
-
-
-    grounds = {}
-    if GameMap.layers['Ground'] then
-        for i, obj in pairs(GameMap.layers['Ground'].objects) do
-            local ground = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
-            ground:setType('static')
-            ground:setCollisionClass('Platform')
-            table.insert(grounds, ground)
-        end
-    end
     
     -- empty table to track which keys have been pressed
     love.keyboard.keysPressed = {}
