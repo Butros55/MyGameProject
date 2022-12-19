@@ -12,6 +12,7 @@ push = require 'lib/push'
 Class = require 'lib/class'
 camera = require 'lib/camera'
 cam = camera()
+anim8 = require 'lib/anim8'
 
 
 --requre StateMachine
