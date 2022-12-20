@@ -27,10 +27,10 @@ function PlayState:update(dt)
     --timer for current round
     roundTimer = roundTimer + dt
     --Skeletons spawn faster with higher roundtime
-    FasterSpawnTimer = roundTimer / 1000
+    --FasterSpawnTimer = roundTimer / 1000
     --spawns new skeletons based on timer
-    spawnTimer = spawnTimer + dt * FasterSpawnTimer
-    if spawnTimer > 1 then
+    spawnTimer = spawnTimer + dt --* FasterSpawnTimer
+    if spawnTimer > 5 then
         table.insert(Skeletons, Skeleton())
         spawnTimer = 0
         --counts how many skeletons spawned in round
@@ -39,7 +39,7 @@ function PlayState:update(dt)
 
     --updates all skeletons based on player
     for k, skeleton in pairs(Skeletons) do
-        skeleton:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection)
+        skeleton:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
     end
 
 end
@@ -51,4 +51,5 @@ function PlayState:render()
     end
     love.graphics.printf('Time Passed: ' ..tostring(math.floor(roundTimer))..'sec', 0, 10, VIRTUAL_WIDTH, 'center')
     love.graphics.printf('Skeleton Spawned: ' ..tostring(skeletoncounter), 0, 30, VIRTUAL_WIDTH, 'center')
+    love.graphics.printf('Health Left: ' ..tostring(playerhealth), 0, 50, VIRTUAL_WIDTH, 'center')
 end

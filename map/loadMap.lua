@@ -20,6 +20,8 @@ GameMap = sti('map/test.lua')
 world:addCollisionClass('Player')
 world:addCollisionClass('Platform')
 world:addCollisionClass('Skeleton')
+world:addCollisionClass('Ghost', {ignores = {'Skeleton'}})
+world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player'}})
 
 -- loads graphic Elements and assets
 gbackgrounds = {

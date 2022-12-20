@@ -51,7 +51,7 @@ function Player:init()
     inJump = false
     inFall = false
     --timer and combat variable so the player cant move while attacking
-    inCombat = false
+    self.inCombat = false
     self.attackcounter = 0
     self.incombattimer = 1.5
     self.outcombattimer = 10
@@ -67,6 +67,8 @@ function Player:init()
     self.collider:setFixedRotation(true)
 
     self.isSliding = false
+
+    self.health = 100
 
 end
 
@@ -88,25 +90,25 @@ function Player:update(dt)
         self.attackcounter = 0
     end
     -- if q was pressed reset outcombat so the player cant move while combat is true
-    if love.keyboard.wasPressed('q') and self.incombattimer > 0.3 and self.attackcounter < 3 then
-        inCombat = true
+    if love.keyboard.wasPressed('q') and self.incombattimer > 0.3 and self.attackcounter < 3 and self.isSliding == false and inJump == false then
+        self.inCombat = true
         self.incombattimer = 0
         self.outcombattimer = 0
         self.attackcounter = self.attackcounter + 1
     elseif self.outcombattimer > 0.3 and self.isSliding == false then
         self.collider:setLinearVelocity(0, dy)
-        inCombat = false
+        self.inCombat = false
     end
 
     --movement with a (left) and d (right)
-    if love.keyboard.isDown('d') and inCombat == false and self.isSliding == false then
+    if love.keyboard.isDown('d') and self.inCombat == false and self.isSliding == false then
         self.collider:setLinearVelocity(200, dy)
         self.movingDirection = true
         isMoving = true
         if inJump == false then
             self.anim = self.animations.right
         end
-    elseif love.keyboard.isDown('a') and inCombat == false and self.isSliding == false then
+    elseif love.keyboard.isDown('a') and self.inCombat == false and self.isSliding == false then
         self.collider:setLinearVelocity(-200, dy)
         self.movingDirection = false
         isMoving = true
@@ -117,33 +119,33 @@ function Player:update(dt)
 
     --checks if player isnt moving and dependig on direction set idle if not
     if isMoving == false and self.movingDirection == true and inJump == false then
-        if self.attackcounter == 3 and inCombat == true then
+        if self.attackcounter == 3 and self.inCombat == true then
             self.anim = self.animations.combat3r
             self.collider:applyLinearImpulse(50, dy)
-        elseif self.attackcounter == 2 and inCombat == true then
+        elseif self.attackcounter == 2 and self.inCombat == true then
             self.anim = self.animations.combat2r
-        elseif self.attackcounter == 1 and inCombat == true then
+        elseif self.attackcounter == 1 and self.inCombat == true then
             self.anim = self.animations.combat1r
-        elseif self.outcombattimer > 10 and inCombat == false then
+        elseif self.outcombattimer > 10 and self.inCombat == false then
             self.anim = self.animations.idler
-        elseif self.outcombattimer > 9.05 and inCombat == false then
+        elseif self.outcombattimer > 9.05 and self.inCombat == false then
             self.anim = self.animations.swordbackr
-        elseif inCombat == false then
+        elseif self.inCombat == false then
             self.anim = self.animations.idlercombat
         end
     end 
         
     if isMoving == false and self.movingDirection == false and inJump == false then
-        if self.attackcounter == 3 and inCombat == true then
+        if self.attackcounter == 3 and self.inCombat == true then
             self.anim = self.animations.combat3l
             self.collider:applyLinearImpulse(-50, dy)
-        elseif self.attackcounter == 2 and inCombat == true then
+        elseif self.attackcounter == 2 and self.inCombat == true then
             self.anim = self.animations.combat2l
-        elseif self.attackcounter == 1 and inCombat == true then
+        elseif self.attackcounter == 1 and self.inCombat == true then
             self.anim = self.animations.combat1l
-        elseif self.outcombattimer > 10 and inCombat == false then
+        elseif self.outcombattimer > 10 and self.inCombat == false then
             self.anim = self.animations.idlel
-        elseif self.outcombattimer > 9.05 and inCombat == false then
+        elseif self.outcombattimer > 9.05 and self.inCombat == false then
             self.anim = self.animations.swordbackl
         else
             self.anim = self.animations.idlelcombat
@@ -171,9 +173,11 @@ function Player:update(dt)
         if self.movingDirection == true then
             self.anim = self.animations.slider
             self.isSliding = true
+            self.collider:setCollisionClass('Ghost')
         else
             self.anim = self.animations.slidel
             self.isSliding = true
+            self.collider:setCollisionClass('Ghost')
         end
     else
         self.isSliding = false
@@ -223,6 +227,7 @@ function Player:update(dt)
             dx , dy = self.collider:getLinearVelocity()
             self.collider:setLinearVelocity(0, dy)
             self.slidecd = 10
+            self.collider:setCollisionClass('Player')
         end
     end
 
