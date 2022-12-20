@@ -48,7 +48,7 @@ function Skeleton:init()
     self.hit = false
     self.hittimer = 0
 
-    isMoving = false
+    self.isMoving = false
 end
 
 function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection)
@@ -65,15 +65,13 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
     
     --knockback while sliding on enemy
-    if playercollider:enter('Skeleton') and playersliding == true then
+    if self.collider:enter('Player') and playersliding == true then
         if playerdirection == true then
             self.hit = true
             self.collider:applyLinearImpulse(150, -50)
-            self.collider:applyAngularImpulse(5000)
         else
             self.hit = true
             self.collider:applyLinearImpulse(-150, -50)
-            self.collider:applyAngularImpulse(5000)
         end
     end
 
@@ -84,11 +82,11 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     if playerx > self.x and self.hit == false then
         self.collider:setLinearVelocity(30, dy)
         self.anim = self.animations.walkr
-        isMoving = true
+        self.isMoving = true
     elseif playerx < self.x and self.hit == false then
         self.collider:setLinearVelocity(-30, dy)
         self.anim = self.animations.walkl
-        isMoving = true
+        self.isMoving = true
     end
 
 
@@ -101,13 +99,13 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.y = self.collider:getY() - 24
         self.anim = self.animations.attackr
         self.collider:setLinearVelocity(0, dy)
-        isMoving = false
+        self.isMoving = false
     elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width and self.hit == false then
         self.y = self.collider:getY() - 24
         self.x = self.collider:getX() - 32
         self.anim = self.animations.attackl
         self.collider:setLinearVelocity(0, dy)
-        isMoving = false
+        self.isMoving = false
     end
 
 
@@ -119,7 +117,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 end
 
 function Skeleton:render()
-    if isMoving == true then
+    if self.isMoving == true then
         self.anim:draw(self.walkSheet, self.x, self.y)
     else
         self.anim:draw(self.attackSheet, self.x, self.y)
