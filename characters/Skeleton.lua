@@ -44,7 +44,7 @@ function Skeleton:init()
     self.height = 24
 
     --setting collider for character
-    self.collider = world:newRectangleCollider(0, 0, self.width, self.height)
+    self.collider = world:newRectangleCollider(math.random(100, 400), 0, self.width, self.height)
     self.collider:setCollisionClass('Skeleton')
     self.collider:setFixedRotation(true)
 
@@ -55,7 +55,7 @@ function Skeleton:init()
     self.attacktimer = 0
 
     --checking if enemy is dead
-    self.health = 200
+    self.health = 300
     self.isDead = false
     self.deadcounter = 0
 
@@ -64,11 +64,14 @@ function Skeleton:init()
 end
 
 function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
+ 
+
     dx , dy = self.collider:getLinearVelocity()
 
     --setting Skeletons x and y to collider box
     self.x = self.collider:getX() - 10
     self.y = self.collider:getY() - 20
+    
 
 
     --timer for hit
@@ -76,7 +79,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     --if hitted set hit to true for 0.6 sec
     if self.hit == false then
         self.hittimer = 0
-    elseif self.hit == true and self.hittimer > 0.4 then
+    elseif self.hit == true and self.hittimer > 0.5 then
         self.hittimer = 0
         self.hit = false
     end
@@ -84,22 +87,22 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     --get hit if player i close enough and in combat
     if playerx - self.x < 10 and playerx - self.x > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false then
         self.hit = true
-        self.collider:applyLinearImpulse(-10, -10)
+        self.collider:applyLinearImpulse(-5, -10)
         self.health = self.health - 10
     elseif playerx - self.x > -12 - playerwidth - self.width and playerx - self.x < -self.width and playerincombat == true and playerdirection == true and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false then
         self.hit = true
-        self.collider:applyLinearImpulse(10, -10)
+        self.collider:applyLinearImpulse(5, -10)
         self.health = self.health - 10
     end
 
     --knockback while sliding trough enemys
     if playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false then
         self.hit = true
-        self.collider:applyLinearImpulse(-20, -10)
+        self.collider:applyLinearImpulse(-10, -10)
         self.health = self.health - 10
     elseif playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == true and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false then
         self.hit = true
-        self.collider:applyLinearImpulse(20, -10)
+        self.collider:applyLinearImpulse(10, -10)
         self.health = self.health - 10
     end
 
@@ -126,47 +129,49 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.doublejump = self.doublejump + 1
     end
 
+    --if health = 0 then dead = true
+    if self.health <= 0 and self.isDead == false then
+        self.isDead = true
+        self.collider:setCollisionClass('Dead')
+        self.isMoving = false
+        self.hit = false
+        if playerdirection == false then
+            self.anim = self.animations.deadr
+        elseif playerdirection == true then
+            self.anim = self.animations.deadl
+        end
+    elseif self.isDead == true and self.health <= 0 then
+        self.deadcounter = self.deadcounter + dt
+    end
+
 
     --attack animaton if player is close enought
-    if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false and self.isDead == false then
+    if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) then
         self.y = self.collider:getY() - 24
         self.anim = self.animations.attackr
         self.collider:setLinearVelocity(0, dy)
         self.isMoving = false
         self.attacktimer = self.attacktimer + dt
-        if self.attacktimer > 2 then
-            self.attacktimer = 0
+        if self.attacktimer >= 0.9 then
+            self.attacktimer = -0.9
+            playerhealth = playerhealth -20
         end
-    elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width and self.hit == false and self.isDead == false then
+    elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) then
         self.y = self.collider:getY() - 24
         self.x = self.collider:getX() - 32
         self.anim = self.animations.attackl
         self.collider:setLinearVelocity(0, dy)
         self.isMoving = false
         self.attacktimer = self.attacktimer + dt
-        if self.attacktimer > 2 then
-            self.attacktimer = 0
+        if self.attacktimer >= 0.9 then
+            self.attacktimer = -0.9
+            playerhealth = playerhealth -20
         end
     else
         --reset timer for attack to player
         self.attacktimer = 0
     end
 
-    --if health = 0 then dead = true
-    if self.health <= 0 and self.isDead == false then
-        self.isDead = true
-        self.collider:setCollisionClass('Dead')
-        self.deadcounter = self.deadcounter + dt
-        self.isMoving = false
-        self.hit = false
-        self.collider:setLinearVelocity(0, 0)
-        if playerdirection == false then
-            self.anim = self.animations.deadr
-        elseif playerdirection == true then
-            self.anim = self.animations.deadl
-        end
-    end
-    
 
     --resets doublejump after hitting Platform
     if self.collider:enter('Platform') then

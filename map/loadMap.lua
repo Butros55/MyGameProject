@@ -21,7 +21,7 @@ world:addCollisionClass('Player')
 world:addCollisionClass('Platform')
 world:addCollisionClass('Skeleton')
 world:addCollisionClass('Ghost', {ignores = {'Skeleton'}})
-world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player'}})
+world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player', 'Ghost'}})
 
 -- loads graphic Elements and assets
 gbackgrounds = {
@@ -30,6 +30,15 @@ gbackgrounds = {
     ['background_2'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_2.png')
 }
 
+sounds = {
+    ['music'] = love.audio.newSource('src/sounds/music1.wav', 'static'),
+    ['sword1'] = love.audio.newSource('src/sounds/sword1.wav', 'static'),
+    ['sword2'] = love.audio.newSource('src/sounds/sword2.wav', 'static'),
+    ['sword3'] = love.audio.newSource('src/sounds/sword3.wav', 'static'),
+    ['jump1'] = love.audio.newSource('src/sounds/jump1.wav', 'static'),
+    ['jump2'] = love.audio.newSource('src/sounds/jump2.wav', 'static'),
+    ['landing'] = love.audio.newSource('src/sounds/landing.wav', 'static')
+}
 
 
 grounds = {}

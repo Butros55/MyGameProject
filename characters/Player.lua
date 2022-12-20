@@ -68,7 +68,7 @@ function Player:init()
 
     self.isSliding = false
 
-    self.health = 100
+    playerhealth = 100
 
 end
 
@@ -121,11 +121,14 @@ function Player:update(dt)
     if isMoving == false and self.movingDirection == true and inJump == false then
         if self.attackcounter == 3 and self.inCombat == true then
             self.anim = self.animations.combat3r
-            self.collider:applyLinearImpulse(50, dy)
+            self.collider:applyLinearImpulse(40, 0)
+            sounds['sword3']:play()
         elseif self.attackcounter == 2 and self.inCombat == true then
             self.anim = self.animations.combat2r
+            sounds['sword2']:play()
         elseif self.attackcounter == 1 and self.inCombat == true then
             self.anim = self.animations.combat1r
+            sounds['sword1']:play()
         elseif self.outcombattimer > 10 and self.inCombat == false then
             self.anim = self.animations.idler
         elseif self.outcombattimer > 9.05 and self.inCombat == false then
@@ -138,11 +141,14 @@ function Player:update(dt)
     if isMoving == false and self.movingDirection == false and inJump == false then
         if self.attackcounter == 3 and self.inCombat == true then
             self.anim = self.animations.combat3l
-            self.collider:applyLinearImpulse(-50, dy)
+            sounds['sword3']:play()
+            self.collider:applyLinearImpulse(-40, 0)
         elseif self.attackcounter == 2 and self.inCombat == true then
             self.anim = self.animations.combat2l
+            sounds['sword2']:play()
         elseif self.attackcounter == 1 and self.inCombat == true then
             self.anim = self.animations.combat1l
+            sounds['sword1']:play()
         elseif self.outcombattimer > 10 and self.inCombat == false then
             self.anim = self.animations.idlel
         elseif self.outcombattimer > 9.05 and self.inCombat == false then
@@ -161,6 +167,11 @@ function Player:update(dt)
         if love.keyboard.wasPressed('space') then
             self.collider:setLinearVelocity(dx, 0)
             self.collider:applyLinearImpulse(0, -350)
+            if doublejump == 0 then
+                sounds['jump1']:play()
+            else
+                sounds['jump2']:play()
+            end
             doublejump = doublejump + 1
             inJump = true
         end
@@ -211,6 +222,7 @@ function Player:update(dt)
     if self.collider:enter('Platform') then
         doublejump = 0
         inJump = false
+        sounds['landing']:play()
     end
 
     --setting camera to playercharacter
