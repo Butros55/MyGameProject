@@ -10,9 +10,6 @@
 ]]
 
 -- Loads all content we need for this Game
-spawntimer = 0
-
-Skeletons = {}
 
 function love.load()
 
@@ -130,7 +127,6 @@ function love.draw()
         cam:attach(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
             GameMap:drawLayer(GameMap.layers['neue'])
             gStateMachine:render()
-            world:draw()
         cam:detach()
 
 

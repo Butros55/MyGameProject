@@ -33,6 +33,8 @@ function Skeleton:init()
     self.animations.attackr = anim8.newAnimation(self.gridattack('1-18', 1), 0.1)
     self.animations.attackl = anim8.newAnimation(self.gridattack('1-18', 1), 0.1):flipH()
 
+    self.anim = self.animations.attackr
+
     --getting width and height depending on spriteSheets charackter (hardcoded for now change later!!!)
     self.width = 8
     self.height = 24
@@ -43,8 +45,7 @@ function Skeleton:init()
     self.collider:setFixedRotation(true)
 
     self.doublejump = 0
-
-    self.anim = self.animations.attackr
+    --sets if hittet and timer after hit for knockback
     self.hit = false
     self.hittimer = 0
 
@@ -53,9 +54,9 @@ end
 
 function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection)
     dx , dy = self.collider:getLinearVelocity()
-
+    --timer for hit
     self.hittimer = self.hittimer + dt
-
+    --if hitted set hit to true for 0.5 sec
     if self.hit == false then
         self.hittimer = 0
     elseif self.hit == true and self.hittimer > 0.5 then
@@ -79,6 +80,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     self.x = self.collider:getX() - 10
     self.y = self.collider:getY() - 20
 
+    --go to player based on position x and y
     if playerx > self.x and self.hit == false then
         self.collider:setLinearVelocity(30, dy)
         self.anim = self.animations.walkr
@@ -89,12 +91,13 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.isMoving = true
     end
 
-
+    --allows the skeleton to jump
     if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) then
         self.collider:setLinearVelocity(dx, -400)
         self.doublejump = self.doublejump + 1
     end
 
+    --attack animation if skeleton is close enought to player
     if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false then
         self.y = self.collider:getY() - 24
         self.anim = self.animations.attackr
@@ -108,7 +111,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.isMoving = false
     end
 
-
+    --resets doublejump after hitting Platform
     if self.collider:enter('Platform') then
         self.doublejump = 0
     end
@@ -117,6 +120,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 end
 
 function Skeleton:render()
+    --is needed because of more than one spriteSheet
     if self.isMoving == true then
         self.anim:draw(self.walkSheet, self.x, self.y)
     else
