@@ -45,12 +45,12 @@ function Skeleton:load()
     self.doublejump = 0
 
     self.anim = self.animations.attackr
+
+    isMoving = false
 end
 
-function Skeleton:update(dt, playerx, playery)
+function Skeleton:update(dt, playerx, playery, playerwidth, playerheight)
     dx , dy = self.collider:getLinearVelocity()
-
-    local isMoving = false
 
     --setting Skeletons x and y to collider box
     self.x = self.collider:getX() - 10
@@ -66,21 +66,27 @@ function Skeleton:update(dt, playerx, playery)
         isMoving = true
     end
 
+    playerx = playerx
+
 
     if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) then
         self.collider:setLinearVelocity(dx, -400)
         self.doublejump = self.doublejump + 1
     end
 
-    if (playerx - self.x < 12 and playerx - self.x > 0) then
+    if playerx - self.x < 12 and playerx - self.x > -self.width then
         self.y = self.collider:getY() - 24
         self.anim = self.animations.attackr
         self.collider:setLinearVelocity(0, dy)
-    elseif (playerx - self.x > -12 and playerx - self.x < 0) then
+        isMoving = false
+    elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width then
         self.y = self.collider:getY() - 24
+        self.x = self.collider:getX() - 32
         self.anim = self.animations.attackl
         self.collider:setLinearVelocity(0, dy)
+        isMoving = false
     end
+
 
     if self.collider:enter('Platform') then
         self.doublejump = 0
@@ -89,12 +95,10 @@ function Skeleton:update(dt, playerx, playery)
     self.anim:update(dt)
 end
 
-function Skeleton:render(playerx, playery)
-    if (playerx - self.x < 12 and playerx - self.x > 0) then
-        self.anim:draw(self.attackSheet, self.x, self.y)
-    elseif (playerx - self.x > -12 and playerx - self.x < 0) then
-        self.anim:draw(self.attackSheet, self.x, self.y)
-    else
+function Skeleton:render()
+    if isMoving == true then
         self.anim:draw(self.walkSheet, self.x, self.y)
+    else
+        self.anim:draw(self.attackSheet, self.x, self.y)
     end
 end

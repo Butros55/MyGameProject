@@ -43,6 +43,9 @@ function Player:init()
     self.animations.combat2l = anim8.newAnimation(self.grid('7-7', 7,'1-4', 8), 0.06):flipH()
     self.animations.combat3r = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.1)
     self.animations.combat3l = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.1):flipH()
+    --slide animation
+    self.animations.slider = anim8.newAnimation(self.grid('4-7', 4), 0.15)
+    self.animations.slidel = anim8.newAnimation(self.grid('4-7', 4), 0.15):flipH()
 
     movingDirection = true
     inJump = false
@@ -66,8 +69,9 @@ end
 
 
 --updates Player for move jump or collision
-function Player:update(dt)
+function Player:update(dt, skeletoncollider)
 
+    local isSliding = false
     local isMoving = false
 
     dx , dy = self.collider:getLinearVelocity()
@@ -156,6 +160,35 @@ function Player:update(dt)
         end
     end
 
+    --set slide velocitiy if c was pressed
+    if love.keyboard.wasPressed('c') and inJump == false then
+        if movingDirection == true then
+            self.collider:applyLinearImpulse(150, dy)
+        else
+            self.collider:applyLinearImpulse(-150, dy)
+        end
+    end
+
+    --animation while sliding
+    if love.keyboard.isDown('c') and inJump == false then
+        if movingDirection == true then
+            self.anim = self.animations.slider
+            isSliding = true
+        else
+            self.anim = self.animations.slidel
+            isSliding = true
+        end
+    end
+
+    --knockback while sliding on enemy
+    if self.collider:enter('Skeleton') and isSliding == true then
+        if movingDirection == true then
+            skeletoncollider:setLinearVelocity(200, -20)
+        else
+            skeletoncollider:setLinearVelocity(-200, -20)
+        end
+    end
+
     if movingDirection == true and inJump == true then
         if dy > 0 then
             self.anim = self.animations.jumpdownr
@@ -181,7 +214,7 @@ function Player:update(dt)
 
     --after moving key relased set velocity to 0
     function love.keyreleased(key)
-        if key == 'd' or key == 'a' then
+        if key == 'd' or key == 'a' or 'c' then
             dx , dy = self.collider:getLinearVelocity()
             self.collider:setLinearVelocity(0, dy)
         end
