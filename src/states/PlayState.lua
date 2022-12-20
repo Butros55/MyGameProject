@@ -18,6 +18,7 @@ function PlayState:init()
     roundTimer = 0
     skeletoncounter = 0
     self.player = Player()
+    self.necro = Necromancer()
 
     sounds['music']:setLooping(true)
     sounds['music']:play()
@@ -27,7 +28,7 @@ end
 function PlayState:update(dt)
     self.player:update(dt)
 
-    Necormancer:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
+    self.necro:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
 
     if spawnTimer > 0.5 then
         table.insert(Skeletons, Skeleton())
@@ -49,7 +50,7 @@ end
 
 function PlayState:render()
 
-    Necormancer:render()
+    self.necro:render()
 
     self.player:render()
     for k, skeleton in pairs(Skeletons) do

@@ -10,34 +10,34 @@
 
 Necromancer = Class{}
 
-function Necormancer:init()
+function Necromancer:init()
     --initilase all pngs from Skeleton
-    self.spriteSheet = love.graphics.newImage('graphics/enemys/necormancer')
+    self.spriteSheet = love.graphics.newImage('graphics/enemys/necromancer.png')
 
 
     -- get all grids from pngs
-    self.grididle = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
+    self.gridsheet = anim8.newGrid(160, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
 
     self.animations = {}
 
-    self.animations.deadr = anim8.newAnimation(self.griddead('1-10', 7), 0.1)
-    self.animations.deadl = anim8.newAnimation(self.griddead('1-10', 7), 0.1):flipH()
-    self.animations.hitr = anim8.newAnimation(self.gridhit('1-5', 6), 0.2)
-    self.animations.hitl = anim8.newAnimation(self.gridhit('1-5', 6), 0.2):flipH()
-    self.animations.walkr = anim8.newAnimation(self.gridwalk('1-8', 2), 0.1)
-    self.animations.walkl = anim8.newAnimation(self.gridwalk('1-8', 2), 0.1):flipH()
-    self.animations.attackr = anim8.newAnimation(self.gridattack('1-13', 3), 0.1)
-    self.animations.attackl = anim8.newAnimation(self.gridattack('1-13', 3), 0.1):flipH()
+    self.animations.deadr = anim8.newAnimation(self.gridsheet('1-10', 7), 0.1)
+    self.animations.deadl = anim8.newAnimation(self.gridsheet('1-10', 7), 0.1):flipH()
+    self.animations.hitr = anim8.newAnimation(self.gridsheet('1-5', 6), 0.2)
+    self.animations.hitl = anim8.newAnimation(self.gridsheet('1-5', 6), 0.2):flipH()
+    self.animations.walkr = anim8.newAnimation(self.gridsheet('1-8', 2), 0.1)
+    self.animations.walkl = anim8.newAnimation(self.gridsheet('1-8', 2), 0.1):flipH()
+    self.animations.attackr = anim8.newAnimation(self.gridsheet('1-13', 3), 0.1)
+    self.animations.attackl = anim8.newAnimation(self.gridsheet('1-13', 3), 0.1):flipH()
 
 
     self.anim = self.animations.walkr
 
     --getting width and height depending on spriteSheets charackter (hardcoded for now change later!!!)
-    self.width = 8
-    self.height = 24
+    self.width = 22
+    self.height = 45
 
     --setting collider for character
-    self.collider = world:newRectangleCollider(math.random(100, 400), 0, self.width, self.height)
+    self.collider = world:newRectangleCollider(200, 0, self.width, self.height)
     self.collider:setCollisionClass('Necromancer')
     self.collider:setFixedRotation(true)
 
@@ -51,23 +51,26 @@ function Necormancer:init()
     self.isDead = false
     self.deadcounter = 0
 
-    self.world:setGravity(0, 0)
-
     self.isMoving = false
 
-    --set timer and table for skeletons spawn
-    self.spawnTimer = 0
-    self.Skeletons = {}
+    --timer for random necro x position
+    self.necrotimerx = 0
+    self.necrotimery = 0
+
+
+    self.randomnecroy = math.random(150, 250)
+    self.randomnecro = math.floor(math.random(100, 300))
+    self.dy = -15
 end
 
-function Necormancer:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
+function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
  
 
     dx , dy = self.collider:getLinearVelocity()
 
     --setting Skeletons x and y to collider box
-    self.x = self.collider:getX() - 10
-    self.y = self.collider:getY() - 20
+    self.x = self.collider:getX() - 80
+    self.y = self.collider:getY() - 95
     
 
 
@@ -82,19 +85,19 @@ function Necormancer:update(dt, playerx, playery, playerwidth, playerheight, pla
     end
 
     --get hit if player i close enough and in combat
-    if playerx - self.x < 10 and playerx - self.x > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false then
+    if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
-    elseif playerx - self.x > -12 - playerwidth - self.width and playerx - self.x < -self.width and playerincombat == true and playerdirection == true and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false then
+    elseif playerx - self.x - 76 > -4 - playerwidth - self.width and playerx - self.x - 76 < -self.width and playerincombat == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
     end
 
     --damage while sliding trough enemys
-    if playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false then
+    if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
-    elseif playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == true and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false then
+    elseif playerx - self.x - 76 < -4 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
     end
@@ -105,16 +108,32 @@ function Necormancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         self.anim = self.animations.hitl
     end
 
-    --go to random position from player based on position x and y (not included yet)
-    if playerx > self.x and self.hit == false and self.isDead == false then
-        self.collider:setLinearVelocity(30, dy)
-        self.anim = self.animations.walkr
-        self.isMoving = true
-    elseif playerx < self.x and self.hit == false and self.isDead == false then
-        self.collider:setLinearVelocity(-30, dy)
-        self.anim = self.animations.walkl
-        self.isMoving = true
+
+    if self.y < playery - self.randomnecroy - 30 then
+        self.dy = 35
+    elseif self.y > playery - self.randomnecroy + 30 then
+        self.dy = -45
+    else
+        self.dy = -15
+        self.randomnecroy = math.random(150, 250)
     end
+
+    self.necrotimerx = self.necrotimerx + dt
+    --go to random position from player based on position x and y
+    if self.necrotimerx >= math.random(8, 14) then
+        if self.x < self.randomnecro - 50 then
+            self.collider:setLinearVelocity(80, self.dy) --set to -15 y for no gravity!!!
+            self.anim = self.animations.walkr
+        elseif self.x > self.randomnecro + 50 then
+        self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
+        self.anim = self.animations.walkl
+        else
+            self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2), playerx - (VIRTUAL_WIDTH / 2)))
+        end
+    else
+        self.collider:setLinearVelocity(0, self.dy)
+    end
+    
 
     --if health = 0 then dead = true
     if self.health <= 0 and self.isDead == false then
@@ -134,6 +153,6 @@ function Necormancer:update(dt, playerx, playery, playerwidth, playerheight, pla
     self.anim:update(dt)
 end
 
-function Necormancer:render()
-    self.anim:draw(self.hitSheet, self.x, self.y)
+function Necromancer:render()
+    self.anim:draw(self.spriteSheet, self.x, self.y)
 end

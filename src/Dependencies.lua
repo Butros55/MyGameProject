@@ -26,8 +26,9 @@ require 'src/states/PlayState'
 require 'src/Constants'
 
 --requre All players and enemys
-require 'characters/player'
+require 'characters/Player'
 require 'characters/Skeleton'
+require 'characters/Necromancer'
 
 --requre map to load
 require 'map/loadMap'
