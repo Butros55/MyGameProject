@@ -64,7 +64,7 @@ function Skeleton:update(dt, playerx, playery)
     end
 
 
-    if playery < self.y and self.doublejump < 2 and (playerx - self.x < 150 or playerx - self.x < 150) then
+    if playery + 10 < self.y and self.doublejump < 2 and (playerx - self.x < 150 or playerx - self.x < 150) then
         self.collider:setLinearVelocity(dx, -400)
         self.doublejump = self.doublejump + 1
     end
