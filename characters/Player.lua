@@ -144,7 +144,7 @@ function Player:update(dt)
 
     --setting players x and y to collider box
     self.x = self.collider:getX() - 25
-    self.y = self.collider:getY() - ((self.height * 2) - 37 + 1)
+    self.y = self.collider:getY() - ((self.height * 2) - 37)
 
     --jump if doublejump is under 2
     if doublejump < 2 then
