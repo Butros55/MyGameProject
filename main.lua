@@ -10,6 +10,10 @@
 ]]
 
 -- Loads all content we need for this Game
+spawntimer = 0
+
+Skeletons = {}
+
 function love.load()
 
     require 'src/Dependencies'
@@ -75,6 +79,8 @@ end
 
 function love.update(dt)
     -- Updates currents StateMachine State
+
+
     gStateMachine:update(dt)
 
     -- reset keysPressed table for new input

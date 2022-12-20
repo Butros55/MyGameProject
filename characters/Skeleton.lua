@@ -8,9 +8,9 @@
     Renders and updates Enemys
 ]]
 
-Skeleton = {}
+Skeleton = Class{}
 
-function Skeleton:load()
+function Skeleton:init()
     --initilase all pngs from Skeleton
     self.attackSheet = love.graphics.newImage('graphics/enemys/Skeleton Attack.png')
     self.deadkSheet = love.graphics.newImage('graphics/enemys/Skeleton Dead.png')
@@ -51,7 +51,7 @@ function Skeleton:load()
     isMoving = false
 end
 
-function Skeleton:update(dt, playerx, playery, playerwidth, playerheight)
+function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection)
     dx , dy = self.collider:getLinearVelocity()
 
     self.hittimer = self.hittimer + dt
@@ -61,6 +61,20 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight)
     elseif self.hit == true and self.hittimer > 0.5 then
         self.hittimer = 0
         self.hit = false
+    end
+
+    
+    --knockback while sliding on enemy
+    if playercollider:enter('Skeleton') and playersliding == true then
+        if playerdirection == true then
+            self.hit = true
+            self.collider:applyLinearImpulse(150, -50)
+            self.collider:applyAngularImpulse(5000)
+        else
+            self.hit = true
+            self.collider:applyLinearImpulse(-150, -50)
+            self.collider:applyAngularImpulse(5000)
+        end
     end
 
     --setting Skeletons x and y to collider box
@@ -76,8 +90,6 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight)
         self.anim = self.animations.walkl
         isMoving = true
     end
-
-    playerx = playerx
 
 
     if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) then
