@@ -58,14 +58,6 @@ function Necormancer:init()
     --set timer and table for skeletons spawn
     self.spawnTimer = 0
     self.Skeletons = {}
-
-    --timer for current round
-    roundTimer = roundTimer + dt
-    --Skeletons spawn faster with higher roundtime
-    FasterSpawnTimer = roundTimer / 100
-    --spawns new skeletons based on timer
-    spawnTimer = spawnTimer + dt * FasterSpawnTimer
-
 end
 
 function Necormancer:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
@@ -144,7 +136,4 @@ end
 
 function Necormancer:render()
     self.anim:draw(self.hitSheet, self.x, self.y)
-    for k, skeleton in pairs(Skeletons) do
-        skeleton:render()
-    end
 end
