@@ -189,7 +189,6 @@ function Player:update(dt)
 
     --Player animations updates
     self.anim:update(dt)
-
 end
 
 

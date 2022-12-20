@@ -124,6 +124,7 @@ function love.draw()
         cam:attach(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
             GameMap:drawLayer(GameMap.layers['neue'])
             gStateMachine:render()
+            world:draw()
         cam:detach()
 
 

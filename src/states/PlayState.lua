@@ -23,5 +23,5 @@ end
 
 function PlayState:render()
     self.player:render()
-    Skeleton:render()
+    Skeleton:render(self.player.x, self.player.y)
 end

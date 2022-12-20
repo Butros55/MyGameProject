@@ -22,6 +22,7 @@ function Skeleton:load()
     -- get all grids from pngs
     self.gridwalk = anim8.newGrid(22, 33, self.walkSheet:getWidth(), self.walkSheet:getHeight())
     self.grididle = anim8.newGrid(24, 32, self.idleSheet:getWidth(), self.idleSheet:getHeight())
+    self.gridattack = anim8.newGrid(43, 37, self.attackSheet:getWidth(), self.attackSheet:getHeight())
 
     self.animations = {}
 
@@ -29,6 +30,8 @@ function Skeleton:load()
     self.animations.idlel = anim8.newAnimation(self.grididle('1-11', 1), 0.2):flipH()
     self.animations.walkr = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1)
     self.animations.walkl = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1):flipH()
+    self.animations.attackr = anim8.newAnimation(self.gridattack('1-18', 1), 0.1)
+    self.animations.attackl = anim8.newAnimation(self.gridattack('1-18', 1), 0.1):flipH()
 
     --getting width and height depending on spriteSheets charackter (hardcoded for now change later!!!)
     self.width = 8
@@ -41,7 +44,7 @@ function Skeleton:load()
 
     self.doublejump = 0
 
-    self.anim = self.animations.walkr
+    self.anim = self.animations.attackr
 end
 
 function Skeleton:update(dt, playerx, playery)
@@ -51,7 +54,7 @@ function Skeleton:update(dt, playerx, playery)
 
     --setting Skeletons x and y to collider box
     self.x = self.collider:getX() - 10
-    self.y = self.collider:getY() - 22
+    self.y = self.collider:getY() - 20
 
     if playerx > self.x then
         self.collider:setLinearVelocity(30, dy)
@@ -64,9 +67,19 @@ function Skeleton:update(dt, playerx, playery)
     end
 
 
-    if playery + 10 < self.y and self.doublejump < 2 and (playerx - self.x < 150 or playerx - self.x < 150) then
+    if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) then
         self.collider:setLinearVelocity(dx, -400)
         self.doublejump = self.doublejump + 1
+    end
+
+    if (playerx - self.x < 12 and playerx - self.x > 0) then
+        self.y = self.collider:getY() - 24
+        self.anim = self.animations.attackr
+        self.collider:setLinearVelocity(0, dy)
+    elseif (playerx - self.x > -12 and playerx - self.x < 0) then
+        self.y = self.collider:getY() - 24
+        self.anim = self.animations.attackl
+        self.collider:setLinearVelocity(0, dy)
     end
 
     if self.collider:enter('Platform') then
@@ -76,6 +89,12 @@ function Skeleton:update(dt, playerx, playery)
     self.anim:update(dt)
 end
 
-function Skeleton:render()
-    self.anim:draw(self.walkSheet, self.x, self.y)
+function Skeleton:render(playerx, playery)
+    if (playerx - self.x < 12 and playerx - self.x > 0) then
+        self.anim:draw(self.attackSheet, self.x, self.y)
+    elseif (playerx - self.x > -12 and playerx - self.x < 0) then
+        self.anim:draw(self.attackSheet, self.x, self.y)
+    else
+        self.anim:draw(self.walkSheet, self.x, self.y)
+    end
 end
