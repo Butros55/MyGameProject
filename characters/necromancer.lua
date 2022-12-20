@@ -139,23 +139,6 @@ function Necormancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         self.deadcounter = self.deadcounter + dt
     end
 
-    --spawns skeletons
-    if spawnTimer > 0.5 then
-        table.insert(Skeletons, Skeleton())
-        spawnTimer = 0
-        --counts how many skeletons spawned in round
-        skeletoncounter = skeletoncounter + 1
-    end
-
-    --updates all skeletons based on player
-    for k, skeleton in pairs(Skeletons) do
-        skeleton:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
-
-        if skeleton.isDead == true and skeleton.deadcounter > 20 then
-            table.remove(Skeletons, k)
-        end
-    end
-
     self.anim:update(dt)
 end
 
