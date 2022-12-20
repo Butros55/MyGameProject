@@ -47,7 +47,7 @@ function Player:init()
     self.animations.slider = anim8.newAnimation(self.grid('4-7', 4), 0.15)
     self.animations.slidel = anim8.newAnimation(self.grid('4-7', 4), 0.15):flipH()
 
-    movingDirection = true
+    self.movingDirection = true
     inJump = false
     inFall = false
     --timer and combat variable so the player cant move while attacking
@@ -55,6 +55,7 @@ function Player:init()
     self.attackcounter = 0
     self.incombattimer = 1.5
     self.outcombattimer = 10
+    self.slidecd = 10
 
     --getting width and height depending on spriteSheets charackter (hardcoded for now change later!!!)
     self.width = 19
@@ -65,13 +66,14 @@ function Player:init()
     self.collider:setCollisionClass('Player')
     self.collider:setFixedRotation(true)
 
+    self.isSliding = false
+
 end
 
 
 --updates Player for move jump or collision
-function Player:update(dt, skeletoncollider)
-
-    local isSliding = false
+function Player:update(dt)
+    
     local isMoving = false
 
     dx , dy = self.collider:getLinearVelocity()
@@ -79,6 +81,8 @@ function Player:update(dt, skeletoncollider)
     --increasing timer every second by 1
     self.incombattimer = self.incombattimer + dt
     self.outcombattimer = self.outcombattimer + dt
+    --decrease cd for 10sec
+    self.slidecd = self.slidecd - dt
 
     if self.incombattimer > 0.5 then
         self.attackcounter = 0
@@ -89,22 +93,22 @@ function Player:update(dt, skeletoncollider)
         self.incombattimer = 0
         self.outcombattimer = 0
         self.attackcounter = self.attackcounter + 1
-    elseif self.outcombattimer > 0.3 then
+    elseif self.outcombattimer > 0.3 and self.isSliding == false then
         self.collider:setLinearVelocity(0, dy)
         inCombat = false
     end
 
     --movement with a (left) and d (right)
-    if love.keyboard.isDown('d') and inCombat == false then
+    if love.keyboard.isDown('d') and inCombat == false and self.isSliding == false then
         self.collider:setLinearVelocity(200, dy)
-        movingDirection = true
+        self.movingDirection = true
         isMoving = true
         if inJump == false then
             self.anim = self.animations.right
         end
-    elseif love.keyboard.isDown('a') and inCombat == false then
+    elseif love.keyboard.isDown('a') and inCombat == false and self.isSliding == false then
         self.collider:setLinearVelocity(-200, dy)
-        movingDirection = false
+        self.movingDirection = false
         isMoving = true
         if inJump == false then
             self.anim = self.animations.left
@@ -112,7 +116,7 @@ function Player:update(dt, skeletoncollider)
     end
 
     --checks if player isnt moving and dependig on direction set idle if not
-    if isMoving == false and movingDirection == true and inJump == false then
+    if isMoving == false and self.movingDirection == true and inJump == false then
         if self.attackcounter == 3 and inCombat == true then
             self.anim = self.animations.combat3r
             self.collider:applyLinearImpulse(50, dy)
@@ -129,7 +133,7 @@ function Player:update(dt, skeletoncollider)
         end
     end 
         
-    if isMoving == false and movingDirection == false and inJump == false then
+    if isMoving == false and self.movingDirection == false and inJump == false then
         if self.attackcounter == 3 and inCombat == true then
             self.anim = self.animations.combat3l
             self.collider:applyLinearImpulse(-50, dy)
@@ -160,42 +164,38 @@ function Player:update(dt, skeletoncollider)
         end
     end
 
+
+    --animation while sliding
+    if love.keyboard.isDown('c') and inJump == false and self.slidecd <= 0 then
+        dx , dy = self.collider:getLinearVelocity()
+        if self.movingDirection == true then
+            self.anim = self.animations.slider
+            self.isSliding = true
+        else
+            self.anim = self.animations.slidel
+            self.isSliding = true
+        end
+    else
+        self.isSliding = false
+    end
+
     --set slide velocitiy if c was pressed
-    if love.keyboard.wasPressed('c') and inJump == false then
-        if movingDirection == true then
+    if love.keyboard.wasPressed('c') and inJump == false and self.slidecd <= 0 then
+        if self.movingDirection == true then
             self.collider:applyLinearImpulse(150, dy)
         else
             self.collider:applyLinearImpulse(-150, dy)
         end
     end
 
-    --animation while sliding
-    if love.keyboard.isDown('c') and inJump == false then
-        if movingDirection == true then
-            self.anim = self.animations.slider
-            isSliding = true
-        else
-            self.anim = self.animations.slidel
-            isSliding = true
-        end
-    end
 
-    --knockback while sliding on enemy
-    if self.collider:enter('Skeleton') and isSliding == true then
-        if movingDirection == true then
-            skeletoncollider:setLinearVelocity(200, -20)
-        else
-            skeletoncollider:setLinearVelocity(-200, -20)
-        end
-    end
-
-    if movingDirection == true and inJump == true then
+    if self.movingDirection == true and inJump == true then
         if dy > 0 then
             self.anim = self.animations.jumpdownr
         else
             self.anim = self.animations.jumpupr
         end
-    elseif movingDirection == false and inJump == true then 
+    elseif self.movingDirection == false and inJump == true then 
         if dy > 0 then
             self.anim = self.animations.jumpdownl
         else
@@ -214,9 +214,15 @@ function Player:update(dt, skeletoncollider)
 
     --after moving key relased set velocity to 0
     function love.keyreleased(key)
-        if key == 'd' or key == 'a' or 'c' then
+        if key == 'd' or key == 'a' then
             dx , dy = self.collider:getLinearVelocity()
             self.collider:setLinearVelocity(0, dy)
+        end
+
+        if key == 'c' and self.slidecd <= 0 then
+            dx , dy = self.collider:getLinearVelocity()
+            self.collider:setLinearVelocity(0, dy)
+            self.slidecd = 10
         end
     end
 

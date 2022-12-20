@@ -45,6 +45,8 @@ function Skeleton:load()
     self.doublejump = 0
 
     self.anim = self.animations.attackr
+    self.hit = false
+    self.hittimer = 0
 
     isMoving = false
 end
@@ -52,15 +54,24 @@ end
 function Skeleton:update(dt, playerx, playery, playerwidth, playerheight)
     dx , dy = self.collider:getLinearVelocity()
 
+    self.hittimer = self.hittimer + dt
+
+    if self.hit == false then
+        self.hittimer = 0
+    elseif self.hit == true and self.hittimer > 0.5 then
+        self.hittimer = 0
+        self.hit = false
+    end
+
     --setting Skeletons x and y to collider box
     self.x = self.collider:getX() - 10
     self.y = self.collider:getY() - 20
 
-    if playerx > self.x then
+    if playerx > self.x and self.hit == false then
         self.collider:setLinearVelocity(30, dy)
         self.anim = self.animations.walkr
         isMoving = true
-    elseif playerx < self.x then
+    elseif playerx < self.x and self.hit == false then
         self.collider:setLinearVelocity(-30, dy)
         self.anim = self.animations.walkl
         isMoving = true
@@ -74,12 +85,12 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight)
         self.doublejump = self.doublejump + 1
     end
 
-    if playerx - self.x < 12 and playerx - self.x > -self.width then
+    if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false then
         self.y = self.collider:getY() - 24
         self.anim = self.animations.attackr
         self.collider:setLinearVelocity(0, dy)
         isMoving = false
-    elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width then
+    elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width and self.hit == false then
         self.y = self.collider:getY() - 24
         self.x = self.collider:getX() - 32
         self.anim = self.animations.attackl
