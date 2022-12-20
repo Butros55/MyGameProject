@@ -26,6 +26,7 @@ require 'src/Constants'
 
 --requre All players and enemys
 require 'characters/player'
+require 'characters/Skeleton'
 
 --requre map to load
 require 'map/loadMap'

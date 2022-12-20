@@ -19,7 +19,7 @@ GameMap = sti('map/test.lua')
 --Add colission classes
 world:addCollisionClass('Player')
 world:addCollisionClass('Platform')
-world:addCollisionClass('Enemy')
+world:addCollisionClass('Skeleton')
 
 -- loads graphic Elements and assets
 gbackgrounds = {
