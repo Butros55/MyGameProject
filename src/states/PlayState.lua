@@ -12,16 +12,16 @@ PlayState = Class{__includes = BaseState}
 
 function PlayState:init()
     self.player = Player()
-    self.skeleton = Skeleton()
+    self.skeleton = Skeleton:load()
 end
 
 
 function PlayState:update(dt)
     self.player:update(dt)
-    self.skeleton:update(dt)
+    Skeleton:update(dt, self.player.x, self.player.y)
 end
 
 function PlayState:render()
     self.player:render()
-    self.skeleton:render()
+    Skeleton:render()
 end
