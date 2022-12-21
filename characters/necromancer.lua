@@ -57,8 +57,9 @@ function Necromancer:init()
     self.necrotimerx = 0
     self.necrotimery = 0
 
-
-    self.randomnecroy = math.random(150, 250)
+    self.necroisdown = 10
+    self.randomnecrodown = math.random(16, 20)
+    self.randomnecroy = math.random(150, 200)
     self.randomnecro = math.floor(math.random(100, 300))
     self.dy = -15
 end
@@ -110,25 +111,26 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
 
 
     if self.y < playery - self.randomnecroy - 30 then
-        self.dy = 35
+        self.dy = 30
     elseif self.y > playery - self.randomnecroy + 30 then
-        self.dy = -45
+        self.dy = -40
     else
         self.dy = -15
-        self.randomnecroy = math.random(150, 250)
+        self.randomnecroy = math.random(50, 320)
     end
+
 
     self.necrotimerx = self.necrotimerx + dt
     --go to random position from player based on position x and y
-    if self.necrotimerx >= math.random(8, 14) then
+    if self.necrotimerx >= math.random(8, 14) and self.hit == false and self.isDead == false then
         if self.x < self.randomnecro - 50 then
             self.collider:setLinearVelocity(80, self.dy) --set to -15 y for no gravity!!!
             self.anim = self.animations.walkr
-        elseif self.x > self.randomnecro + 50 then
+        elseif self.x > self.randomnecro + 50 and self.hit == false and self.isDead == false then
         self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
         self.anim = self.animations.walkl
         else
-            self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2), playerx - (VIRTUAL_WIDTH / 2)))
+            self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2) + 100, playerx - (VIRTUAL_WIDTH / 2) - 100))
         end
     else
         self.collider:setLinearVelocity(0, self.dy)
