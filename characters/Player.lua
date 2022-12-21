@@ -48,8 +48,7 @@ function Player:init()
     self.animations.slidel = anim8.newAnimation(self.grid('4-7', 4), 0.15):flipH()
 
     self.movingDirection = true
-    inJump = false
-    inFall = false
+    self.inJump = false
     --timer and combat variable so the player cant move while attacking
     self.inCombat = false
     self.attackcounter = 0
@@ -105,20 +104,22 @@ function Player:update(dt)
         self.collider:setLinearVelocity(200, dy)
         self.movingDirection = true
         isMoving = true
-        if inJump == false then
+        if self.
+inJump == false then
             self.anim = self.animations.right
         end
     elseif love.keyboard.isDown('a') and self.inCombat == false and self.isSliding == false then
         self.collider:setLinearVelocity(-200, dy)
         self.movingDirection = false
         isMoving = true
-        if inJump == false then
+        if self.
+inJump == false then
             self.anim = self.animations.left
         end
     end
 
     --checks if player isnt moving and dependig on direction set idle if not
-    if isMoving == false and self.movingDirection == true and inJump == false then
+    if isMoving == false and self.movingDirection == true and self.inJump == false then
         if self.attackcounter == 3 and self.inCombat == true then
             self.anim = self.animations.combat3r
             self.collider:applyLinearImpulse(40, 0)
@@ -138,7 +139,7 @@ function Player:update(dt)
         end
     end 
         
-    if isMoving == false and self.movingDirection == false and inJump == false then
+    if isMoving == false and self.movingDirection == false and self.inJump == false then
         if self.attackcounter == 3 and self.inCombat == true then
             self.anim = self.animations.combat3l
             sounds['sword3']:play()
@@ -173,13 +174,14 @@ function Player:update(dt)
                 sounds['jump2']:play()
             end
             doublejump = doublejump + 1
-            inJump = true
+            self.
+    inJump = true
         end
     end
 
 
     --animation while sliding
-    if love.keyboard.isDown('c') and inJump == false and self.slidecd <= 0 then
+    if love.keyboard.isDown('c') and self.inJump == false and self.slidecd <= 0 then
         dx , dy = self.collider:getLinearVelocity()
         if self.movingDirection == true then
             self.anim = self.animations.slider
@@ -195,7 +197,7 @@ function Player:update(dt)
     end
 
     --set slide velocitiy if c was pressed
-    if love.keyboard.wasPressed('c') and inJump == false and self.slidecd <= 0 then
+    if love.keyboard.wasPressed('c') and self.inJump == false and self.slidecd <= 0 then
         if self.movingDirection == true then
             self.collider:applyLinearImpulse(150, dy)
         else
@@ -204,13 +206,13 @@ function Player:update(dt)
     end
 
 
-    if self.movingDirection == true and inJump == true then
+    if self.movingDirection == true and self.inJump == true then
         if dy > 0 then
             self.anim = self.animations.jumpdownr
         else
             self.anim = self.animations.jumpupr
         end
-    elseif self.movingDirection == false and inJump == true then 
+    elseif self.movingDirection == false and self.inJump == true then 
         if dy > 0 then
             self.anim = self.animations.jumpdownl
         else
@@ -221,7 +223,8 @@ function Player:update(dt)
     --reset doublejump with platform collision
     if self.collider:enter('Platform') then
         doublejump = 0
-        inJump = false
+        self.
+inJump = false
         sounds['landing']:play()
     end
 
