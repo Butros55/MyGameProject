@@ -135,6 +135,24 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
     else
         self.collider:setLinearVelocity(0, self.dy)
     end
+
+    spawnTimer = spawnTimer + dt
+
+    if spawnTimer > 5 and self.isDead == false and self.hit == false then
+        table.insert(Skeletons, Skeleton())
+        spawnTimer = 0
+        --counts how many skeletons spawned in round
+        skeletoncounter = skeletoncounter + 1
+    end
+
+    --updates all skeletons based on player
+    for k, skeleton in pairs(Skeletons) do
+        skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
+
+        if skeleton.isDead == true and skeleton.deadcounter > 20 then
+            table.remove(Skeletons, k)
+        end
+    end
     
 
     --if health = 0 then dead = true
@@ -157,4 +175,8 @@ end
 
 function Necromancer:render()
     self.anim:draw(self.spriteSheet, self.x, self.y)
+
+    for k, skeleton in pairs(Skeletons) do
+        skeleton:render()
+    end
 end
