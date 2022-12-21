@@ -62,9 +62,13 @@ function Necromancer:init()
     self.randomnecroy = math.random(150, 200)
     self.randomnecro = math.floor(math.random(100, 300))
     self.dy = -15
-
+    --if necro is spawning cnancle any animation and movement
     self.isSpawning = false
-    self.spawingtimer = 0
+    self.isspawingtimer = 0
+
+    self.spawnTimer = 2
+    self.fasterSpawn = 0
+    self.Skeletons = {}
 end
 
 function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
@@ -112,14 +116,14 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         self.anim = self.animations.hitl
     end
 
-    
-    spawnTimer = spawnTimer + dt
-
-
-    if spawnTimer > 5 and self.isDead == false and self.hit == false then
+    --timer for skeletonspawn
+    self.fasterSpawn = self.fasterSpawn + dt / 100
+    self.spawnTimer = self.spawnTimer + dt * self.fasterSpawn
+    --spawns in random time and every sec faster skeletons if necrro is alive
+    if self.spawnTimer > math.random(1,2) and self.isDead == false and self.hit == false then
         self.isSpawning = true
-        table.insert(Skeletons, Skeleton())
-        spawnTimer = 0
+        table.insert(self.Skeletons, Skeleton())
+        self.spawnTimer = 0
         if playerdirection == false then
             self.anim = self.animations.spawnr
         elseif playerdirection == true then
@@ -131,20 +135,20 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
 
     if self.isSpawning == true then
         self.collider:setLinearVelocity(0, 0)
-        self.spawingtimer = self.spawingtimer + dt
-        if self.spawingtimer > 1.3 then
+        self.isspawingtimer = self.isspawingtimer + dt
+        if self.isspawingtimer > 1.3 then
             self.isSpawning = false
-            self.spawingtimer = 0
+            self.isspawingtimer = 0
         end
     end
 
 
-    --updates all skeletons based on player
-    for k, skeleton in pairs(Skeletons) do
-        skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
+    --updates all skeletons based on players x and y
+    for k, skeleton in pairs(self.Skeletons) do
+        skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat, self.x)
 
         if skeleton.isDead == true and skeleton.deadcounter > 20 then
-            table.remove(Skeletons, k)
+            table.remove(self.Skeletons, k)
         end
     end
 
@@ -197,7 +201,7 @@ end
 function Necromancer:render()
     self.anim:draw(self.spriteSheet, self.x, self.y)
 
-    for k, skeleton in pairs(Skeletons) do
+    for k, skeleton in pairs(self.Skeletons) do
         skeleton:render()
     end
 end
