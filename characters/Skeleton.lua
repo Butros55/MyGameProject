@@ -133,6 +133,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     if self.health <= 0 and self.isDead == false then
         self.isDead = true
         self.collider:setCollisionClass('Dead')
+        self.collider:setLinearVelocity(dx, 20)
         self.isMoving = false
         self.hit = false
         if playerdirection == false then

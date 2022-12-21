@@ -54,7 +54,7 @@ function Necromancer:init()
     self.isMoving = false
 
     --timer for random necro x position
-    self.necrotimerx = 0
+    self.necrotimerx = 12
     self.necrotimery = 0
 
     self.necroisdown = 10
@@ -66,8 +66,8 @@ function Necromancer:init()
     self.isSpawning = false
     self.isspawingtimer = 0
 
-    self.spawnTimer = 2
-    self.fasterSpawn = 0
+    self.spawnTimer = 0
+    self.fasterSpawn = 1
     self.Skeletons = {}
 end
 
@@ -93,10 +93,10 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
     end
 
     --get hit if player i close enough and in combat
-    if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
+    if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2 + 20)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
-    elseif playerx - self.x - 76 > -4 - playerwidth - self.width and playerx - self.x - 76 < -self.width and playerincombat == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
+    elseif playerx - self.x - 76 > -4 - playerwidth - self.width and playerx - self.x - 76 < -self.width and playerincombat == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2 + 20)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
     end
@@ -117,13 +117,13 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
     end
 
     --timer for skeletonspawn
-    self.fasterSpawn = self.fasterSpawn + dt / 100
-    self.spawnTimer = self.spawnTimer + dt * self.fasterSpawn
+    self.spawnTimer = self.spawnTimer + dt * math.min(self.fasterSpawn, 2)
     --spawns in random time and every sec faster skeletons if necrro is alive
-    if self.spawnTimer > math.random(1,2) and self.isDead == false and self.hit == false then
+    if self.spawnTimer > 10 and self.isDead == false and self.hit == false then
         self.isSpawning = true
         table.insert(self.Skeletons, Skeleton())
         self.spawnTimer = 0
+        self.fasterSpawn = self.fasterSpawn + 0.05
         if playerdirection == false then
             self.anim = self.animations.spawnr
         elseif playerdirection == true then
@@ -131,6 +131,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         end
         --counts how many skeletons spawned in round
         skeletoncounter = skeletoncounter + 1
+        skeletontimer = 0 -- temporär zum balancen
     end
 
     if self.isSpawning == true then

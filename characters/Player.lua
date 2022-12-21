@@ -90,7 +90,7 @@ function Player:update(dt)
         self.attackcounter = 0
     end
     -- if q was pressed reset outcombat so the player cant move while combat is true
-    if love.keyboard.wasPressed('q') and self.incombattimer > 0.3 and self.attackcounter < 3 and self.isSliding == false and inJump == false then
+    if love.keyboard.wasPressed('q') and self.incombattimer > 0.3 and self.attackcounter < 3 and self.isSliding == false then
         self.inCombat = true
         self.incombattimer = 0
         self.outcombattimer = 0

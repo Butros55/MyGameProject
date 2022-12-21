@@ -22,7 +22,7 @@ world:addCollisionClass('Platform')
 world:addCollisionClass('Skeleton')
 world:addCollisionClass('Necromancer', {ignores = {'Skeleton'}})
 world:addCollisionClass('Ghost', {ignores = {'Skeleton', 'Necromancer'}})
-world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player', 'Ghost'}})
+world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead'}})
 
 -- loads graphic Elements and assets
 gbackgrounds = {
