@@ -20,14 +20,14 @@ function Necromancer:init()
 
     self.animations = {}
 
-    self.animations.deadr = anim8.newAnimation(self.gridsheet('1-10', 7), 0.1)
-    self.animations.deadl = anim8.newAnimation(self.gridsheet('1-10', 7), 0.1):flipH()
+    self.animations.deadr = anim8.newAnimation(self.gridsheet('1-10', 7), 0.1, 'pauseAtEnd')
+    self.animations.deadl = anim8.newAnimation(self.gridsheet('1-10', 7), 0.1, 'pauseAtEnd'):flipH()
     self.animations.hitr = anim8.newAnimation(self.gridsheet('1-5', 6), 0.2)
     self.animations.hitl = anim8.newAnimation(self.gridsheet('1-5', 6), 0.2):flipH()
     self.animations.walkr = anim8.newAnimation(self.gridsheet('1-8', 2), 0.1)
     self.animations.walkl = anim8.newAnimation(self.gridsheet('1-8', 2), 0.1):flipH()
-    self.animations.attackr = anim8.newAnimation(self.gridsheet('1-13', 3), 0.1)
-    self.animations.attackl = anim8.newAnimation(self.gridsheet('1-13', 3), 0.1):flipH()
+    self.animations.spawnr = anim8.newAnimation(self.gridsheet('1-13', 3), 0.1)
+    self.animations.spawnl = anim8.newAnimation(self.gridsheet('1-13', 3), 0.1):flipH()
 
 
     self.anim = self.animations.walkr
@@ -62,6 +62,9 @@ function Necromancer:init()
     self.randomnecroy = math.random(150, 200)
     self.randomnecro = math.floor(math.random(100, 300))
     self.dy = -15
+
+    self.isSpawning = false
+    self.spawingtimer = 0
 end
 
 function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
@@ -109,10 +112,46 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         self.anim = self.animations.hitl
     end
 
+    
+    spawnTimer = spawnTimer + dt
 
-    if self.y < playery - self.randomnecroy - 30 then
+
+    if spawnTimer > 5 and self.isDead == false and self.hit == false then
+        self.isSpawning = true
+        table.insert(Skeletons, Skeleton())
+        spawnTimer = 0
+        if playerdirection == false then
+            self.anim = self.animations.spawnr
+        elseif playerdirection == true then
+            self.anim = self.animations.spawnl
+        end
+        --counts how many skeletons spawned in round
+        skeletoncounter = skeletoncounter + 1
+    end
+
+    if self.isSpawning == true then
+        self.collider:setLinearVelocity(0, 0)
+        self.spawingtimer = self.spawingtimer + dt
+        if self.spawingtimer > 1.3 then
+            self.isSpawning = false
+            self.spawingtimer = 0
+        end
+    end
+
+
+    --updates all skeletons based on player
+    for k, skeleton in pairs(Skeletons) do
+        skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
+
+        if skeleton.isDead == true and skeleton.deadcounter > 20 then
+            table.remove(Skeletons, k)
+        end
+    end
+
+
+    if self.y < playery - self.randomnecroy - 30 and self.isSpawning == false then
         self.dy = 30
-    elseif self.y > playery - self.randomnecroy + 30 then
+    elseif self.y > playery - self.randomnecroy + 30 and self.isSpawning == false then
         self.dy = -40
     else
         self.dy = -15
@@ -122,11 +161,11 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
 
     self.necrotimerx = self.necrotimerx + dt
     --go to random position from player based on position x and y
-    if self.necrotimerx >= math.random(8, 14) and self.hit == false and self.isDead == false then
+    if self.necrotimerx >= math.random(8, 14) and self.hit == false and self.isDead == false and self.isSpawning == false then
         if self.x < self.randomnecro - 50 then
             self.collider:setLinearVelocity(80, self.dy) --set to -15 y for no gravity!!!
             self.anim = self.animations.walkr
-        elseif self.x > self.randomnecro + 50 and self.hit == false and self.isDead == false then
+        elseif self.x > self.randomnecro + 50 and self.hit == false and self.isDead == false and self.isSpawning == false then
         self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
         self.anim = self.animations.walkl
         else
@@ -134,24 +173,6 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         end
     else
         self.collider:setLinearVelocity(0, self.dy)
-    end
-
-    spawnTimer = spawnTimer + dt
-
-    if spawnTimer > 5 and self.isDead == false and self.hit == false then
-        table.insert(Skeletons, Skeleton())
-        spawnTimer = 0
-        --counts how many skeletons spawned in round
-        skeletoncounter = skeletoncounter + 1
-    end
-
-    --updates all skeletons based on player
-    for k, skeleton in pairs(Skeletons) do
-        skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
-
-        if skeleton.isDead == true and skeleton.deadcounter > 20 then
-            table.remove(Skeletons, k)
-        end
     end
     
 
