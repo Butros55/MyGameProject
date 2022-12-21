@@ -16,7 +16,8 @@ function PlayState:init()
     roundTimer = 0
     skeletoncounter = 0
     self.player = Player()
-    self.necro = Necromancer()
+    self.spawner = Spawner()
+    Necromancers = {}
 
     sounds['music']:setLooping(true)
     sounds['music']:play()
@@ -24,15 +25,15 @@ end
 
 
 function PlayState:update(dt)
-    self.player:update(dt)
-    self.necro:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
     roundTimer = roundTimer + dt
+    self.player:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
+    self.spawner:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
 
 end
 
 function PlayState:render()
     self.player:render()
-    self.necro:render()
+    self.spawner:render()
     
     love.graphics.printf('Time Passed: ' ..tostring(math.floor(roundTimer)).. 'sec', self.player.x - VIRTUAL_WIDTH + 80, self.player.y - (VIRTUAL_HEIGHT / 2), VIRTUAL_WIDTH, 'center')
     love.graphics.printf('Skeleton Spawned: ' ..tostring(skeletoncounter), 0, 30, VIRTUAL_WIDTH, 'center')

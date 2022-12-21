@@ -29,6 +29,7 @@ require 'src/Constants'
 require 'characters/Player'
 require 'characters/Skeleton'
 require 'characters/Necromancer'
+require 'characters/Spawner'
 
 --requre map to load
 require 'map/loadMap'
