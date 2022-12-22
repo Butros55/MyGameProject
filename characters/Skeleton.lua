@@ -231,8 +231,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     end
 
     --removes skeleton from table if isDead and selfcollider is desroyed
-    if self.collidercheck == 0 then
-    elseif self.isDead == true and self.health then
+    if self.collidercheck == 0 and self.isDead == true and self.health then
         self.deadcounter = self.deadcounter + dt
     end
 

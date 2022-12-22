@@ -73,7 +73,7 @@ function Necromancer:init(playerx)
     --if necro is spawning cnancle any animation and movement
     self.isSpawning = false
     self.isspawingtimer = 0
-    self.currentSize = 0
+    self.skeletonCurrentSize = 0
 
     self.spawnTimer = 0
     self.fasterSpawn = 1
@@ -127,42 +127,12 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
             self.anim = self.animations.hitl
         end
 
-        --timer for skeletonspawn
-        self.spawnTimer = self.spawnTimer + dt * math.min(self.fasterSpawn, 2)
-        --spawns in random time and every sec faster skeletons if necrro is alive
-        if self.spawnTimer > 10 and self.isDead == false and self.hit == false then
-            self.isSpawning = true
-            table.insert(self.Skeletons, Skeleton(self.x, self.y, playery))
-            self.spawnTimer = 0
-            self.fasterSpawn = self.fasterSpawn + 0.05
-            if playerdirection == false then
-                self.anim = self.animations.spawnr
-            elseif playerdirection == true then
-                self.anim = self.animations.spawnl
-            end
-            --counts how many skeletons spawned in round
-            skeletoncounter = skeletoncounter + 1
-            self.currentSize = self.currentSize + 1
-            skeletontimer = 0 -- temporär zum balancen
-        end
-
         if self.isSpawning == true then
             self.collider:setLinearVelocity(0, 0)
             self.isspawingtimer = self.isspawingtimer + dt
             if self.isspawingtimer > 1.3 then
                 self.isSpawning = false
                 self.isspawingtimer = 0
-            end
-        end
-
-
-        --updates all skeletons based on players x and y
-        for k, skeleton in pairs(self.Skeletons) do
-            skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat, self.x)
-
-            if skeleton.isDead == true and skeleton.deadcounter > 5 then
-                table.remove(self.Skeletons, k)
-                self.currentSize = self.currentSize - 1
             end
         end
 
@@ -193,7 +163,6 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
             self.collider:setLinearVelocity(0, self.dy)
         end
 
-
         --if health = 0 then dead = true
         if self.health <= 0 and self.isDead == false then
             self.isDead = true
@@ -211,13 +180,44 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         elseif playerdirection == true then
             self.anim = self.animations.deadl
         end
+        self.collider:destroy()
         self.collidercheck = 0
     end
 
     --deletes necro from table if isDead and selfcollider got destroyed
-    if self.collidercheck == 0 then
+    if self.collidercheck == 0 and self.skeletonCurrentSize <= 0 then
         self.deadcounter = self.deadcounter + dt
     end
+
+    --timer for skeletonspawn
+    self.spawnTimer = self.spawnTimer + dt * math.min(self.fasterSpawn, 2)
+    --spawns in random time and every sec faster skeletons if necrro is alive
+    if self.spawnTimer > 10 and self.isDead == false and self.hit == false then
+        self.isSpawning = true
+        table.insert(self.Skeletons, Skeleton(self.x, self.y, playery))
+        self.spawnTimer = 0
+        self.fasterSpawn = self.fasterSpawn + 0.05
+        if playerdirection == false then
+            self.anim = self.animations.spawnr
+        elseif playerdirection == true then
+            self.anim = self.animations.spawnl
+        end
+        --counts how many skeletons spawned in round
+        skeletoncounter = skeletoncounter + 1
+        self.skeletonCurrentSize = self.skeletonCurrentSize + 1
+        skeletontimer = 0 -- temporär zum balancen
+    end
+
+    --updates all skeletons based on players x and y
+    for k, skeleton in pairs(self.Skeletons) do
+        skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat, self.x)
+
+        if skeleton.isDead == true and skeleton.deadcounter > 5 then
+            table.remove(self.Skeletons, k)
+            self.skeletonCurrentSize = self.skeletonCurrentSize - 1
+        end
+    end
+
 
     self.anim:update(dt)
 end
