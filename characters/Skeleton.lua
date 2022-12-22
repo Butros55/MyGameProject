@@ -18,12 +18,14 @@ function Skeleton:init(necrox, necroy, playery)
     self.idleSheet = love.graphics.newImage('graphics/enemys/Skeleton Idle.png')
     self.walkSheet = love.graphics.newImage('graphics/enemys/Skeleton Walk.png')
     self.reactSheet = love.graphics.newImage('graphics/enemys/Skeleton React.png')
+    self.spawnSheet = love.graphics.newImage('graphics/enemys/Skeleton Spawn.png')
 
     -- get all grids from pngs
     self.gridwalk = anim8.newGrid(22, 33, self.walkSheet:getWidth(), self.walkSheet:getHeight())
     self.gridhit = anim8.newGrid(30, 32, self.hitSheet:getWidth(), self.hitSheet:getHeight())
     self.gridattack = anim8.newGrid(43, 37, self.attackSheet:getWidth(), self.attackSheet:getHeight())
     self.griddead = anim8.newGrid(33, 32, self.deadSheet:getWidth(), self.deadSheet:getHeight())
+    self.gridspawn = anim8.newGrid(33, 32, self.spawnSheet:getWidth(), self.spawnSheet:getHeight())
 
     self.animations = {}
 
@@ -35,7 +37,7 @@ function Skeleton:init(necrox, necroy, playery)
     self.animations.walkl = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1):flipH()
     self.animations.attackr = anim8.newAnimation(self.gridattack('1-18', 1), 0.05)
     self.animations.attackl = anim8.newAnimation(self.gridattack('1-18', 1), 0.05):flipH()
-    self.animations.spawning = anim8.newAnimation(self.griddead('15-1', 1), 0.2)
+    self.animations.spawning = anim8.newAnimation(self.gridspawn('1-15', 1), 0.2):flipH()
 
 
     self.anim = self.animations.attackr
@@ -90,7 +92,7 @@ function Skeleton:init(necrox, necroy, playery)
     self.isMoving = false
     self.outmap = false
     self.isSpawningtimer = 0
-    self.isSpawning = false
+    self.isSpawning = true
 end
 
 function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
@@ -203,8 +205,16 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.attacktimer = 0
     end
 
+    --resets doublejump after hitting Platform
+    if self.collider:enter('Platform') and self.outmap == false then
+        self.doublejump = 0
+    end
+
     self.isSpawningtimer = self.isSpawningtimer + dt
-    if self.isSpawningtimer < 3 and self.isSpawning == false then
+    if self.isSpawningtimer < 3 then
+        self.isMoving = false
+        self.hit = false
+        self.isDead = false
         self.collider:setLinearVelocity(0, 0)
         self.anim = self.animations.spawning
         self.isSpawning = true
@@ -214,18 +224,14 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.collider:setCollisionClass('Skeleton')
     end
 
-
-    --resets doublejump after hitting Platform
-    if self.collider:enter('Platform') and self.outmap == false then
-        self.doublejump = 0
-    end
-
     self.anim:update(dt)
 end
 
 function Skeleton:render()
     --is needed because of more than one spriteSheet
-    if self.hit == true then
+    if self.isSpawning == true then
+        self.anim:draw(self.spawnSheet, self.x, self.y)
+    elseif self.hit == true then
         self.anim:draw(self.hitSheet, self.x, self.y)
     elseif self.isMoving == true then
         self.anim:draw(self.walkSheet, self.x, self.y)
