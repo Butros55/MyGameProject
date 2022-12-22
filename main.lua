@@ -125,8 +125,8 @@ function love.draw()
             VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
 
         cam:attach(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
-            gStateMachine:render()
             GameMap:drawLayer(GameMap.layers['neue'])
+            gStateMachine:render()
         cam:detach()
 
     push:apply('end')
