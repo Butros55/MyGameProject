@@ -14,6 +14,8 @@ camera = require 'lib/camera'
 cam = camera()
 anim8 = require 'lib/anim8'
 
+--requires AI beavviors
+require 'characters/AI'
 
 --requre StateMachine
 require 'src/StateMachine'

@@ -91,8 +91,6 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         self.x = self.collider:getX() - 80
         self.y = self.collider:getY() - 95
 
-
-
         --timer for hit
         self.hittimer = self.hittimer + dt
         --if hitted set hit to true for 0.6 sec
@@ -111,7 +109,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
             self.hit = true
             self.health = self.health - 10
         end
-
+        
         --damage while sliding trough enemys
         if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
             self.hit = true
@@ -120,13 +118,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
             self.hit = true
             self.health = self.health - 10
         end
-
-        if self.hit == true and playerdirection == false and self.isDead == false then
-            self.anim = self.animations.hitr
-        elseif self.hit == true and playerdirection == true and self.isDead == false then
-            self.anim = self.animations.hitl
-        end
-
+        
         if self.isSpawning == true then
             self.collider:setLinearVelocity(0, 0)
             self.isspawingtimer = self.isspawingtimer + dt
@@ -170,6 +162,8 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
             self.isMoving = false
             self.hit = false
             self.collidercheck = 1
+
+            
         end
     end
     

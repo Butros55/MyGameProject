@@ -46,37 +46,18 @@ function Skeleton:init(necrox, necroy, playery)
     self.width = 8
     self.height = 24
     self.spawnx = math.random(necrox + 100, necrox - 100)
-    self.objy = 1000000
-    self.spawn = -300
-    --spawns at ground based on position x
-    if GameMap.layers['Ground'] then
-        for i, obj in pairs(GameMap.layers['Ground'].objects) do
-            if self.spawnx > obj.x and self.spawnx < obj.x + obj.width then
-                if obj.y < self.objy then
-                    self.spawn = obj.y
-                end
-                self.objy = obj.y
-            end
-        end
-    end
 
-    self.autodeady = -100000
-    --checks if skeleton is under map and set isDead to true
-    if GameMap.layers['Ground'] then
-        for k, autodead in pairs(GameMap.layers['Ground'].objects) do
-            if autodead.y > self.autodeady then
-                 self.autodead = autodead.y + autodead.height
-            end
-            self.autodeady = autodead.y
-        end
-    end
+    --spawns at ground based on position x
+    self.spawn = GroundAI:highestGroundColliderOnX(self.spawnx)
+
+    --checks if skeleton is under map
+    self.autodead = AI:LowestGroundCollider()
 
     self.spawny = self.spawn - self.height - 1
 
-    --setting collider for character
-    self.collider = world:newRectangleCollider(self.spawnx, self.spawny, self.width, self.height)
-    self.collider:setCollisionClass('Skeleton')
-    self.collider:setFixedRotation(true)
+    --sets up collider for Skeleton
+    self.collider = ModelSetup:newCollider(self.spawnx, self.spawny, self.width, self.height, 'Skeleton')
+
 
     self.doublejump = 0
     --sets if hittet and timer after hit for knockback
