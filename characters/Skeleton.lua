@@ -93,27 +93,29 @@ function Skeleton:init(necrox, necroy, playery)
     self.outmap = false
     self.isSpawningtimer = 0
     self.isSpawning = true
-    self.collidercheck = 2
+    self.collidercheck = 3
+    self.fallingAfterDead = 0
 end
 
 function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
- 
-    if self.collidercheck == 2 then
+
+    --timer for hit
+    self.hittimer = self.hittimer + dt
+    --if hitted set hit to true for 0.6 sec
+    if self.hit == false then
+        self.hittimer = 0
+    elseif self.hit == true and self.hittimer > 0.5 then
+        self.hittimer = 0
+        self.hit = false
+    end
+
+    if self.collidercheck == 3 then
+
         dx , dy = self.collider:getLinearVelocity()
 
         --setting Skeletons x and y to collider box
         self.x = self.collider:getX() - 10
         self.y = self.collider:getY() - 20
-
-        --timer for hit
-        self.hittimer = self.hittimer + dt
-        --if hitted set hit to true for 0.6 sec
-        if self.hit == false then
-            self.hittimer = 0
-        elseif self.hit == true and self.hittimer > 0.5 then
-            self.hittimer = 0
-            self.hit = false
-        end
 
         --get hit if player i close enough and in combat
         if playerx - self.x < 10 and playerx - self.x > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
@@ -192,15 +194,16 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.doublejump = 0
         end
 
-        if self.health <= 0 and self.isDead == false or self.y > self.autodead and self.isDead == false and self.isSpawning == false and self.collidercheck == 1 then
+        --sets skeleton to dead if under 0 health
+        if self.health <= 0 and self.isDead == false or self.y > self.autodead and self.isDead == false then
             self.isDead = true
             self.deadcounter = self.deadcounter + dt
+            self.collider:setLinearVelocity(0, 20)
             self.collider:setCollisionClass('Dead')
-            self.collider:setLinearVelocity(dx, 20)
             self.isMoving = false
             self.hit = false
             self.health = 0
-            self.collidercheck = 1
+            self.collidercheck = 2
         end
 
         self.isSpawningtimer = self.isSpawningtimer + dt
@@ -219,15 +222,25 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
     end
 
-    --removes selfcollider if Skeleton is dead
-    if self.collidercheck == 1 then
+    if self.collidercheck == 2 then
         if playerdirection == false then
             self.anim = self.animations.deadr
         elseif playerdirection == true then
             self.anim = self.animations.deadl
         end
-        self.collider:destroy()
-        self.collidercheck = 0
+        self.collidercheck = 1
+    end
+
+    --removes selfcollider if Skeleton is dead after falling for some time
+    if self.collidercheck == 1 then
+        self.fallingAfterDead = self.fallingAfterDead + dt
+        --setting Skeletons x and y to collider box
+        self.x = self.collider:getX() - 10
+        self.y = self.collider:getY() - 20
+            if self.fallingAfterDead > 3 then
+                self.collider:destroy()
+                self.collidercheck = 0
+            end
     end
 
     --removes skeleton from table if isDead and selfcollider is desroyed
