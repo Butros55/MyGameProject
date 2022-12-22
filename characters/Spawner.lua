@@ -27,6 +27,7 @@ function Spawner:update(dt, playerx, playery, playerwidth, playerheight, players
     for k, necro in pairs(self.necromancers) do
         necro:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat, self.x)
         if necro.deadcounter > 5 and necro.currentSize <= 0 then
+            self.collider:destroy()
             table.remove(self.necromancers, k)
             self.currentSize = self.currentSize - 1
         end

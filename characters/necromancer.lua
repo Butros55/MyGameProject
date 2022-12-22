@@ -78,132 +78,144 @@ function Necromancer:init(playerx)
     self.spawnTimer = 0
     self.fasterSpawn = 1
     self.Skeletons = {}
+
+    self.collidercheck = 2
 end
 
 function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
  
+    if self.collidercheck == 2 then
+        dx , dy = self.collider:getLinearVelocity()
 
-    dx , dy = self.collider:getLinearVelocity()
-
-    --setting Skeletons x and y to collider box
-    self.x = self.collider:getX() - 80
-    self.y = self.collider:getY() - 95
-    
+        --setting Skeletons x and y to collider box
+        self.x = self.collider:getX() - 80
+        self.y = self.collider:getY() - 95
 
 
-    --timer for hit
-    self.hittimer = self.hittimer + dt
-    --if hitted set hit to true for 0.6 sec
-    if self.hit == false then
-        self.hittimer = 0
-    elseif self.hit == true and self.hittimer > 0.5 then
-        self.hittimer = 0
-        self.hit = false
-    end
 
-    --get hit if player i close enough and in combat
-    if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2 + 20)) and self.isDead == false then
-        self.hit = true
-        self.health = self.health - 10
-    elseif playerx - self.x - 76 > -4 - playerwidth - self.width and playerx - self.x - 76 < -self.width and playerincombat == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2 + 20)) and self.isDead == false then
-        self.hit = true
-        self.health = self.health - 10
-    end
-
-    --damage while sliding trough enemys
-    if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
-        self.hit = true
-        self.health = self.health - 10
-    elseif playerx - self.x - 76 < -4 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
-        self.hit = true
-        self.health = self.health - 10
-    end
-
-    if self.hit == true and playerdirection == false and self.isDead == false then
-        self.anim = self.animations.hitr
-    elseif self.hit == true and playerdirection == true and self.isDead == false then
-        self.anim = self.animations.hitl
-    end
-
-    --timer for skeletonspawn
-    self.spawnTimer = self.spawnTimer + dt * math.min(self.fasterSpawn, 2)
-    --spawns in random time and every sec faster skeletons if necrro is alive
-    if self.spawnTimer > 10 and self.isDead == false and self.hit == false then
-        self.isSpawning = true
-        table.insert(self.Skeletons, Skeleton(self.x, self.y, playery))
-        self.spawnTimer = 0
-        self.fasterSpawn = self.fasterSpawn + 0.05
-        if playerdirection == false then
-            self.anim = self.animations.spawnr
-        elseif playerdirection == true then
-            self.anim = self.animations.spawnl
+        --timer for hit
+        self.hittimer = self.hittimer + dt
+        --if hitted set hit to true for 0.6 sec
+        if self.hit == false then
+            self.hittimer = 0
+        elseif self.hit == true and self.hittimer > 0.5 then
+            self.hittimer = 0
+            self.hit = false
         end
-        --counts how many skeletons spawned in round
-        skeletoncounter = skeletoncounter + 1
-        self.currentSize = self.currentSize + 1
-        skeletontimer = 0 -- temporär zum balancen
-    end
 
-    if self.isSpawning == true then
-        self.collider:setLinearVelocity(0, 0)
-        self.isspawingtimer = self.isspawingtimer + dt
-        if self.isspawingtimer > 1.3 then
-            self.isSpawning = false
-            self.isspawingtimer = 0
+        --get hit if player i close enough and in combat
+        if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2 + 20)) and self.isDead == false then
+            self.hit = true
+            self.health = self.health - 10
+        elseif playerx - self.x - 76 > -4 - playerwidth - self.width and playerx - self.x - 76 < -self.width and playerincombat == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2 + 20)) and self.isDead == false then
+            self.hit = true
+            self.health = self.health - 10
         end
-    end
 
-
-    --updates all skeletons based on players x and y
-    for k, skeleton in pairs(self.Skeletons) do
-        skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat, self.x)
-
-        if skeleton.isDead == true and skeleton.deadcounter > 5 then
-            table.remove(self.Skeletons, k)
-            self.currentSize = self.currentSize - 1
+        --damage while sliding trough enemys
+        if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
+            self.hit = true
+            self.health = self.health - 10
+        elseif playerx - self.x - 76 < -4 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
+            self.hit = true
+            self.health = self.health - 10
         end
-    end
+
+        if self.hit == true and playerdirection == false and self.isDead == false then
+            self.anim = self.animations.hitr
+        elseif self.hit == true and playerdirection == true and self.isDead == false then
+            self.anim = self.animations.hitl
+        end
+
+        --timer for skeletonspawn
+        self.spawnTimer = self.spawnTimer + dt * math.min(self.fasterSpawn, 2)
+        --spawns in random time and every sec faster skeletons if necrro is alive
+        if self.spawnTimer > 10 and self.isDead == false and self.hit == false then
+            self.isSpawning = true
+            table.insert(self.Skeletons, Skeleton(self.x, self.y, playery))
+            self.spawnTimer = 0
+            self.fasterSpawn = self.fasterSpawn + 0.05
+            if playerdirection == false then
+                self.anim = self.animations.spawnr
+            elseif playerdirection == true then
+                self.anim = self.animations.spawnl
+            end
+            --counts how many skeletons spawned in round
+            skeletoncounter = skeletoncounter + 1
+            self.currentSize = self.currentSize + 1
+            skeletontimer = 0 -- temporär zum balancen
+        end
+
+        if self.isSpawning == true then
+            self.collider:setLinearVelocity(0, 0)
+            self.isspawingtimer = self.isspawingtimer + dt
+            if self.isspawingtimer > 1.3 then
+                self.isSpawning = false
+                self.isspawingtimer = 0
+            end
+        end
 
 
-    if self.y < playery - self.randomnecroy - 30 and self.isSpawning == false then
-        self.dy = 30
-    elseif self.y > playery - self.randomnecroy + 30 and self.isSpawning == false then
-        self.dy = -40
-    else
-        self.dy = -15
-        self.randomnecroy = math.random(50, 320)
-    end
+        --updates all skeletons based on players x and y
+        for k, skeleton in pairs(self.Skeletons) do
+            skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat, self.x)
+
+            if skeleton.isDead == true and skeleton.deadcounter > 5 then
+                table.remove(self.Skeletons, k)
+                self.currentSize = self.currentSize - 1
+            end
+        end
 
 
-    self.necrotimerx = self.necrotimerx + dt
-    --go to random position from player based on position x and y
-    if self.necrotimerx >= math.random(8, 14) and self.hit == false and self.isDead == false and self.isSpawning == false then
-        if self.x < self.randomnecro - 50 then
-            self.collider:setLinearVelocity(80, self.dy) --set to -15 y for no gravity!!!
-            self.anim = self.animations.walkr
-        elseif self.x > self.randomnecro + 50 and self.hit == false and self.isDead == false and self.isSpawning == false then
-        self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
-        self.anim = self.animations.walkl
+        if self.y < playery - self.randomnecroy - 30 and self.isSpawning == false then
+            self.dy = 30
+        elseif self.y > playery - self.randomnecroy + 30 and self.isSpawning == false then
+            self.dy = -40
         else
-            self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2) - 50, playerx - (VIRTUAL_WIDTH / 2) + 50))
+            self.dy = -15
+            self.randomnecroy = math.random(50, 320)
         end
-    else
-        self.collider:setLinearVelocity(0, self.dy)
+
+
+        self.necrotimerx = self.necrotimerx + dt
+        --go to random position from player based on position x and y
+        if self.necrotimerx >= math.random(8, 14) and self.hit == false and self.isDead == false and self.isSpawning == false then
+            if self.x < self.randomnecro - 50 then
+                self.collider:setLinearVelocity(80, self.dy) --set to -15 y for no gravity!!!
+                self.anim = self.animations.walkr
+            elseif self.x > self.randomnecro + 50 and self.hit == false and self.isDead == false and self.isSpawning == false then
+            self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
+            self.anim = self.animations.walkl
+            else
+                self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2) - 50, playerx - (VIRTUAL_WIDTH / 2) + 50))
+            end
+        else
+            self.collider:setLinearVelocity(0, self.dy)
+        end
+
+
+        --if health = 0 then dead = true
+        if self.health <= 0 and self.isDead == false then
+            self.isDead = true
+            self.collider:setCollisionClass('Dead')
+            self.isMoving = false
+            self.hit = false
+            self.collidercheck = 1
+        end
     end
     
-
-    --if health = 0 then dead = true
-    if self.health <= 0 and self.isDead == false then
-        self.isDead = true
-        self.collider:setCollisionClass('Dead')
-        self.isMoving = false
-        self.hit = false
+    --removes selfcollider if necro is dead
+    if self.collidercheck == 1 then
         if playerdirection == false then
             self.anim = self.animations.deadr
         elseif playerdirection == true then
             self.anim = self.animations.deadl
         end
-    elseif self.isDead == true and self.health <= 0 then
+        self.collidercheck = 0
+    end
+
+    --deletes necro from table if isDead and selfcollider got destroyed
+    if self.collidercheck == 0 then
         self.deadcounter = self.deadcounter + dt
     end
 
