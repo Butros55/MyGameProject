@@ -73,6 +73,7 @@ function Necromancer:init(playerx)
     --if necro is spawning cnancle any animation and movement
     self.isSpawning = false
     self.isspawingtimer = 0
+    self.currentSize = 0
 
     self.spawnTimer = 0
     self.fasterSpawn = 1
@@ -139,6 +140,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         end
         --counts how many skeletons spawned in round
         skeletoncounter = skeletoncounter + 1
+        self.currentSize = self.currentSize + 1
         skeletontimer = 0 -- temporär zum balancen
     end
 
@@ -156,8 +158,9 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
     for k, skeleton in pairs(self.Skeletons) do
         skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat, self.x)
 
-        if skeleton.isDead == true and skeleton.deadcounter > 20 then
+        if skeleton.isDead == true and skeleton.deadcounter > 5 then
             table.remove(self.Skeletons, k)
+            self.currentSize = self.currentSize - 1
         end
     end
 
@@ -182,7 +185,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
         self.anim = self.animations.walkl
         else
-            self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2) + 100, playerx - (VIRTUAL_WIDTH / 2) - 100))
+            self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2) - 50, playerx - (VIRTUAL_WIDTH / 2) + 50))
         end
     else
         self.collider:setLinearVelocity(0, self.dy)

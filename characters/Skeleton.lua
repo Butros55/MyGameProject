@@ -42,9 +42,36 @@ function Skeleton:init(necrox, necroy, playery)
     --getting width and height depending on spriteSheets charackter (hardcoded for now change later!!!)
     self.width = 8
     self.height = 24
+    self.spawnx = math.random(necrox + 100, necrox - 100)
+    self.objy = 1000000
+    self.spawn = -300
+    --spawns at ground based on position x
+    if GameMap.layers['Ground'] then
+        for i, obj in pairs(GameMap.layers['Ground'].objects) do
+            if self.spawnx > obj.x and self.spawnx < obj.x + obj.width then
+                if obj.y < self.objy then
+                    self.spawn = obj.y
+                end
+                self.objy = obj.y
+            end
+        end
+    end
+
+    self.autodeady = -100000
+    --checks if skeleton is under map and set isDead to true
+    if GameMap.layers['Ground'] then
+        for k, autodead in pairs(GameMap.layers['Ground'].objects) do
+            if autodead.y > self.autodeady then
+                 self.autodead = autodead.y + autodead.height
+            end
+            self.autodeady = autodead.y
+        end
+    end
+
+    self.spawny = self.spawn - self.height - 1
 
     --setting collider for character
-    self.collider = world:newRectangleCollider(math.random(necrox + 100, necrox - 100), playery + 70, self.width, self.height)
+    self.collider = world:newRectangleCollider(self.spawnx, self.spawny, self.width, self.height)
     self.collider:setCollisionClass('Skeleton')
     self.collider:setFixedRotation(true)
 
@@ -130,19 +157,21 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.doublejump = self.doublejump + 1
     end
 
-    --if health = 0 then dead = true
-    if self.health <= 0 and self.isDead == false then
+    --if health = 0 or autodead then dead = true
+    if self.health <= 0 and self.isDead == false or self.y > self.autodead and self.isDead == false then
         self.isDead = true
+        self.deadcounter = self.deadcounter + dt
         self.collider:setCollisionClass('Dead')
         self.collider:setLinearVelocity(dx, 20)
         self.isMoving = false
         self.hit = false
+        self.health = 0
         if playerdirection == false then
             self.anim = self.animations.deadr
         elseif playerdirection == true then
             self.anim = self.animations.deadl
         end
-    elseif self.isDead == true and self.health <= 0 then
+    elseif self.isDead == true and self.health then
         self.deadcounter = self.deadcounter + dt
     end
 
