@@ -10,7 +10,7 @@
 
 Skeleton = Class{}
 
-function Skeleton:init()
+function Skeleton:init(necrox, necroy)
     --initilase all pngs from Skeleton
     self.attackSheet = love.graphics.newImage('graphics/enemys/Skeleton Attack.png')
     self.deadSheet = love.graphics.newImage('graphics/enemys/Skeleton Dead.png')
@@ -33,8 +33,8 @@ function Skeleton:init()
     self.animations.hitl = anim8.newAnimation(self.gridhit('1-4', 1), 0.2):flipH()
     self.animations.walkr = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1)
     self.animations.walkl = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1):flipH()
-    self.animations.attackr = anim8.newAnimation(self.gridattack('1-18', 1), 0.1)
-    self.animations.attackl = anim8.newAnimation(self.gridattack('1-18', 1), 0.1):flipH()
+    self.animations.attackr = anim8.newAnimation(self.gridattack('1-18', 1), 0.05)
+    self.animations.attackl = anim8.newAnimation(self.gridattack('1-18', 1), 0.05):flipH()
 
 
     self.anim = self.animations.attackr
@@ -44,7 +44,7 @@ function Skeleton:init()
     self.height = 24
 
     --setting collider for character
-    self.collider = world:newRectangleCollider(math.random(100, 400), 0, self.width, self.height)
+    self.collider = world:newRectangleCollider(math.random(necrox + (VIRTUAL_WIDTH / 2), necrox - (VIRTUAL_WIDTH / 2)), necroy, self.width, self.height)
     self.collider:setCollisionClass('Skeleton')
     self.collider:setFixedRotation(true)
 
@@ -133,6 +133,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     if self.health <= 0 and self.isDead == false then
         self.isDead = true
         self.collider:setCollisionClass('Dead')
+        self.collider:setLinearVelocity(dx, 20)
         self.isMoving = false
         self.hit = false
         if playerdirection == false then
@@ -145,15 +146,15 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     end
 
 
-    --attack animaton if player is close enought
+    --attack if player is close enought
     if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) then
         self.y = self.collider:getY() - 24
         self.anim = self.animations.attackr
         self.collider:setLinearVelocity(0, dy)
         self.isMoving = false
         self.attacktimer = self.attacktimer + dt
-        if self.attacktimer >= 0.9 then
-            self.attacktimer = -0.9
+        if self.attacktimer >= 0.45 then
+            self.attacktimer = -0.45
             playerhealth = playerhealth -20
         end
     elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) then
@@ -163,8 +164,8 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.collider:setLinearVelocity(0, dy)
         self.isMoving = false
         self.attacktimer = self.attacktimer + dt
-        if self.attacktimer >= 0.9 then
-            self.attacktimer = -0.9
+        if self.attacktimer >= 0.45 then
+            self.attacktimer = -0.45
             playerhealth = playerhealth -20
         end
     else
