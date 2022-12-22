@@ -10,7 +10,7 @@
 
 Skeleton = Class{}
 
-function Skeleton:init(necrox, necroy)
+function Skeleton:init(necrox, necroy, playery)
     --initilase all pngs from Skeleton
     self.attackSheet = love.graphics.newImage('graphics/enemys/Skeleton Attack.png')
     self.deadSheet = love.graphics.newImage('graphics/enemys/Skeleton Dead.png')
@@ -44,7 +44,7 @@ function Skeleton:init(necrox, necroy)
     self.height = 24
 
     --setting collider for character
-    self.collider = world:newRectangleCollider(math.random(necrox + 150, necrox - 150), necroy, self.width, self.height)
+    self.collider = world:newRectangleCollider(math.random(necrox + 100, necrox - 100), playery + 70, self.width, self.height)
     self.collider:setCollisionClass('Skeleton')
     self.collider:setFixedRotation(true)
 
@@ -60,6 +60,7 @@ function Skeleton:init(necrox, necroy)
     self.deadcounter = 0
 
     self.isMoving = false
+    self.outmap = false
 
 end
 
@@ -113,18 +114,18 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     end
 
     --go to player based on position x and y
-    if playerx > self.x and self.hit == false and self.isDead == false then
+    if playerx > self.x and self.hit == false and self.isDead == false and self.outmap == false then
         self.collider:setLinearVelocity(30, dy)
         self.anim = self.animations.walkr
         self.isMoving = true
-    elseif playerx < self.x and self.hit == false and self.isDead == false then
+    elseif playerx < self.x and self.hit == false and self.isDead == false and self.outmap == false then
         self.collider:setLinearVelocity(-30, dy)
         self.anim = self.animations.walkl
         self.isMoving = true
     end
 
     --allows the skeleton to jump
-    if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false then
+    if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false and self.outmap == false then
         self.collider:setLinearVelocity(dx, -400)
         self.doublejump = self.doublejump + 1
     end
@@ -147,7 +148,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
 
     --attack if player is close enought
-    if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) then
+    if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.outmap == false then
         self.y = self.collider:getY() - 24
         self.anim = self.animations.attackr
         self.collider:setLinearVelocity(0, dy)
@@ -157,7 +158,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.attacktimer = -0.45
             playerhealth = playerhealth -20
         end
-    elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) then
+    elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.outmap == false then
         self.y = self.collider:getY() - 24
         self.x = self.collider:getX() - 32
         self.anim = self.animations.attackl
@@ -175,7 +176,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
 
     --resets doublejump after hitting Platform
-    if self.collider:enter('Platform') then
+    if self.collider:enter('Platform') and self.outmap == false then
         self.doublejump = 0
     end
 

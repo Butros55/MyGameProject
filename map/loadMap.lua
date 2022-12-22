@@ -23,6 +23,7 @@ world:addCollisionClass('Skeleton')
 world:addCollisionClass('Necromancer', {ignores = {'Skeleton'}})
 world:addCollisionClass('Ghost', {ignores = {'Skeleton', 'Necromancer'}})
 world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead'}})
+world:addCollisionClass('OutMap', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead', 'Platform'}})
 
 -- loads graphic Elements and assets
 gbackgrounds = {
@@ -41,7 +42,7 @@ sounds = {
     ['landing'] = love.audio.newSource('src/sounds/landing.wav', 'static')
 }
 
-
+grounddetections = {}
 grounds = {}
 if GameMap.layers['Ground'] then
     for i, obj in pairs(GameMap.layers['Ground'].objects) do

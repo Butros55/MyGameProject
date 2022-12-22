@@ -45,7 +45,7 @@ function Necromancer:init(playerx)
     end
 
     --setting collider for character
-    self.collider = world:newRectangleCollider(self.necrospawn , -100, self.width, self.height)
+    self.collider = world:newRectangleCollider(self.necrospawn , -300, self.width, self.height)
     self.collider:setCollisionClass('Necromancer')
     self.collider:setFixedRotation(true)
 
@@ -129,7 +129,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
     --spawns in random time and every sec faster skeletons if necrro is alive
     if self.spawnTimer > 10 and self.isDead == false and self.hit == false then
         self.isSpawning = true
-        table.insert(self.Skeletons, Skeleton(self.x, self.y))
+        table.insert(self.Skeletons, Skeleton(self.x, self.y, playery))
         self.spawnTimer = 0
         self.fasterSpawn = self.fasterSpawn + 0.05
         if playerdirection == false then
