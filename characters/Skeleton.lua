@@ -83,7 +83,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
     --timer for hit
     self.hittimer = self.hittimer + dt
-    --if hitted set hit to true for 0.6 sec
+    --if hitted set hit to true for 0.5 sec
     if self.hit == false then
         self.hittimer = 0
     elseif self.hit == true and self.hittimer > 0.5 then

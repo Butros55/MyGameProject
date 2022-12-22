@@ -29,16 +29,6 @@ end
 --checks if enemy got hitted if so set hit to true for 0.5sec
 function AI:getHitted(dt, x, y, width, height, playerx, playery, playerwidth, playerdirection, playerincombat, adjustments, health, isDead, hittimer)
 
-    --timer for hit
-    hittimer = hittimer + dt
-    --if hitted set hit to true for 0.5 sec
-    if hit == false then
-        hittimer = 0
-    elseif hit == true and hittimer > 0.5 then
-        hittimer = 0
-        hit = false
-    end
-
     --get hit if player i close enough and in combat
     if playerx - x - adjustments < 2 and playerx - x - adjustments > -width and playerincombat == true and playerdirection == false and (playery > y - (height * 2) and playery < y + (height * 2 + 20)) and isDead == false then
         hit = true
@@ -48,7 +38,20 @@ function AI:getHitted(dt, x, y, width, height, playerx, playery, playerwidth, pl
         health = health - 10
     end
 
-    return hit
+    return hit, health
+end
+
+function AI:hitTimer(dt, hit, hittimer)
+    --timer for hit
+    self.hittimer = self.hittimer + dt
+    --if hitted set hit to true for 0.5 sec
+    if self.hit == false then
+        self.hittimer = 0
+    elseif self.hit == true and self.hittimer > 0.5 then
+        self.hittimer = 0
+        self.hit = false
+    end
+    return self.hit
 end
 
 
@@ -56,7 +59,7 @@ end
 GroundAI = {}
 
 --returns highest collider from position x if nothing ther set 0
-function GroundAI:highestGroundColliderOnX(x, playery)
+function GroundAI:highestGroundColliderOnX(x)
     if GameMap.layers['Ground'] then
         self.objy = VIRTUAL_HEIGHT * 2
         self.collider_y = 0

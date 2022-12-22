@@ -44,10 +44,8 @@ function Necromancer:init(playerx)
         self.necrospawn = -playerx - VIRTUAL_WIDTH
     end
 
-    --setting collider for character
-    self.collider = world:newRectangleCollider(self.necrospawn , -300, self.width, self.height)
-    self.collider:setCollisionClass('Necromancer')
-    self.collider:setFixedRotation(true)
+    --sets up collider for Necromancer
+    self.collider = ModelSetup:newCollider(self.necrospawn, -300, self.width, self.height, 'Necromancer')
 
     --sets if hittet and timer after hit for knockback
     self.hit = false
