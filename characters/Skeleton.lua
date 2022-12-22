@@ -35,8 +35,8 @@ function Skeleton:init(necrox, necroy, playery)
     self.animations.hitl = anim8.newAnimation(self.gridhit('1-4', 1), 0.2):flipH()
     self.animations.walkr = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1)
     self.animations.walkl = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1):flipH()
-    self.animations.attackr = anim8.newAnimation(self.gridattack('1-18', 1), 0.05)
-    self.animations.attackl = anim8.newAnimation(self.gridattack('1-18', 1), 0.05):flipH()
+    self.animations.attackr = anim8.newAnimation(self.gridattack('1-18', 1), 0.075)
+    self.animations.attackl = anim8.newAnimation(self.gridattack('1-18', 1), 0.075):flipH()
     self.animations.spawning = anim8.newAnimation(self.gridspawn('1-15', 1), 0.2):flipH()
 
 
@@ -185,8 +185,8 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.collider:setLinearVelocity(0, dy)
         self.isMoving = false
         self.attacktimer = self.attacktimer + dt
-        if self.attacktimer >= 0.45 then
-            self.attacktimer = -0.45
+        if self.attacktimer >= 0.675 then
+            self.attacktimer = -0.675
             playerhealth = playerhealth -20
         end
     elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.outmap == false and self.isSpawning == false then
@@ -196,8 +196,8 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.collider:setLinearVelocity(0, dy)
         self.isMoving = false
         self.attacktimer = self.attacktimer + dt
-        if self.attacktimer >= 0.45 then
-            self.attacktimer = -0.45
+        if self.attacktimer >= 0.675 then
+            self.attacktimer = -0.675
             playerhealth = playerhealth -20
         end
     else
