@@ -2,7 +2,7 @@ Spawner = Class{}
 
 function Spawner:init()
     --set timer and table for Necormancer spawn
-    self.spawnTimer = 30
+    self.spawnTimer = 50
     self.fasterSpawn = 1
     self.necromancers = {}
     self.necroCurrentSize = 0
@@ -14,7 +14,7 @@ function Spawner:update(dt, playerx, playery, playerwidth, playerheight, players
     --timer for necromancerspawn
     self.spawnTimer = self.spawnTimer + dt * math.min(self.fasterSpawn, 2)
     --spawns in random time and every sec faster necromancer if necrro is alive
-    if self.spawnTimer > 20 and self.necroCurrentSize < 1 then
+    if self.spawnTimer > 60 and self.necroCurrentSize < 5 then
         table.insert(self.necromancers, Necromancer(playerx))
         self.spawnTimer = 0
         self.fasterSpawn = self.fasterSpawn + 0.5
