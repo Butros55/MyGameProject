@@ -95,6 +95,7 @@ function Skeleton:init(necrox, necroy, playery)
     self.isSpawning = true
     self.collidercheck = 3
     self.fallingAfterDead = 0
+    self.doublejumptimer = 0
 end
 
 function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
@@ -156,14 +157,17 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.isMoving = true
         end
 
+        --makes sure the skeleton doublejumps imediatly
+        self.doublejumptimer = self.doublejumptimer + dt
         --allows the skeleton to jump
-        if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false and self.outmap == false and self.isSpawning == false then
+        if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false and self.outmap == false and self.isSpawning == false and self.doublejumptimer > 0.4 then
             self.collider:setLinearVelocity(dx, -400)
             self.doublejump = self.doublejump + 1
+            self.doublejumptimer = 0
         end
 
         --attack if player is close enought
-        if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.outmap == false and self.isSpawning == false then
+        if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.outmap == false and self.isSpawning == false and self.doublejumptimer > 0.4 then
             self.y = self.collider:getY() - 24
             self.anim = self.animations.attackr
             self.collider:setLinearVelocity(0, dy)
