@@ -10,7 +10,7 @@
 
 Necromancer = Class{}
 
-function Necromancer:init()
+function Necromancer:init(playerx)
     --initilase all pngs from Skeleton
     self.spriteSheet = love.graphics.newImage('graphics/enemys/necromancer.png')
 
@@ -36,8 +36,16 @@ function Necromancer:init()
     self.width = 22
     self.height = 45
 
+    --get random negative or positiv from number
+    --spawns necro left or right from players screen
+    if math.random(0, 2) > 1 then
+        self.necrospawn = playerx + VIRTUAL_WIDTH
+    else
+        self.necrospawn = -playerx - VIRTUAL_WIDTH
+    end
+
     --setting collider for character
-    self.collider = world:newRectangleCollider(200, 0, self.width, self.height)
+    self.collider = world:newRectangleCollider(self.necrospawn , -100, self.width, self.height)
     self.collider:setCollisionClass('Necromancer')
     self.collider:setFixedRotation(true)
 

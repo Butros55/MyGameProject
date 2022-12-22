@@ -15,7 +15,7 @@ function Spawner:update(dt, playerx, playery, playerwidth, playerheight, players
     self.spawnTimer = self.spawnTimer + dt * math.min(self.fasterSpawn, 2)
     --spawns in random time and every sec faster necromancer if necrro is alive
     if self.spawnTimer > 50 and self.size < 5 then
-        table.insert(self.necromancers, Necromancer())
+        table.insert(self.necromancers, Necromancer(playerx))
         self.spawnTimer = 0
         self.fasterSpawn = self.fasterSpawn + 0.5
         self.size = 0

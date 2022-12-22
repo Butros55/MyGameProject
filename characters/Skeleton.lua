@@ -44,7 +44,7 @@ function Skeleton:init(necrox, necroy)
     self.height = 24
 
     --setting collider for character
-    self.collider = world:newRectangleCollider(math.random(necrox + (VIRTUAL_WIDTH / 2), necrox - (VIRTUAL_WIDTH / 2)), necroy, self.width, self.height)
+    self.collider = world:newRectangleCollider(math.random(necrox + 150, necrox - 150), necroy, self.width, self.height)
     self.collider:setCollisionClass('Skeleton')
     self.collider:setFixedRotation(true)
 
