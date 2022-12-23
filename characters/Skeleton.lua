@@ -94,7 +94,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.x = self.collider:getX() - 10
         self.y = self.collider:getY() - 20
 
-        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 20)}
+        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 0)}
         self.hit = self.test[1]
         self.health = self.test[2]
 
@@ -139,7 +139,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false and self.outmap == false and self.isSpawning == false and self.doublejumptimer > 0.4 then
             self.collider:setLinearVelocity(dx, -400)
             self.doublejump = self.doublejump + 1
-            self.doublejumptimer = 0
+            self.doublejumptimer = 0.4
         end
 
         --attack if player is close enought
@@ -171,7 +171,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
         --resets doublejump after hitting Platform
         if self.collider:enter('Platform') and self.outmap == false then
-            self.doublejump = 0
+            self.doublejump = 4
         end
 
         --sets skeleton to dead if under 0 health
@@ -200,7 +200,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.collider:setCollisionClass('Skeleton')
         end
 
-        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 20)}
+        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 0)}
 
 
     end

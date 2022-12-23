@@ -91,7 +91,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
 
         self.hit = AI:hitTimer(self, dt, self.hit, self.hittimer)
 
-        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 20)}
+        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 50, 100, 0, 0, 20)}
 
         --get hit if player i close enough and in combat
         self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 50, 100, 0, 0, 20)}

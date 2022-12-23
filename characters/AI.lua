@@ -33,11 +33,11 @@ GroundAI = {}
 function AI:hitbox(self, dt, x, y, width, height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, health, isDead, hittimer, boxSize_x, boxSize_y, adjustemt_top, adjustemt_bot, adjustment_right, adjustment_left)
 
     --get hit if player i close enough and in combat
-    if (playerx + (playerwidth / 2)) - (self.x + (self.width / 2)) < boxSize_x + (adjustment_right or 0) and playerx > self.x and playerincombat == true and playerdirection == false and (playery + (playerheight / 2)) > (self.y + (self.height / 2)) - (self.height + boxSize_y + (adjustemt_top or 0)) and (playery + (playerheight / 2)) < (self.y + (self.height / 2)) + (self.height + boxSize_y + (adjustment_bot or 0)) and self.isDead == false then
+    if (playerx + (playerwidth / 2)) < (self.x + (self.width / 2)) + boxSize_x + (adjustment_right or 0) and playerx > self.x - self.width and playerincombat == true and playerdirection == false and (playery + (playerheight / 2)) > (self.y + (self.height / 2)) - (self.height + boxSize_y + (adjustemt_top or 0)) and (playery + (playerheight / 2)) < (self.y + (self.height / 2)) + (self.height + boxSize_y + (adjustment_bot or 0)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
         return self.hit, self.health, false
-    elseif (playerx + (playerwidth / 2)) - (self.x + (self.width / 2)) > -boxSize_x - (adjustment_left or 0) and playerx < self.x and playerincombat == true and playerdirection == true and (playery + (playerheight / 2)) > (self.y + (self.height / 2)) - (self.height + boxSize_y + (adjustemt_top or 0)) and (playery + (playerheight / 2)) < (self.y + (self.height / 2)) + (self.height + boxSize_y + (adjustment_bot or 0)) and self.isDead == false then
+    elseif (playerx + (playerwidth / 2)) > (self.x + (self.width / 2)) -boxSize_x - (adjustment_left or 0) and playerx < self.x + self.width and playerincombat == true and playerdirection == true and (playery + (playerheight / 2)) > (self.y + (self.height / 2)) - (self.height + boxSize_y + (adjustemt_top or 0)) and (playery + (playerheight / 2)) < (self.y + (self.height / 2)) + (self.height + boxSize_y + (adjustment_bot or 0)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
         return self.hit, self.health, true
@@ -46,10 +46,10 @@ function AI:hitbox(self, dt, x, y, width, height, playerx, playery, playerwidth,
 end
 
 function AI:drawHitbox(self, dt, x, y, width, height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, health, isDead, hittimer, boxSize_x, boxSize_y, adjustemt_top, adjustemt_bot, adjustment_right, adjustment_left)
-    self.draw_x = (self.x + (self.width / 2)) - (boxSize_x / 2) - adjustment_left + (playerwidth / 2)
-    self.draw_y = (self.y + (self.height / 2)) - (boxSize_y / 2) + (adjustemt_top or 0) - (playerheight / 2)
-    self.draw_width = self.width + boxSize_x + (adjustment_left or 0) + (adjustment_right or 0)
-    self.draw_height = (self.height / 2) - (self.height + boxSize_y + (adjustemt_top or 0)) + (self.height / 2) + (self.height + boxSize_y + (adjustment_bot or 0)) * 2
+    self.draw_x = (self.x + (self.width / 2)) - boxSize_x - (adjustment_left or 0) + playerwidth
+    self.draw_y = (self.y + (self.height / 2)) - boxSize_y - (adjustemt_top or 0)
+    self.draw_width = (self.width / 2) + (boxSize_x * 2) + (adjustment_left or 0) + (adjustment_right or 0) - playerwidth 
+    self.draw_height = self.height + (boxSize_y * 2) + (adjustment_top or 0) + (adjustment_bot or 0) 
     return self.draw_x, self.draw_y, self.draw_width, self.draw_height
 end
 
