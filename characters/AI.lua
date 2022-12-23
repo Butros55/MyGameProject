@@ -26,22 +26,25 @@ function AI:LowestGroundCollider()
     end
 end
 
+--Behavior for Enemys on Ground
+GroundAI = {}
+
 --checks if enemy got hitted if so set hit to true for 0.5sec
-function AI:getHitted(dt, x, y, width, height, playerx, playery, playerwidth, playerdirection, playerincombat, adjustments, health, isDead, hittimer)
+function AI:getHitted(self, dt, x, y, width, height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, health, isDead, hittimer, adjustment_x, adjustment_y, adjustment_top, adjustemt_bot, adjustment_right, adjustment_left)
 
     --get hit if player i close enough and in combat
-    if playerx - x - adjustments < 2 and playerx - x - adjustments > -width and playerincombat == true and playerdirection == false and (playery > y - (height * 2) and playery < y + (height * 2 + 20)) and isDead == false then
-        hit = true
-        health = health - 10
-    elseif playerx - x - adjustments > -4 - playerwidth - width and playerx - x - adjustments < -width and playerincombat == true and playerdirection == true and (playery > y - (height * 2) and playery < y + (height * 2 + 20)) and isDead == false then
-        hit = true
-        health = health - 10
+    if (playerx + (playerwidth / 2)) - (self.x + (self.width / 2)) < adjustment_x + (adjustment_left or 0) and playerx > self.x and playerincombat == true and playerdirection == false and (playery + (playerheight / 2)) > (self.y + (self.height / 2)) - (self.height - adjustment_y + (adjustment_top or 0)) and (playery + (playerheight / 2)) < (self.y + (self.height / 2)) + (self.height + adjustment_y + (adjustment_bot or 0)) and self.isDead == false then
+        self.hit = true
+        self.health = self.health - 10
+    elseif (playerx + (playerwidth / 2)) - (self.x + (self.width / 2)) > -adjustment_x - (adjustment_right or 0) and playerx < self.x and playerincombat == true and playerdirection == true and (playery + (playerheight / 2)) > (self.y + (self.height / 2)) - (self.height - adjustment_y + (adjustment_top or 0)) and (playery + (playerheight / 2)) < (self.y + (self.height / 2)) + (self.height + adjustment_y + (adjustment_bot or 0)) and self.isDead == false then
+        self.hit = true
+        self.health = self.health - 10
     end
 
-    return hit, health
+    return self.hit, self.health
 end
 
-function AI:hitTimer(dt, hit, hittimer)
+function AI:hitTimer(self, dt, hit, hittimer)
     --timer for hit
     self.hittimer = self.hittimer + dt
     --if hitted set hit to true for 0.5 sec
@@ -54,9 +57,6 @@ function AI:hitTimer(dt, hit, hittimer)
     return self.hit
 end
 
-
---Behavior for Enemys on Ground
-GroundAI = {}
 
 --returns highest collider from position x if nothing ther set 0
 function GroundAI:highestGroundColliderOnX(x)

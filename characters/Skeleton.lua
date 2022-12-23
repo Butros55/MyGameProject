@@ -99,16 +99,9 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.x = self.collider:getX() - 10
         self.y = self.collider:getY() - 20
 
-        --get hit if player i close enough and in combat
-        if playerx - self.x < 10 and playerx - self.x > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
-            self.hit = true
-            self.collider:applyLinearImpulse(-5, -10)
-            self.health = self.health - 10
-        elseif playerx - self.x > -12 - playerwidth - self.width and playerx - self.x < -self.width and playerincombat == true and playerdirection == true and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
-            self.hit = true
-            self.collider:applyLinearImpulse(5, -10)
-            self.health = self.health - 10
-        end
+        self.test = {AI:getHitted(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 20)}
+        self.hit = self.test[1]
+        self.health = self.test[2]
 
         --knockback while sliding trough enemys
         if playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
