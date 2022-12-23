@@ -89,24 +89,12 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         self.x = self.collider:getX() - 80
         self.y = self.collider:getY() - 95
 
-        --timer for hit
-        self.hittimer = self.hittimer + dt
-        --if hitted set hit to true for 0.6 sec
-        if self.hit == false then
-            self.hittimer = 0
-        elseif self.hit == true and self.hittimer > 0.5 then
-            self.hittimer = 0
-            self.hit = false
-        end
+        self.hit = AI:hitTimer(self, dt, self.hit, self.hittimer)
 
         --get hit if player i close enough and in combat
-        if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playerincombat == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2 + 20)) and self.isDead == false then
-            self.hit = true
-            self.health = self.health - 10
-        elseif playerx - self.x - 76 > -4 - playerwidth - self.width and playerx - self.x - 76 < -self.width and playerincombat == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2 + 20)) and self.isDead == false then
-            self.hit = true
-            self.health = self.health - 10
-        end
+        self.test = {AI:getHitted(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 50, 100, 0, 0, 20)}
+        self.hit = self.test[1]
+        self.health = self.test[2]
         
         --damage while sliding trough enemys
         if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then

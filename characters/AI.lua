@@ -36,12 +36,14 @@ function AI:getHitted(self, dt, x, y, width, height, playerx, playery, playerwid
     if (playerx + (playerwidth / 2)) - (self.x + (self.width / 2)) < boxSize_x + (adjustment_left or 0) and playerx > self.x and playerincombat == true and playerdirection == false and (playery + (playerheight / 2)) > (self.y + (self.height / 2)) - (self.height + boxSize_y + (adjustemt_top or 0)) and (playery + (playerheight / 2)) < (self.y + (self.height / 2)) + (self.height + boxSize_y + (adjustment_bot or 0)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
+        return self.hit, self.health, false
     elseif (playerx + (playerwidth / 2)) - (self.x + (self.width / 2)) > -boxSize_x - (adjustment_right or 0) and playerx < self.x and playerincombat == true and playerdirection == true and (playery + (playerheight / 2)) > (self.y + (self.height / 2)) - (self.height + boxSize_y + (adjustemt_top or 0)) and (playery + (playerheight / 2)) < (self.y + (self.height / 2)) + (self.height + boxSize_y + (adjustment_bot or 0)) and self.isDead == false then
         self.hit = true
         self.health = self.health - 10
+        return self.hit, self.health, true
     end
 
-    return self.hit, self.health
+    return self.hit, self.health, nil
 end
 
 function AI:hitTimer(self, dt, hit, hittimer)

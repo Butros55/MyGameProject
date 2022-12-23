@@ -81,15 +81,8 @@ end
 
 function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
 
-    --timer for hit
-    self.hittimer = self.hittimer + dt
-    --if hitted set hit to true for 0.5 sec
-    if self.hit == false then
-        self.hittimer = 0
-    elseif self.hit == true and self.hittimer > 0.5 then
-        self.hittimer = 0
-        self.hit = false
-    end
+
+    self.hit = AI:hitTimer(self, dt, self.hit, self.hittimer)
 
     if self.collidercheck == 3 then
 
@@ -102,6 +95,11 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.test = {AI:getHitted(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 20)}
         self.hit = self.test[1]
         self.health = self.test[2]
+        if self.test[3] == true then
+            self.collider:applyLinearImpulse(30, -10)
+        elseif self.test[3] == false then
+            self.collider:applyLinearImpulse(-30, -10)
+        end
 
         --knockback while sliding trough enemys
         if playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
