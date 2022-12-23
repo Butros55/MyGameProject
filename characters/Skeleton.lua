@@ -77,6 +77,8 @@ function Skeleton:init(necrox, necroy, playery)
     self.collidercheck = 3
     self.fallingAfterDead = 0
     self.doublejumptimer = 0
+
+    drawHitbox = true
 end
 
 function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
@@ -92,14 +94,16 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.x = self.collider:getX() - 10
         self.y = self.collider:getY() - 20
 
-        self.test = {AI:getHitted(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 20)}
+        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 20)}
         self.hit = self.test[1]
         self.health = self.test[2]
+
         if self.test[3] == true then
             self.collider:applyLinearImpulse(30, -10)
         elseif self.test[3] == false then
             self.collider:applyLinearImpulse(-30, -10)
         end
+
 
         --knockback while sliding trough enemys
         if playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
@@ -196,6 +200,9 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.collider:setCollisionClass('Skeleton')
         end
 
+        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 20)}
+
+
     end
 
     if self.collidercheck == 2 then
@@ -240,4 +247,6 @@ function Skeleton:render()
     else
         self.anim:draw(self.attackSheet, self.x, self.y)
     end
+    love.graphics.setColor(1, 1, 1, 0.4)
+    love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
 end

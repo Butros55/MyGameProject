@@ -91,8 +91,10 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
 
         self.hit = AI:hitTimer(self, dt, self.hit, self.hittimer)
 
+        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 20)}
+
         --get hit if player i close enough and in combat
-        self.test = {AI:getHitted(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 50, 100, 0, 0, 20)}
+        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 50, 100, 0, 0, 20)}
         self.hit = self.test[1]
         self.health = self.test[2]
         
@@ -103,6 +105,12 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         elseif playerx - self.x - 76 < -4 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
             self.hit = true
             self.health = self.health - 10
+        end
+
+        if self.hit == true and playerdirection == false and self.isDead == false then
+            self.anim = self.animations.hitr
+        elseif self.hit == true and playerdirection == true and self.isDead == false then
+            self.anim = self.animations.hitl
         end
         
         if self.isSpawning == true then
@@ -205,6 +213,9 @@ end
 function Necromancer:render()
     self.anim:draw(self.spriteSheet, self.x, self.y)
 
+    love.graphics.setColor(1, 1, 1, 0.4)
+    love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
+    
     for k, skeleton in pairs(self.Skeletons) do
         skeleton:render()
     end
