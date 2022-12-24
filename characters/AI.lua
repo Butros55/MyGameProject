@@ -53,6 +53,17 @@ function AI:drawHitbox(self, dt, x, y, width, height, playerx, playery, playerwi
     return self.draw_x, self.draw_y, self.draw_width, self.draw_height
 end
 
+function AI:attack(self, dt, x, y, width, height, playerx, playery, playerwidth, playerheight, isDead, hit, outmap, boxSize_x, boxSize_y, adjustemt_top, adjustemt_bot, adjustment_right, adjustment_left)
+
+    --get hit if player i close enough and in combat
+    if playerx + (playerwidth / 2) > self.x - (self.width / 2) - boxSize_x - (adjustment_left or 0) and playerx + (playerwidth / 2) < self.x + (self.width / 2) and playery + (playerheight / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and playery - (playerheight / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and self.hit == false and self.isDead == false and self.outmap == false then
+        return true
+    elseif playerx - (playerwidth / 2) < self.x + (self.width / 2) + boxSize_x + (adjustment_right or 0) and playerx + (playerwidth / 2) > self.x + (self.width / 2) and playery + (playerheight / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and playery - (playerheight / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and self.hit == false and self.isDead == false and self.outmap == false then
+        return false
+    end
+    return nil
+end
+
 function AI:hitTimer(self, dt, hit, hittimer)
     --timer for hit
     self.hittimer = self.hittimer + dt

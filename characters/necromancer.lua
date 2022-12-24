@@ -53,7 +53,7 @@ function Necromancer:init(playerx)
     self.attacktimer = 0
 
     --checking if enemy is dead
-    self.health = 10000000
+    self.health = 1000
     self.isDead = false
     self.deadcounter = 0
 
@@ -94,8 +94,6 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
 
         self.hit = AI:hitTimer(self, dt, self.hit, self.hittimer)
 
-        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 10, 5, 0, 0, 0)}
-
         --get hit if player i close enough and in combat
         self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 10, 5, 0, 0, 0)}
         self.hit = self.test[1]
@@ -110,12 +108,14 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
             self.health = self.health - 10
         end
 
+        --plays animation on hit
         if self.hit == true and playerdirection == false and self.isDead == false then
             self.anim = self.animations.hitr
         elseif self.hit == true and playerdirection == true and self.isDead == false then
             self.anim = self.animations.hitl
         end
         
+        --plays spawning animation for 1.3sec
         if self.isSpawning == true then
             self.collider:setLinearVelocity(0, 0)
             self.isspawingtimer = self.isspawingtimer + dt
@@ -126,27 +126,27 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         end
 
 
-        if self.y < playery and self.isSpawning == false then
-            self.dy = 30
-        elseif self.y > playery and self.isSpawning == false then
-            self.dy = -10
+        if self.y < playery - self.randomnecroy and self.isSpawning == false then
+            self.dy = 25
+        elseif self.y > playery - self.randomnecroy and self.isSpawning == false then
+            self.dy = -30
         else
             self.dy = -15
-            self.randomnecroy = math.random(50, 320)
+            self.randomnecroy = math.random(0, 150)
         end
 
 
         self.necrotimerx = self.necrotimerx + dt
         --go to random position from player based on position x and y
         if self.necrotimerx >= math.random(8, 14) and self.hit == false and self.isDead == false and self.isSpawning == false then
-            if self.x < self.randomnecro - 50 then
+            if self.x < self.randomnecro - 5 then
                 self.collider:setLinearVelocity(80, self.dy) --set to -15 y for no gravity!!!
                 self.anim = self.animations.walkr
-            elseif self.x > self.randomnecro + 50 and self.hit == false and self.isDead == false and self.isSpawning == false then
-            self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
-            self.anim = self.animations.walkl
+            elseif self.x > self.randomnecro + 5 then
+                self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
+                self.anim = self.animations.walkl
             else
-                self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2) - 50, playerx - (VIRTUAL_WIDTH / 2) + 50))
+                self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2), playerx - (VIRTUAL_WIDTH / 2)))
             end
         else
             self.collider:setLinearVelocity(0, self.dy)
@@ -215,9 +215,6 @@ end
 
 function Necromancer:render()
     self.anim:draw(self.spriteSheet, self.image_x, self.image_y)
-
-    love.graphics.setColor(1, 1, 1, 0.4)
-    love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
     
     for k, skeleton in pairs(self.Skeletons) do
         skeleton:render()

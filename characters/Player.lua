@@ -61,9 +61,7 @@ function Player:init()
     self.height = 29
 
     --setting collider for character
-    self.collider = world:newRectangleCollider(0, 0, self.width, self.height)
-    self.collider:setCollisionClass('Player')
-    self.collider:setFixedRotation(true)
+    self.collider = ModelSetup:newCollider(0, 0, self.width, self.height, 'Player')
 
     self.isSliding = false
 
@@ -109,7 +107,7 @@ function Player:update(dt)
 
     --movement with a (left) and d (right)
     if love.keyboard.isDown('d') and self.inCombat == false and self.isSliding == false then
-        self.collider:setLinearVelocity(200, dy)
+        self.collider:setLinearVelocity(300, dy)
         self.movingDirection = true
         isMoving = true
         if self.
@@ -117,7 +115,7 @@ inJump == false then
             self.anim = self.animations.right
         end
     elseif love.keyboard.isDown('a') and self.inCombat == false and self.isSliding == false then
-        self.collider:setLinearVelocity(-200, dy)
+        self.collider:setLinearVelocity(-300, dy)
         self.movingDirection = false
         isMoving = true
         if self.
@@ -171,7 +169,7 @@ inJump == false then
     if doublejump < 2 then
         if love.keyboard.wasPressed('space') then
             self.collider:setLinearVelocity(dx, 0)
-            self.collider:applyLinearImpulse(0, -650)
+            self.collider:applyLinearImpulse(0, -350)
             if doublejump == 0 then
                 sounds['jump1']:play()
             else

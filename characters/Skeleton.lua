@@ -91,32 +91,32 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         dx , dy = self.collider:getLinearVelocity()
 
         --setting Skeletons x and y to collider box
-        self.image_x = self.collider:getX() - 10
+        self.image_x = self.collider:getX() - 8
         self.image_y = self.collider:getY() - 20
         self.x = self.collider:getX()
         self.y = self.collider:getY()
 
-        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 10, 10, 0, 0, 0, 0)}
-        self.hit = self.test[1]
-        self.health = self.test[2]
+        self.hitbox = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 10, 10, 0, 0, 0, 0)}
+        self.hit = self.hitbox[1]
+        self.health = self.hitbox[2]
 
         self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 10, 10, 0, 0, 0, 0)}
 
 
-        if self.test[3] == true then
-            self.collider:applyLinearImpulse(15, -10)
-        elseif self.test[3] == false then
-            self.collider:applyLinearImpulse(-15, -10)
+        if self.hitbox[3] == true then
+            self.collider:applyLinearImpulse(5, -5)
+        elseif self.hitbox[3] == false then
+            self.collider:applyLinearImpulse(-5, -5)
         end
 
         --knockback while sliding trough enemys
         if playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
             self.hit = true
-            self.collider:applyLinearImpulse(-10, -10)
+            self.collider:applyLinearImpulse(-5, -10)
             self.health = self.health - 10
         elseif playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == true and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
             self.hit = true
-            self.collider:applyLinearImpulse(10, -10)
+            self.collider:applyLinearImpulse(5, -10)
             self.health = self.health - 10
         end
 
@@ -127,14 +127,16 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         end
 
         --go to player based on position x and y
-        if playerx + playerwidth > self.x and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
+        if playerx - (playerwidth / 2) - 3 > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
             self.collider:setLinearVelocity(40, dy)
             self.anim = self.animations.walkr
             self.isMoving = true
-        elseif playerx - playerwidth < self.x and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
+            self.image_x = self.collider:getX() - 8
+        elseif playerx + (playerwidth / 2) + 3 < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
             self.collider:setLinearVelocity(-40, dy)
             self.anim = self.animations.walkl
             self.isMoving = true
+            self.image_x = self.collider:getX() -14
         end
 
         --makes sure the skeleton doublejumps imediatly
@@ -144,6 +146,33 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.collider:setLinearVelocity(dx, -400)
             self.doublejump = self.doublejump + 1
             self.doublejumptimer = 0
+        end
+
+        --attack if player is close enought
+        if AI:attack(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, self.isDead, self.hit, self.outmap, 10, 5) == false and self.isSpawning == false then
+            self.image_y = self.collider:getY() - 24
+            self.anim = self.animations.attackr
+            self.collider:setLinearVelocity(0, dy)
+            self.isMoving = false
+            self.attacktimer = self.attacktimer + dt
+            if self.attacktimer >= 0.675 then
+                self.attacktimer = -0.675
+                playerhealth = playerhealth -20
+            end
+        elseif AI:attack(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, self.isDead, self.hit, self.outmap, 10, 5) == true and self.isSpawning == false then
+            self.image_y = self.collider:getY() - 24
+            self.image_x = self.collider:getX() - 32
+            self.anim = self.animations.attackl
+            self.collider:setLinearVelocity(0, dy)
+            self.isMoving = false
+            self.attacktimer = self.attacktimer + dt
+            if self.attacktimer >= 0.675 then
+                self.attacktimer = -0.675
+                playerhealth = playerhealth -20
+            end
+        else
+            --reset timer for attack to player
+            self.attacktimer = 0
         end
 
 
