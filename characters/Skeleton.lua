@@ -96,14 +96,17 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.x = self.collider:getX()
         self.y = self.collider:getY()
 
-        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 15, 0, 0, 0, 0, 0)}
+        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 10, 10, 0, 0, 0, 0)}
         self.hit = self.test[1]
         self.health = self.test[2]
 
+        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 10, 10, 0, 0, 0, 0)}
+
+
         if self.test[3] == true then
-            self.collider:applyLinearImpulse(30, -10)
+            self.collider:applyLinearImpulse(10, -10)
         elseif self.test[3] == false then
-            self.collider:applyLinearImpulse(-30, -10)
+            self.collider:applyLinearImpulse(-10, -10)
         end
 
 
@@ -126,11 +129,11 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
         --go to player based on position x and y
         if playerx + playerwidth > self.x and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
-            self.collider:setLinearVelocity(30, dy)
+            self.collider:setLinearVelocity(40, dy)
             self.anim = self.animations.walkr
             self.isMoving = true
         elseif playerx - playerwidth < self.x and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
-            self.collider:setLinearVelocity(-30, dy)
+            self.collider:setLinearVelocity(-40, dy)
             self.anim = self.animations.walkl
             self.isMoving = true
         else
@@ -149,7 +152,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
         --resets doublejump after hitting Platform
         if self.collider:enter('Platform') and self.outmap == false then
-            self.doublejump = 1
+            self.doublejump = 0
         end
 
         --sets skeleton to dead if under 0 health
@@ -177,9 +180,6 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.isSpawning = false
             self.collider:setCollisionClass('Skeleton')
         end
-
-        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 15, 0, 0, 0, 0, 0)}
-
 
     end
 

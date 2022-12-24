@@ -94,10 +94,10 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
 
         self.hit = AI:hitTimer(self, dt, self.hit, self.hittimer)
 
-        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 30, 0, 0, 0, 0, 0)}
+        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 10, 5, 0, 0, 0)}
 
         --get hit if player i close enough and in combat
-        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 30, 0, 0, 0, 0, 0)}
+        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 10, 5, 0, 0, 0)}
         self.hit = self.test[1]
         self.health = self.test[2]
         
@@ -138,14 +138,18 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
 
         self.necrotimerx = self.necrotimerx + dt
         --go to random position from player based on position x and y
-        if playerx - (playerwidth / 2) - 10 > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.isSpawning == false  then
-            self.collider:setLinearVelocity(20, dy) --set to -15 y for no gravity!!!
-            self.anim = self.animations.walkr
-        elseif playerx + (playerwidth / 2) + 10 < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.isSpawning == false then
-        self.collider:setLinearVelocity(-20, dy) --set to -15 y for no gravity!!!
-        self.anim = self.animations.walkl
+        if self.necrotimerx >= math.random(8, 14) and self.hit == false and self.isDead == false and self.isSpawning == false then
+            if self.x < self.randomnecro - 50 then
+                self.collider:setLinearVelocity(80, self.dy) --set to -15 y for no gravity!!!
+                self.anim = self.animations.walkr
+            elseif self.x > self.randomnecro + 50 and self.hit == false and self.isDead == false and self.isSpawning == false then
+            self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
+            self.anim = self.animations.walkl
+            else
+                self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2) - 50, playerx - (VIRTUAL_WIDTH / 2) + 50))
+            end
         else
-            self.collider:setLinearVelocity(0, dy)
+            self.collider:setLinearVelocity(0, self.dy)
         end
 
         --if health = 0 then dead = true
