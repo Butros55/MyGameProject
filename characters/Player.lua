@@ -74,6 +74,14 @@ end
 
 --updates Player for move jump or collision
 function Player:update(dt)
+
+    --setting players x and y to collider box
+    self.x = self.collider:getX()
+    self.y = self.collider:getY()
+
+    --setting players collider for hitbox detection
+    self.image_x = self.collider:getX() - 25
+    self.image_y = self.collider:getY() - ((self.height * 2) - 37)
     
     local isMoving = false
 
@@ -122,7 +130,7 @@ inJump == false then
     if isMoving == false and self.movingDirection == true and self.inJump == false then
         if self.attackcounter == 3 and self.inCombat == true then
             self.anim = self.animations.combat3r
-            self.collider:applyLinearImpulse(40, 0)
+            self.collider:applyLinearImpulse(10, 0)
             sounds['sword3']:play()
         elseif self.attackcounter == 2 and self.inCombat == true then
             self.anim = self.animations.combat2r
@@ -143,7 +151,7 @@ inJump == false then
         if self.attackcounter == 3 and self.inCombat == true then
             self.anim = self.animations.combat3l
             sounds['sword3']:play()
-            self.collider:applyLinearImpulse(-40, 0)
+            self.collider:applyLinearImpulse(-10, 0)
         elseif self.attackcounter == 2 and self.inCombat == true then
             self.anim = self.animations.combat2l
             sounds['sword2']:play()
@@ -159,15 +167,11 @@ inJump == false then
         end
     end
 
-    --setting players x and y to collider box
-    self.x = self.collider:getX() - 25
-    self.y = self.collider:getY() - ((self.height * 2) - 37)
-
     --jump if doublejump is under 2
     if doublejump < 2 then
         if love.keyboard.wasPressed('space') then
             self.collider:setLinearVelocity(dx, 0)
-            self.collider:applyLinearImpulse(0, -350)
+            self.collider:applyLinearImpulse(0, -650)
             if doublejump == 0 then
                 sounds['jump1']:play()
             else
@@ -254,5 +258,5 @@ end
 
 --Renders Player img at position
 function Player:render()
-    self.anim:draw(self.spriteSheet, self.x, self.y)
+    self.anim:draw(self.spriteSheet, self.image_x, self.image_y)
 end

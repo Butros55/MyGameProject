@@ -91,10 +91,12 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         dx , dy = self.collider:getLinearVelocity()
 
         --setting Skeletons x and y to collider box
-        self.x = self.collider:getX() - 10
-        self.y = self.collider:getY() - 20
+        self.image_x = self.collider:getX() - 10
+        self.image_y = self.collider:getY() - 20
+        self.x = self.collider:getX()
+        self.y = self.collider:getY()
 
-        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 0)}
+        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 15, 0, 0, 0, 0, 0)}
         self.hit = self.test[1]
         self.health = self.test[2]
 
@@ -123,55 +125,31 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         end
 
         --go to player based on position x and y
-        if playerx > self.x and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
+        if playerx + playerwidth > self.x and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
             self.collider:setLinearVelocity(30, dy)
             self.anim = self.animations.walkr
             self.isMoving = true
-        elseif playerx < self.x and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
+        elseif playerx - playerwidth < self.x and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
             self.collider:setLinearVelocity(-30, dy)
             self.anim = self.animations.walkl
             self.isMoving = true
+        else
+            self.collider:setLinearVelocity(0, dy)
         end
 
         --makes sure the skeleton doublejumps imediatly
         self.doublejumptimer = self.doublejumptimer + dt
         --allows the skeleton to jump
-        if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false and self.outmap == false and self.isSpawning == false and self.doublejumptimer > 0.4 then
+        if playery + (playerheight / 2) > self.y - (self.height / 2) and playery - (playerheight / 2) < self.y + (self.height / 2) and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false and self.outmap == false and self.isSpawning == false and self.doublejumptimer > 0.4 then
             self.collider:setLinearVelocity(dx, -400)
             self.doublejump = self.doublejump + 1
-            self.doublejumptimer = 0.4
+            self.doublejumptimer = 0
         end
 
-        --attack if player is close enought
-        if playerx - self.x < 12 and playerx - self.x > -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.outmap == false and self.isSpawning == false and self.doublejumptimer > 0.4 then
-            self.y = self.collider:getY() - 24
-            self.anim = self.animations.attackr
-            self.collider:setLinearVelocity(0, dy)
-            self.isMoving = false
-            self.attacktimer = self.attacktimer + dt
-            if self.attacktimer >= 0.675 then
-                self.attacktimer = -0.675
-                playerhealth = playerhealth -20
-            end
-        elseif playerx - self.x > -14 - playerwidth - self.width and playerx - self.x < -self.width and self.hit == false and self.isDead == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.outmap == false and self.isSpawning == false then
-            self.y = self.collider:getY() - 24
-            self.x = self.collider:getX() - 32
-            self.anim = self.animations.attackl
-            self.collider:setLinearVelocity(0, dy)
-            self.isMoving = false
-            self.attacktimer = self.attacktimer + dt
-            if self.attacktimer >= 0.675 then
-                self.attacktimer = -0.675
-                playerhealth = playerhealth -20
-            end
-        else
-            --reset timer for attack to player
-            self.attacktimer = 0
-        end
 
         --resets doublejump after hitting Platform
         if self.collider:enter('Platform') and self.outmap == false then
-            self.doublejump = 4
+            self.doublejump = 1
         end
 
         --sets skeleton to dead if under 0 health
@@ -200,7 +178,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.collider:setCollisionClass('Skeleton')
         end
 
-        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 0, 0, 0, 0, 0)}
+        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 15, 0, 0, 0, 0, 0)}
 
 
     end
@@ -237,15 +215,15 @@ end
 function Skeleton:render()
     --is needed because of more than one spriteSheet
     if self.isSpawning == true then
-        self.anim:draw(self.spawnSheet, self.x, self.y)
+        self.anim:draw(self.spawnSheet, self.image_x, self.image_y)
     elseif self.hit == true then
-        self.anim:draw(self.hitSheet, self.x, self.y)
+        self.anim:draw(self.hitSheet, self.image_x, self.image_y)
     elseif self.isMoving == true then
-        self.anim:draw(self.walkSheet, self.x, self.y)
+        self.anim:draw(self.walkSheet, self.image_x, self.image_y)
     elseif self.isDead == true then
-        self.anim:draw(self.deadSheet, self.x, self.y)
+        self.anim:draw(self.deadSheet, self.image_x, self.image_y)
     else
-        self.anim:draw(self.attackSheet, self.x, self.y)
+        self.anim:draw(self.attackSheet, self.image_x, self.image_y)
     end
     love.graphics.setColor(1, 1, 1, 0.4)
     love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
