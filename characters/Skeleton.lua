@@ -66,7 +66,7 @@ function Skeleton:init(necrox, necroy, playery)
     self.attacktimer = 0
 
     --checking if enemy is dead
-    self.health = 300
+    self.health = 3000
     self.isDead = false
     self.deadcounter = 0
 
@@ -104,11 +104,10 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
 
         if self.test[3] == true then
-            self.collider:applyLinearImpulse(10, -10)
+            self.collider:applyLinearImpulse(15, -10)
         elseif self.test[3] == false then
-            self.collider:applyLinearImpulse(-10, -10)
+            self.collider:applyLinearImpulse(-15, -10)
         end
-
 
         --knockback while sliding trough enemys
         if playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
@@ -136,14 +135,12 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.collider:setLinearVelocity(-40, dy)
             self.anim = self.animations.walkl
             self.isMoving = true
-        else
-            self.collider:setLinearVelocity(0, dy)
         end
 
         --makes sure the skeleton doublejumps imediatly
         self.doublejumptimer = self.doublejumptimer + dt
         --allows the skeleton to jump
-        if playery + (playerheight / 2) > self.y - (self.height / 2) and playery - (playerheight / 2) < self.y + (self.height / 2) and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false and self.outmap == false and self.isSpawning == false and self.doublejumptimer > 0.4 then
+        if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false and self.outmap == false and self.isSpawning == false and self.doublejumptimer > 0.4 then
             self.collider:setLinearVelocity(dx, -400)
             self.doublejump = self.doublejump + 1
             self.doublejumptimer = 0
