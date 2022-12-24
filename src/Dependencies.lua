@@ -13,7 +13,7 @@ require 'src/Constants'
 require 'src/config'
 
 Class = require 'lib/class'
-camera = require 'lib/camera'
+gamera = require 'lib/gamera'
 anim8 = require 'lib/anim8'
 parallax = require 'lib/parallax'
 

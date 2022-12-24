@@ -17,15 +17,15 @@ world = wf.newWorld(0, 900, true)
 GameMap = sti('map/test.lua')
 
 --load camera
-cam = camera(math.floor(VIRTUAL_WIDTH / 2), math.floor(VIRTUAL_HEIGHT / 2), VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
-cam:setDeadzone(VIRTUAL_WIDTH/2 - 19, VIRTUAL_HEIGHT/2 - 30, 30, 110)
-cam.draw_deadzone = true
+world_dimensions = {1200, 350}
+camera = gamera.new(0,0,unpack(world_dimensions))
+camera:setWindow(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 
---seeting up parralax layers
+--layers list for parallax layers
 layers = {}
-layers.near = parallax.new(cam, 100, 100)
-layers.middle = parallax.new(cam, 2, 0.6)
-layers.far = parallax.new(cam, 0.05, 0.2)
+layers.near = parallax.new(camera, 1.5)
+layers.middle = parallax.new(camera, 0.5)
+layers.far = parallax.new(camera, 1, 0.25)
 
 --Add colission classes
 world:addCollisionClass('Player')

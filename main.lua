@@ -73,37 +73,15 @@ end
 function love.update(dt)
     -- Updates currents StateMachine State
     gStateMachine:update(dt)
-    cam:update(dt)
     -- reset keysPressed table for new input
     love.keyboard.keysPressed = {}
 
     world:update(dt)
 end
 
-test = {}
 
-local function draw_all()
-    -- draw with push at virtual resolution
-    love.graphics.setCanvas(canvas)
-    love.graphics.clear()
-    cam:attach()
+function love.draw()-- draw with push at virtual resolution
 
-        layers.far:draw_tiled_single_axis(0, 130, gbackgrounds['background_0'], 'x')
-        GameMap:drawLayer(GameMap.layers['neue'])
-        gStateMachine:render()
-
-        world:draw()
-    cam:detach()
-    love.graphics.setCanvas()
-
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setBlendMode('alpha', 'premultiplied')
-    love.graphics.draw(canvas, 0, 0, 0, scale, scale)
-    love.graphics.setBlendMode('alpha')
-end
-
-
-
-function love.draw()
-        cam:draw(draw_all())
+    gStateMachine:render()
+    
 end
