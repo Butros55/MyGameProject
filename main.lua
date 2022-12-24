@@ -80,55 +80,30 @@ function love.update(dt)
     world:update(dt)
 end
 
-function love.draw()
+test = {}
+
+local function draw_all()
     -- draw with push at virtual resolution
     love.graphics.setCanvas(canvas)
     love.graphics.clear()
+    cam:attach()
 
-        -- scale backround to Virtual resolution
-        backgroundWidth = gbackgrounds['background_0']:getWidth()
-        backgroundHeight = gbackgrounds['background_0']:getHeight()
-        backgroundWidth = gbackgrounds['background_1']:getWidth()
-        backgroundHeight = gbackgrounds['background_1']:getHeight()
-        backgroundWidth = gbackgrounds['background_2']:getWidth()
-        backgroundHeight = gbackgrounds['background_2']:getHeight()
+        layers.far:draw_tiled_single_axis(0, 130, gbackgrounds['background_0'], 'x')
+        GameMap:drawLayer(GameMap.layers['neue'])
+        gStateMachine:render()
 
-        love.graphics.draw(gbackgrounds['background_0'],
-            -- draw at x, y
-            0, 0,
-            -- no rotation
-            0,
-
-            VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
-        
-        love.graphics.draw(gbackgrounds['background_1'],
-            -- draw at x, y
-            0, 0,
-            -- no rotation
-            0,
-
-            VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
-        
-        love.graphics.draw(gbackgrounds['background_2'],
-            -- draw at x, y
-            0, 0,
-            -- no rotation
-            0,
-
-            VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
-
-        cam:attach()
-            GameMap:drawLayer(GameMap.layers['neue'])
-            gStateMachine:render()
-            world:draw()
-        cam:detach()
-
-        cam:draw()
-
+        world:draw()
+    cam:detach()
     love.graphics.setCanvas()
 
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setBlendMode('alpha', 'premultiplied')
     love.graphics.draw(canvas, 0, 0, 0, scale, scale)
     love.graphics.setBlendMode('alpha')
+end
+
+
+
+function love.draw()
+        cam:draw(draw_all())
 end

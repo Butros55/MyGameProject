@@ -12,10 +12,10 @@
 require 'src/Constants'
 require 'src/config'
 
-push = require 'lib/push'
 Class = require 'lib/class'
 camera = require 'lib/camera'
 anim8 = require 'lib/anim8'
+parallax = require 'lib/parallax'
 
 --requires AI beavviors
 require 'characters/AI'

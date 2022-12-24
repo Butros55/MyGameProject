@@ -21,6 +21,12 @@ cam = camera(math.floor(VIRTUAL_WIDTH / 2), math.floor(VIRTUAL_HEIGHT / 2), VIRT
 cam:setDeadzone(VIRTUAL_WIDTH/2 - 19, VIRTUAL_HEIGHT/2 - 30, 30, 110)
 cam.draw_deadzone = true
 
+--seeting up parralax layers
+layers = {}
+layers.near = parallax.new(cam, 100, 100)
+layers.middle = parallax.new(cam, 2, 0.6)
+layers.far = parallax.new(cam, 0.05, 0.2)
+
 --Add colission classes
 world:addCollisionClass('Player')
 world:addCollisionClass('Platform')
