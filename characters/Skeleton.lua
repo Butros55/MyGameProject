@@ -222,8 +222,8 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     if self.collidercheck == 1 then
         self.fallingAfterDead = self.fallingAfterDead + dt
         --setting Skeletons x and y to collider box
-        self.x = self.collider:getX() - 10
-        self.y = self.collider:getY() - 20
+        self.image_x = self.collider:getX() - 10
+        self.image_y = self.collider:getY() - 20
             if self.fallingAfterDead > 3 then
                 self.collider:destroy()
                 self.collidercheck = 0
