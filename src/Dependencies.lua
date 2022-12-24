@@ -8,10 +8,13 @@
     Get all required files for game
 ]]
 
+--require Constants
+require 'src/Constants'
+require 'src/config'
+
 push = require 'lib/push'
 Class = require 'lib/class'
 camera = require 'lib/camera'
-cam = camera()
 anim8 = require 'lib/anim8'
 
 --requires AI beavviors
@@ -23,9 +26,6 @@ require 'src/StateMachine'
 --require all States curent in game
 require 'src/states/BaseState'
 require 'src/states/PlayState'
-
---requre Constants
-require 'src/Constants'
 
 --requre All players and enemys
 require 'characters/Player'

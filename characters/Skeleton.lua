@@ -251,6 +251,4 @@ function Skeleton:render()
     else
         self.anim:draw(self.attackSheet, self.image_x, self.image_y)
     end
-    love.graphics.setColor(1, 1, 1, 0.4)
-    love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
 end

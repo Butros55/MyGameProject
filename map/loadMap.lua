@@ -16,6 +16,11 @@ world = wf.newWorld(0, 900, true)
 --loading tiled map into
 GameMap = sti('map/test.lua')
 
+--load camera
+cam = camera(math.floor(VIRTUAL_WIDTH / 2), math.floor(VIRTUAL_HEIGHT / 2), VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+cam:setDeadzone(VIRTUAL_WIDTH/2 - 19, VIRTUAL_HEIGHT/2 - 30, 30, 110)
+cam.draw_deadzone = true
+
 --Add colission classes
 world:addCollisionClass('Player')
 world:addCollisionClass('Platform')
@@ -26,6 +31,7 @@ world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necr
 world:addCollisionClass('OutMap', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead', 'Platform'}})
 
 -- loads graphic Elements and assets
+love.graphics.setDefaultFilter('nearest', 'nearest')
 gbackgrounds = {
     ['background_0'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_0.png'),
     ['background_1'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_1.png'),

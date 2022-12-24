@@ -33,7 +33,8 @@ function PlayState:update(dt)
     roundTimer = roundTimer + dt
     self.player:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat, self.player.image_x, self.player.image_y)
     self.spawner:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
-
+    --setting camera to playercharacter
+    cam:follow(math.floor(self.player.x + (self.player.width / 2)), math.floor(self.player.y))
 end
 
 function PlayState:render()

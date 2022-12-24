@@ -110,16 +110,14 @@ function Player:update(dt)
         self.collider:setLinearVelocity(300, dy)
         self.movingDirection = true
         isMoving = true
-        if self.
-inJump == false then
+        if self.inJump == false then
             self.anim = self.animations.right
         end
     elseif love.keyboard.isDown('a') and self.inCombat == false and self.isSliding == false then
         self.collider:setLinearVelocity(-300, dy)
         self.movingDirection = false
         isMoving = true
-        if self.
-inJump == false then
+        if self.inJump == false then
             self.anim = self.animations.left
         end
     end
@@ -176,8 +174,7 @@ inJump == false then
                 sounds['jump2']:play()
             end
             doublejump = doublejump + 1
-            self.
-    inJump = true
+            self.inJump = true
         end
     end
 
@@ -225,13 +222,9 @@ inJump == false then
     --reset doublejump with platform collision
     if self.collider:enter('Platform') then
         doublejump = 0
-        self.
-inJump = false
+        self.inJump = false
         sounds['landing']:play()
     end
-
-    --setting camera to playercharacter
-    cam:lookAt(self.x + (50 / 2), self.y)
 
     --after moving key relased set velocity to 0
     function love.keyreleased(key)

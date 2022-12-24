@@ -15,9 +15,6 @@ function love.load()
 
     require 'src/Dependencies'
 
-    -- Deafult Filter for better 2d pixel looks
-    love.graphics.setDefaultFilter('nearest', 'nearest')
-
     -- seeded the math.random function so they alwas random
     math.randomseed(os.time())
 
@@ -25,13 +22,18 @@ function love.load()
     love.window.setTitle('Test Project')
 
     -- Setting Screen and resolution to Players Screen
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+    love.window.setMode(0, 0, {fullscreen = false})
     screen_width = love.graphics.getWidth()
-    screen_height = love.graphics.getWidth()
-    push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, screen_width, screen_height,{
-        resizable = true,
-        fullscreen = true,
-        vsync = true
-    })
+    screen_height = love.graphics.getHeight()
+    xscale = screen_width / VIRTUAL_WIDTH
+    yscale = screen_height / VIRTUAL_HEIGHT
+    scale = math.min(xscale, yscale)
+    xoffset = (screen_width - VIRTUAL_WIDTH * scale) / 2
+    yoffset = (screen_height - VIRTUAL_HEIGHT * scale) / 2
+    love.window.setMode(screen_width, screen_height, config)
+    canvas = love.graphics.newCanvas(VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+
 
     -- initialze all States
     -- (play) the gameplay itself
@@ -44,12 +46,6 @@ function love.load()
     love.keyboard.keysPressed = {}
 
 end
-
--- scale resolutuon if screen gets resized
-function love.resize(w, h)
-    push:resize(w, h)
-end
-
 
 -- Get users input and give it to the keysPressed table
 function love.keypressed(key)
@@ -76,10 +72,8 @@ end
 
 function love.update(dt)
     -- Updates currents StateMachine State
-
-
     gStateMachine:update(dt)
-
+    cam:update(dt)
     -- reset keysPressed table for new input
     love.keyboard.keysPressed = {}
 
@@ -88,9 +82,8 @@ end
 
 function love.draw()
     -- draw with push at virtual resolution
-
-
-    push:apply('start')
+    love.graphics.setCanvas(canvas)
+    love.graphics.clear()
 
         -- scale backround to Virtual resolution
         backgroundWidth = gbackgrounds['background_0']:getWidth()
@@ -124,12 +117,18 @@ function love.draw()
 
             VIRTUAL_WIDTH / (backgroundWidth -1) , VIRTUAL_HEIGHT / (backgroundHeight - 1))
 
-        cam:attach(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+        cam:attach()
             GameMap:drawLayer(GameMap.layers['neue'])
             gStateMachine:render()
             world:draw()
         cam:detach()
 
+        cam:draw()
 
-    push:apply('end')
+    love.graphics.setCanvas()
+
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setBlendMode('alpha', 'premultiplied')
+    love.graphics.draw(canvas, 0, 0, 0, scale, scale)
+    love.graphics.setBlendMode('alpha')
 end
