@@ -35,14 +35,14 @@ function PlayState:update(dt)
     self.spawner:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
 
     --setting camera to playercharacter
-    camera:setPosition(self.player.x, self.player.y)
+    camera:setPosition(math.floor(self.player.x), math.floor(self.player.y))
 
 end
 
 
 function PlayState:render()
-    function draw_game(l,t,w,h)
 
+    function draw_game(l,t,w,h)
         self.player:render()
         self.spawner:render()
         GameMap:drawLayer(GameMap.layers['neue'])
@@ -55,11 +55,28 @@ function PlayState:render()
         love.graphics.printf('Health Left: ' ..tostring(playerhealth), self.player.x - VIRTUAL_WIDTH + 75, self.player.y + (VIRTUAL_HEIGHT / 2) - 14, VIRTUAL_WIDTH, 'center')
     end
 
+    local function draw_bg0(l,t,w,h)
+        local x,y = 0, -100
+        layers.far:draw_tiled_single_axis(x, y, gbackgrounds['background_0'] ,'x')
+    end
+
+    local function draw_bg1(l,t,w,h)
+        local x,y = 0, -90
+        layers.middle:draw_tiled_single_axis(x, y, gbackgrounds['background_1'] ,'x')
+    end
+
+    local function draw_bg2(l,t,w,h)
+        local x,y = 0, -60
+        layers.near:draw_tiled_single_axis(x, y, gbackgrounds['background_2'] ,'x')
+    end
+
     function draw_all(l,t,w,h)
-        layers.far:draw_tiled_single_axis(0,0, gbackgrounds['background_0'], 'x')
-        layers.middle:draw_tiled_single_axis(0,0, gbackgrounds['background_1'] ,'x')
-        layers.near:draw_tiled_single_axis(0,0, gbackgrounds['background_2'], 'x')
+        layers.far:draw(draw_bg0)
+        layers.middle:draw(draw_bg1)
+        layers.near:draw(draw_bg2)
         draw_game(l,t,w,h)
     end
+
+        love.graphics.clear()
         camera:draw(draw_all)
 end

@@ -34,7 +34,6 @@ function love.load()
     love.window.setMode(screen_width, screen_height, config)
     canvas = love.graphics.newCanvas(VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 
-
     -- initialze all States
     -- (play) the gameplay itself
     gStateMachine = StateMachine{
@@ -81,7 +80,16 @@ end
 
 
 function love.draw()-- draw with push at virtual resolution
+    -- draw with push at virtual resolution
+    love.graphics.setCanvas(canvas)
+    love.graphics.clear()
 
-    gStateMachine:render()
+        gStateMachine:render()
+
+    love.graphics.setCanvas()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setBlendMode('alpha', 'premultiplied')
+    love.graphics.draw(canvas, 0, 0, 0, scale, scale)
+    love.graphics.setBlendMode('alpha')
     
 end

@@ -23,9 +23,9 @@ camera:setWindow(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 
 --layers list for parallax layers
 layers = {}
-layers.near = parallax.new(camera, 1.5)
-layers.middle = parallax.new(camera, 0.5)
-layers.far = parallax.new(camera, 1, 0.25)
+layers.near = parallax.new(camera, 2, 0.3)
+layers.middle = parallax.new(camera, 2, 0.15)
+layers.far = parallax.new(camera, 1.5, 0.12)
 
 --Add colission classes
 world:addCollisionClass('Player')
@@ -43,6 +43,7 @@ gbackgrounds = {
     ['background_1'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_1.png'),
     ['background_2'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_2.png')
 }
+
 
 sounds = {
     ['music'] = love.audio.newSource('src/sounds/music1.wav', 'static'),
