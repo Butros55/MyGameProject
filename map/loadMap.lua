@@ -15,10 +15,12 @@ world = wf.newWorld(0, 900, true)
 
 --loading tiled map into
 GameMap = sti('map/test.lua')
+mapW = GameMap.width * GameMap.tilewidth
+mapH = GameMap.height * GameMap.tileheight
 
 --load camera
-world_dimensions = {1120, 496}
-camera = gamera.new(0,0,unpack(world_dimensions))
+world_dimensions = {mapW - (GameMap.tileheight * 2), mapH - (GameMap.tileheight * 2)}
+camera = gamera.new(GameMap.tileheight, GameMap.tileheight, unpack(world_dimensions))
 camera:setWindow(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 
 --layers list for parallax layers
