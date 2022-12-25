@@ -17,7 +17,7 @@ world = wf.newWorld(0, 900, true)
 GameMap = sti('map/test.lua')
 
 --load camera
-world_dimensions = {1200, 350}
+world_dimensions = {1120, 496}
 camera = gamera.new(0,0,unpack(world_dimensions))
 camera:setWindow(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 
@@ -25,16 +25,17 @@ camera:setWindow(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 layers = {}
 layers.near = parallax.new(camera, 2, 0.3)
 layers.middle = parallax.new(camera, 2, 0.15)
-layers.far = parallax.new(camera, 1.5, 0.12)
+layers.far = parallax.new(camera, 2, 0.12)
 
 --Add colission classes
 world:addCollisionClass('Player')
 world:addCollisionClass('Platform')
-world:addCollisionClass('Skeleton')
-world:addCollisionClass('Necromancer', {ignores = {'Skeleton'}})
+world:addCollisionClass('worldBorder')
+world:addCollisionClass('Skeleton', {ignores = {'Skeleton', 'worldBorder'}})
+world:addCollisionClass('Necromancer', {ignores = {'Skeleton', 'worldBorder'}})
 world:addCollisionClass('Ghost', {ignores = {'Skeleton', 'Necromancer'}})
-world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead'}})
-world:addCollisionClass('OutMap', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead', 'Platform'}})
+world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead', 'worldBorder'}})
+world:addCollisionClass('OutMap', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead', 'Platform', 'worldBorder'}})
 
 -- loads graphic Elements and assets
 love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -55,7 +56,7 @@ sounds = {
     ['landing'] = love.audio.newSource('src/sounds/landing.wav', 'static')
 }
 
-grounddetections = {}
+
 grounds = {}
 if GameMap.layers['Ground'] then
     for i, obj in pairs(GameMap.layers['Ground'].objects) do
@@ -63,5 +64,15 @@ if GameMap.layers['Ground'] then
         ground:setType('static')
         ground:setCollisionClass('Platform')
         table.insert(grounds, ground)
+    end
+end
+
+worldBorder = {}
+if GameMap.layers['worldBorder'] then
+    for i, obj in pairs(GameMap.layers['worldBorder'].objects) do
+        local border = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+        border:setType('static')
+        border:setCollisionClass('worldBorder')
+        table.insert(worldBorder, border)
     end
 end

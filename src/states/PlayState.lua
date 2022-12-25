@@ -40,6 +40,8 @@ function PlayState:update(dt)
 end
 
 
+
+
 function PlayState:render()
 
     function draw_game(l,t,w,h)
@@ -56,17 +58,17 @@ function PlayState:render()
     end
 
     local function draw_bg0(l,t,w,h)
-        local x,y = 0, -100
+        local x,y = 0, -70
         layers.far:draw_tiled_single_axis(x, y, gbackgrounds['background_0'] ,'x')
     end
 
     local function draw_bg1(l,t,w,h)
-        local x,y = 0, -90
+        local x,y = 0, -75
         layers.middle:draw_tiled_single_axis(x, y, gbackgrounds['background_1'] ,'x')
     end
 
     local function draw_bg2(l,t,w,h)
-        local x,y = 0, -60
+        local x,y = 0, -20
         layers.near:draw_tiled_single_axis(x, y, gbackgrounds['background_2'] ,'x')
     end
 
