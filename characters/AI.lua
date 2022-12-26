@@ -106,3 +106,11 @@ function ModelSetup:newCollider(x, y, width, height, colliderType)
     collider:setFixedRotation(true)
     return collider
 end
+
+--plays animation and resets it
+function ModelSetup:AnimationState(self, state)
+    if self.anim ~= self.animations[state] then
+        self.anim = self.animations[state]
+        self.anim:gotoFrame(1)
+    end
+end

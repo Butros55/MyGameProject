@@ -22,30 +22,30 @@ function Player:init()
     --storing animations from Sprite Sheet
     self.animations = {}
     --idle animations
-    self.animations.idler = anim8.newAnimation(self.grid('1-4', 1), 0.2)
-    self.animations.idlel = anim8.newAnimation(self.grid('1-4', 1), 0.2):flipH()
-    self.animations.idlercombat = anim8.newAnimation(self.grid('4-7', 6), 0.2)
-    self.animations.idlelcombat = anim8.newAnimation(self.grid('4-7', 6), 0.2):flipH()
+    self.animations['idler'] = anim8.newAnimation(self.grid('1-4', 1), 0.2)
+    self.animations['idlel'] = anim8.newAnimation(self.grid('1-4', 1), 0.2):flipH()
+    self.animations['idlercombat'] = anim8.newAnimation(self.grid('4-7', 6), 0.2)
+    self.animations['idlelcombat'] = anim8.newAnimation(self.grid('4-7', 6), 0.2):flipH()
     --sword after idle back
-    self.animations.swordbackr = anim8.newAnimation(self.grid('3-7', 11), 0.2)
-    self.animations.swordbackl = anim8.newAnimation(self.grid('3-7', 11), 0.2):flipH()
+    self.animations['swordbackr'] = anim8.newAnimation(self.grid('3-7', 11), 0.2)
+    self.animations['swordbackl'] = anim8.newAnimation(self.grid('3-7', 11), 0.2):flipH()
     --running and jumping animations
-    self.animations.right = anim8.newAnimation(self.grid('2-7', 2), 0.12)
-    self.animations.left = anim8.newAnimation(self.grid('2-7', 2), 0.12):flipH()
-    self.animations.jumpupr = anim8.newAnimation(self.grid('3-7', 3, '1-3', 4), 0.1)
-    self.animations.jumpupl = anim8.newAnimation(self.grid('3-7', 3, '1-3', 4), 0.1):flipH()
-    self.animations.jumpdownr = anim8.newAnimation(self.grid('2-3', 4), 0.1)
-    self.animations.jumpdownl = anim8.newAnimation(self.grid('2-3', 4), 0.1):flipH()
+    self.animations['moveright'] = anim8.newAnimation(self.grid('2-7', 2), 0.12)
+    self.animations['moveleft'] = anim8.newAnimation(self.grid('2-7', 2), 0.12):flipH()
+    self.animations['jumpupr'] = anim8.newAnimation(self.grid('3-7', 3, '1-3', 4), 0.1)
+    self.animations['jumpupl'] = anim8.newAnimation(self.grid('3-7', 3, '1-3', 4), 0.1):flipH()
+    self.animations['jumpdownr'] = anim8.newAnimation(self.grid('2-3', 4), 0.1)
+    self.animations['jumpdownl'] = anim8.newAnimation(self.grid('2-3', 4), 0.1):flipH()
     --combat animations
-    self.animations.combat1r = anim8.newAnimation(self.grid('1-6', 7), 0.05)
-    self.animations.combat1l = anim8.newAnimation(self.grid('1-6', 7), 0.05):flipH()
-    self.animations.combat2r = anim8.newAnimation(self.grid('7-7', 7,'1-4', 8), 0.06)
-    self.animations.combat2l = anim8.newAnimation(self.grid('7-7', 7,'1-4', 8), 0.06):flipH()
-    self.animations.combat3r = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.1)
-    self.animations.combat3l = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.1):flipH()
+    self.animations['combat1r'] = anim8.newAnimation(self.grid('1-6', 7), 0.05)
+    self.animations['combat1l'] = anim8.newAnimation(self.grid('1-6', 7), 0.05):flipH()
+    self.animations['combat2r'] = anim8.newAnimation(self.grid('7-7', 7,'1-4', 8), 0.06)
+    self.animations['combat2l'] = anim8.newAnimation(self.grid('7-7', 7,'1-4', 8), 0.06):flipH()
+    self.animations['combat3r'] = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.1)
+    self.animations['combat3l'] = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.1):flipH()
     --slide animation
-    self.animations.slider = anim8.newAnimation(self.grid('4-7', 4), 0.15)
-    self.animations.slidel = anim8.newAnimation(self.grid('4-7', 4), 0.15):flipH()
+    self.animations['slider'] = anim8.newAnimation(self.grid('4-7', 4), 0.15)
+    self.animations['slidel'] = anim8.newAnimation(self.grid('4-7', 4), 0.15):flipH()
 
     self.movingDirection = true
     self.inJump = false
@@ -111,55 +111,55 @@ function Player:update(dt)
         self.movingDirection = true
         isMoving = true
         if self.inJump == false then
-            self.anim = self.animations.right
+            ModelSetup:AnimationState(self, 'moveright')
         end
     elseif love.keyboard.isDown('a') and self.inCombat == false and self.isSliding == false then
         self.collider:setLinearVelocity(-300, dy)
         self.movingDirection = false
         isMoving = true
         if self.inJump == false then
-            self.anim = self.animations.left
+            ModelSetup:AnimationState(self, 'moveleft')
         end
     end
 
     --checks if player isnt moving and dependig on direction set idle if not
     if isMoving == false and self.movingDirection == true and self.inJump == false then
         if self.attackcounter == 3 and self.inCombat == true then
-            self.anim = self.animations.combat3r
+            ModelSetup:AnimationState(self, 'combat3r')
             self.collider:applyLinearImpulse(10, 0)
             sounds['sword3']:play()
         elseif self.attackcounter == 2 and self.inCombat == true then
-            self.anim = self.animations.combat2r
+            ModelSetup:AnimationState(self, 'combat2r')
             sounds['sword2']:play()
         elseif self.attackcounter == 1 and self.inCombat == true then
-            self.anim = self.animations.combat1r
+            ModelSetup:AnimationState(self, 'combat1r')
             sounds['sword1']:play()
         elseif self.outcombattimer > 10 and self.inCombat == false then
-            self.anim = self.animations.idler
+            ModelSetup:AnimationState(self, 'idler')
         elseif self.outcombattimer > 9.05 and self.inCombat == false then
-            self.anim = self.animations.swordbackr
+            ModelSetup:AnimationState(self, 'swordbackr')
         elseif self.inCombat == false then
-            self.anim = self.animations.idlercombat
+            ModelSetup:AnimationState(self, 'idlercombat')
         end
     end 
         
     if isMoving == false and self.movingDirection == false and self.inJump == false then
         if self.attackcounter == 3 and self.inCombat == true then
-            self.anim = self.animations.combat3l
+            ModelSetup:AnimationState(self, 'combat3l')
             sounds['sword3']:play()
             self.collider:applyLinearImpulse(-10, 0)
         elseif self.attackcounter == 2 and self.inCombat == true then
-            self.anim = self.animations.combat2l
+            ModelSetup:AnimationState(self, 'combat2l')
             sounds['sword2']:play()
         elseif self.attackcounter == 1 and self.inCombat == true then
-            self.anim = self.animations.combat1l
+            ModelSetup:AnimationState(self, 'combat1l')
             sounds['sword1']:play()
         elseif self.outcombattimer > 10 and self.inCombat == false then
-            self.anim = self.animations.idlel
+            ModelSetup:AnimationState(self, 'idlel')
         elseif self.outcombattimer > 9.05 and self.inCombat == false then
-            self.anim = self.animations.swordbackl
+            ModelSetup:AnimationState(self, 'swordbackl')
         else
-            self.anim = self.animations.idlelcombat
+            ModelSetup:AnimationState(self, 'idlelcombat')
         end
     end
 
@@ -183,11 +183,11 @@ function Player:update(dt)
     if love.keyboard.isDown('c') and self.inJump == false and self.slidecd <= 0 then
         dx , dy = self.collider:getLinearVelocity()
         if self.movingDirection == true then
-            self.anim = self.animations.slider
+            ModelSetup:AnimationState(self, 'slider')
             self.isSliding = true
             self.collider:setCollisionClass('Ghost')
         else
-            self.anim = self.animations.slidel
+            ModelSetup:AnimationState(self, 'slidel')
             self.isSliding = true
             self.collider:setCollisionClass('Ghost')
         end
@@ -207,15 +207,15 @@ function Player:update(dt)
 
     if self.movingDirection == true and self.inJump == true then
         if dy > 0 then
-            self.anim = self.animations.jumpdownr
+            ModelSetup:AnimationState(self, 'jumpdownr')
         else
-            self.anim = self.animations.jumpupr
+            ModelSetup:AnimationState(self, 'jumpupr')
         end
     elseif self.movingDirection == false and self.inJump == true then 
         if dy > 0 then
-            self.anim = self.animations.jumpdownl
+            ModelSetup:AnimationState(self, 'jumpdownl')
         else
-            self.anim = self.animations.jumpupl
+            ModelSetup:AnimationState(self, 'jumpupl')
         end
     end
 
