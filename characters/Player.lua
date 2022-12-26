@@ -41,8 +41,8 @@ function Player:init()
     self.animations['combat1l'] = anim8.newAnimation(self.grid('1-6', 7), 0.05):flipH()
     self.animations['combat2r'] = anim8.newAnimation(self.grid('7-7', 7,'1-4', 8), 0.06)
     self.animations['combat2l'] = anim8.newAnimation(self.grid('7-7', 7,'1-4', 8), 0.06):flipH()
-    self.animations['combat3r'] = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.1)
-    self.animations['combat3l'] = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.1):flipH()
+    self.animations['combat3r'] = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.05)
+    self.animations['combat3l'] = anim8.newAnimation(self.grid('5-7', 8, '1-3', 9), 0.05):flipH()
     --slide animation
     self.animations['slider'] = anim8.newAnimation(self.grid('4-7', 4), 0.15)
     self.animations['slidel'] = anim8.newAnimation(self.grid('4-7', 4), 0.15):flipH()
@@ -50,11 +50,11 @@ function Player:init()
     self.movingDirection = true
     self.inJump = false
     --timer and combat variable so the player cant move while attacking
-    self.inCombat = false
+    inCombat = false
     self.attackcounter = 0
     self.incombattimer = 1.5
     self.outcombattimer = 10
-    self.slidecd = 10
+    self.slidecd = 0
 
     --getting width and height depending on spriteSheets charackter (hardcoded for now change later!!!)
     self.width = 19
@@ -78,10 +78,11 @@ function Player:update(dt)
     self.y = self.collider:getY()
 
     --setting players collider for hitbox detection
-    self.image_x = self.collider:getX() - 25
-    self.image_y = self.collider:getY() - ((self.height * 2) - 37)
+    self.image_x = math.floor(self.collider:getX() - 25)
+    self.image_y = math.floor(self.collider:getY() - ((self.height * 2) - 37))
     
     local isMoving = false
+    playerattackcd = false
 
     dx , dy = self.collider:getLinearVelocity()
 
@@ -91,15 +92,19 @@ function Player:update(dt)
     --decrease cd for 10sec
     self.slidecd = self.slidecd - dt
 
-    if self.incombattimer > 0.5 then
+    if self.incombattimer > 1 then
         self.attackcounter = 0
     end
+
     -- if q was pressed reset outcombat so the player cant move while combat is true
     if love.keyboard.wasPressed('q') and self.incombattimer > 0.3 and self.attackcounter < 3 and self.isSliding == false then
         self.inCombat = true
         self.incombattimer = 0
         self.outcombattimer = 0
         self.attackcounter = self.attackcounter + 1
+        playerattackcd = true
+    elseif self.incombattimer <= 0 then
+        playerattackcd = false
     elseif self.outcombattimer > 0.3 and self.isSliding == false then
         self.collider:setLinearVelocity(0, dy)
         self.inCombat = false
@@ -126,8 +131,9 @@ function Player:update(dt)
     if isMoving == false and self.movingDirection == true and self.inJump == false then
         if self.attackcounter == 3 and self.inCombat == true then
             ModelSetup:AnimationState(self, 'combat3r')
-            self.collider:applyLinearImpulse(10, 0)
+            self.collider:applyLinearImpulse(400, 0)
             sounds['sword3']:play()
+            self.attackcounter = 0
         elseif self.attackcounter == 2 and self.inCombat == true then
             ModelSetup:AnimationState(self, 'combat2r')
             sounds['sword2']:play()
@@ -147,7 +153,8 @@ function Player:update(dt)
         if self.attackcounter == 3 and self.inCombat == true then
             ModelSetup:AnimationState(self, 'combat3l')
             sounds['sword3']:play()
-            self.collider:applyLinearImpulse(-10, 0)
+            self.collider:applyLinearImpulse(-400, 0)
+            self.attackcounter = 0
         elseif self.attackcounter == 2 and self.inCombat == true then
             ModelSetup:AnimationState(self, 'combat2l')
             sounds['sword2']:play()
@@ -158,7 +165,7 @@ function Player:update(dt)
             ModelSetup:AnimationState(self, 'idlel')
         elseif self.outcombattimer > 9.05 and self.inCombat == false then
             ModelSetup:AnimationState(self, 'swordbackl')
-        else
+        elseif self.inCombat == false then
             ModelSetup:AnimationState(self, 'idlelcombat')
         end
     end

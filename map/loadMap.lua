@@ -22,12 +22,14 @@ mapH = GameMap.height * GameMap.tileheight
 world_dimensions = {mapW - (GameMap.tileheight * 2), mapH - (GameMap.tileheight * 2)}
 camera = gamera.new(GameMap.tileheight, GameMap.tileheight, unpack(world_dimensions))
 camera:setWindow(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+camera:setScale(1.4)
 
 --layers list for parallax layers
 layers = {}
-layers.near = parallax.new(camera, 2, 0.3)
-layers.middle = parallax.new(camera, 2, 0.15)
-layers.far = parallax.new(camera, 2, 0.12)
+layers.far = parallax.new(camera, 2, 0.2)
+layers.middle = parallax.new(camera, 2.5, 0.23)
+layers.near = parallax.new(camera, 2.5, 0.35)
+
 
 --Add colission classes
 world:addCollisionClass('Player')

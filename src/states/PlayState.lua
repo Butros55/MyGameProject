@@ -28,6 +28,7 @@ end
 
 
 function PlayState:update(dt)
+
     necromancertimer = necromancertimer + dt
     skeletontimer = skeletontimer + dt
     roundTimer = roundTimer + dt
@@ -45,9 +46,9 @@ end
 function PlayState:render()
 
     function draw_game(l,t,w,h)
+        GameMap:drawLayer(GameMap.layers['neue'])
         self.player:render()
         self.spawner:render()
-        GameMap:drawLayer(GameMap.layers['neue'])
         world:draw()
         love.graphics.printf('Time Passed: ' ..tostring(math.floor(roundTimer)).. 'sec', self.player.x - VIRTUAL_WIDTH + 85, self.player.y - (VIRTUAL_HEIGHT / 2), VIRTUAL_WIDTH, 'center')
         love.graphics.printf('Skeleton Spawned: ' ..tostring(skeletoncounter), 0, 30, VIRTUAL_WIDTH, 'center')
@@ -63,7 +64,7 @@ function PlayState:render()
     end
 
     local function draw_bg1(l,t,w,h)
-        local x,y = 0, -75
+        local x,y = 0, -57
         layers.middle:draw_tiled_single_axis(x, y, gbackgrounds['background_1'] ,'x')
     end
 

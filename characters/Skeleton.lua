@@ -29,15 +29,15 @@ function Skeleton:init(necrox, necroy, playery)
 
     self.animations = {}
 
-    self.animations.deadr = anim8.newAnimation(self.griddead('1-15', 1), 0.1, 'pauseAtEnd')
-    self.animations.deadl = anim8.newAnimation(self.griddead('1-15', 1), 0.1, 'pauseAtEnd'):flipH()
-    self.animations.hitr = anim8.newAnimation(self.gridhit('1-4', 1), 0.2)
-    self.animations.hitl = anim8.newAnimation(self.gridhit('1-4', 1), 0.2):flipH()
-    self.animations.walkr = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1)
-    self.animations.walkl = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1):flipH()
-    self.animations.attackr = anim8.newAnimation(self.gridattack('1-18', 1), 0.075)
-    self.animations.attackl = anim8.newAnimation(self.gridattack('1-18', 1), 0.075):flipH()
-    self.animations.spawning = anim8.newAnimation(self.gridspawn('1-15', 1), 0.2):flipH()
+    self.animations['deadr'] = anim8.newAnimation(self.griddead('1-15', 1), 0.1, 'pauseAtEnd')
+    self.animations['deadl'] = anim8.newAnimation(self.griddead('1-15', 1), 0.1, 'pauseAtEnd'):flipH()
+    self.animations['hitr'] = anim8.newAnimation(self.gridhit('1-4', 1), 0.2)
+    self.animations['hitl'] = anim8.newAnimation(self.gridhit('1-4', 1), 0.2):flipH()
+    self.animations['walkr'] = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1)
+    self.animations['walkl'] = anim8.newAnimation(self.gridwalk('1-13', 1), 0.1):flipH()
+    self.animations['attackr'] = anim8.newAnimation(self.gridattack('1-18', 1), 0.075)
+    self.animations['attackl'] = anim8.newAnimation(self.gridattack('1-18', 1), 0.075):flipH()
+    self.animations['spawning'] = anim8.newAnimation(self.gridspawn('1-15', 1), 0.2):flipH()
 
 
     self.anim = self.animations.attackr
@@ -66,7 +66,7 @@ function Skeleton:init(necrox, necroy, playery)
     self.attacktimer = 0
 
     --checking if enemy is dead
-    self.health = 3000
+    self.health = 34
     self.isDead = false
     self.deadcounter = 0
 
@@ -121,20 +121,20 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         end
 
         if self.hit == true and playerdirection == false and self.isDead == false and self.isSpawning == false then
-            self.anim = self.animations.hitr
+            ModelSetup:AnimationState(self, 'hitr')
         elseif self.hit == true and playerdirection == true and self.isDead == false and self.isSpawning == false then
-            self.anim = self.animations.hitl
+            ModelSetup:AnimationState(self, 'hitl')
         end
 
         --go to player based on position x and y
-        if playerx - (playerwidth / 2) - 3 > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
+        if playerx - (playerwidth / 2) - 10 > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
             self.collider:setLinearVelocity(40, dy)
-            self.anim = self.animations.walkr
+            ModelSetup:AnimationState(self, 'walkr')
             self.isMoving = true
             self.image_x = self.collider:getX() - 8
-        elseif playerx + (playerwidth / 2) + 3 < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
+        elseif playerx + (playerwidth / 2) + 10 < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
             self.collider:setLinearVelocity(-40, dy)
-            self.anim = self.animations.walkl
+            ModelSetup:AnimationState(self, 'walkl')
             self.isMoving = true
             self.image_x = self.collider:getX() -14
         end
@@ -151,7 +151,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         --attack if player is close enought
         if AI:attack(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, self.isDead, self.hit, self.outmap, 10, 5) == false and self.isSpawning == false then
             self.image_y = self.collider:getY() - 24
-            self.anim = self.animations.attackr
+            ModelSetup:AnimationState(self, 'attackr')
             self.collider:setLinearVelocity(0, dy)
             self.isMoving = false
             self.attacktimer = self.attacktimer + dt
@@ -162,7 +162,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         elseif AI:attack(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, self.isDead, self.hit, self.outmap, 10, 5) == true and self.isSpawning == false then
             self.image_y = self.collider:getY() - 24
             self.image_x = self.collider:getX() - 32
-            self.anim = self.animations.attackl
+            ModelSetup:AnimationState(self, 'attackl')
             self.collider:setLinearVelocity(0, dy)
             self.isMoving = false
             self.attacktimer = self.attacktimer + dt
@@ -199,7 +199,7 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             self.hit = false
             self.isDead = false
             self.collider:setLinearVelocity(0, 0)
-            self.anim = self.animations.spawning
+            ModelSetup:AnimationState(self, 'spawning')
             self.isSpawning = true
             self.collider:setCollisionClass('Dead')
         elseif self.isSpawning == true then
@@ -211,9 +211,9 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
     if self.collidercheck == 2 then
         if playerdirection == false then
-            self.anim = self.animations.deadr
+            ModelSetup:AnimationState(self, 'deadr')
         elseif playerdirection == true then
-            self.anim = self.animations.deadl
+            ModelSetup:AnimationState(self, 'deadl')
         end
         self.collidercheck = 1
     end

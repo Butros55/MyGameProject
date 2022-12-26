@@ -33,14 +33,18 @@ GroundAI = {}
 function AI:hitbox(self, dt, x, y, width, height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, health, isDead, hittimer, boxSize_x, boxSize_y, adjustemt_top, adjustemt_bot, adjustment_right, adjustment_left)
 
     --get hit if player i close enough and in combat
-    if playerx + (playerwidth / 2) > self.x - (self.width / 2) - boxSize_x - (adjustment_left or 0) and playerx + (playerwidth / 2) < self.x + (self.width / 2) and playery + (playerheight / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and playery - (playerheight / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and playerincombat == true and playerdirection == true and self.isDead == false then
-        self.hit = true
-        self.health = self.health - 10
-        return self.hit, self.health, true
-    elseif playerx - (playerwidth / 2) < self.x + (self.width / 2) + boxSize_x + (adjustment_right or 0) and playerx + (playerwidth / 2) > self.x + (self.width / 2) and playery + (playerheight / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and playery - (playerheight / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and playerincombat == true and playerdirection == false and self.isDead == false then
-        self.hit = true
-        self.health = self.health - 10
-        return self.hit, self.health, false
+    if playerx + (playerwidth / 2) > self.x - (self.width / 2) - boxSize_x - (adjustment_left or 0) and playerx + (playerwidth / 2) < self.x + (self.width / 2) and playery + (playerheight / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and playery - (playerheight / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and playerdirection == true and self.isDead == false then
+        if love.keyboard.wasPressed('q') and playerattackcd == true then
+            self.hit = true
+            self.health = self.health - 10
+            return self.hit, self.health, true
+        end
+    elseif playerx - (playerwidth / 2) < self.x + (self.width / 2) + boxSize_x + (adjustment_right or 0) and playerx + (playerwidth / 2) > self.x + (self.width / 2) and playery + (playerheight / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and playery - (playerheight / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and playerdirection == false and self.isDead == false then
+        if love.keyboard.wasPressed('q') and playerattackcd == true then
+            self.hit = true
+            self.health = self.health - 10
+            return self.hit, self.health, false
+        end
     end
     return self.hit, self.health, nil
 end
