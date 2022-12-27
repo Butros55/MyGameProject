@@ -83,6 +83,10 @@ end
 --Behavior for Enemys on Ground
 GroundAI = {}
 
+function GroundAI:jumpOnPlatform(self)
+
+end
+
 --returns highest collider from position x if nothing ther set 0
 function GroundAI:highestGroundColliderOnX(x)
     if GameMap.layers['Ground'] then
@@ -141,7 +145,7 @@ function GroundAI:currentGroundColliderOnX(self, x, y, height)
             self.nextLowestGroundColliderOnX = nextLowestGroundColliderOnX(self, self.x , self.y, self.height)
             if self.x > obj.x and self.x < obj.x + obj.width then
                 self.collider_height_box = self.y - self.nextHighestGroundColliderOnX
-                if self.y + (self.height / 2) < obj.y + (obj.height / 2) and obj.y > self.nextHighestGroundColliderOnX and obj.y < self.nextLowestGroundColliderOnX then
+                if self.y + self.height - 10 < obj.y + (obj.height / 2) and obj.y > self.nextHighestGroundColliderOnX and obj.y < self.nextLowestGroundColliderOnX then
                     self.collider_x = obj.x
                     self.collider_y = obj.y
                     self.collider_width = obj.width
@@ -161,7 +165,7 @@ function GroundAI:nextHighestGroundCollider(self, x, y)
         self.collider_width = 0
         self.collider_height = 0
         for i, obj in pairs(GameMap.layers['Ground'].objects) do
-            if self.x + 200 > obj.x and self.x - 200 < obj.x + obj.width then
+            if self.x + 150 > obj.x and self.x - 150 < obj.x + obj.width then
                 if self.y > obj.y and self.collider_y < obj.y then
                     self.collider_y = obj.y
                     self.collider_x = obj.x

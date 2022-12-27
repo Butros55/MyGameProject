@@ -19,7 +19,7 @@ function PlayState:init()
     skeletontimer = 0
     necromancertimer = 0
     self.player = Player()
-    self.spawner = Spawner()
+   -- self.spawner = Spawner()
     Necromancers = {}
 
     sounds['music']:setLooping(true)
@@ -37,7 +37,7 @@ function PlayState:update(dt)
     skeletontimer = skeletontimer + dt
     roundTimer = roundTimer + dt
     self.player:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat, self.player.image_x, self.player.image_y)
-    self.spawner:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
+   -- self.spawner:update(dt, self.player.x, self.player.y, self.player.width, self.player.height, self.player.isSliding, self.player.collider, self.player.movingDirection, self.player.inCombat)
 
     --setting camera to playercharacter
     camera:setPosition(math.floor(self.player.x), math.floor(self.player.y))
@@ -52,8 +52,7 @@ function PlayState:render()
     function draw_game(l,t,w,h)
         GameMap:drawLayer(GameMap.layers['neue'])
         self.player:render()
-        self.spawner:render()
-        world:draw()
+       -- self.spawner:render()
         love.graphics.printf('Time Passed: ' ..tostring(math.floor(roundTimer)).. 'sec', camx - (VIRTUAL_WIDTH / 2) + 150, camy - (VIRTUAL_HEIGHT / 2) + 80, 150)
         love.graphics.printf('Skeleton Spawned: ' ..tostring(skeletoncounter), 0, 30, VIRTUAL_WIDTH, 'center')
         love.graphics.printf('Necromancer Spawned: ' ..tostring(necromancercounter), 0, 10, VIRTUAL_WIDTH, 'center')

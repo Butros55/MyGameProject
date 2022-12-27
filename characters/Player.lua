@@ -95,6 +95,17 @@ function Player:update(dt)
     --decrease cd for 10sec
     self.slidecd = self.slidecd - dt
 
+    currentcollider_x = select(1, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
+    currentcollider_y = select(2, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
+    currentcollider_width = select(3, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
+    currentcollider_boxheight = select(4, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
+    currentcollider_nextheighest = select(5, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
+    currentcollider_nextlowest = select(6, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
+    nexthighest_x = select(1, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
+    nexthighest_y = select(2, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
+    nexthighest_width = select(3, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
+    nexthighest_height = select(4, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
+
     if self.incombattimer > 0.6 or isMoving == true then
         self.attackcounter = 0
         self.playonce = 1
@@ -321,13 +332,6 @@ function Player:update(dt)
         end
     end
 
-    currentcollider_x = select(1, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_y = select(2, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_width = select(3, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_boxheight = select(4, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_nextheighest = select(5, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_nextlowest = select(6, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-
     --Player animations updates
     self.anim:update(dt)
 end
@@ -343,5 +347,9 @@ function Player:render()
     love.graphics.printf('collider box height: ' ..tostring(currentcollider_boxheight), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
     love.graphics.printf('next heighest: ' ..tostring(currentcollider_nextheighest), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 350, 400)
     love.graphics.printf('next lowest: ' ..tostring(currentcollider_nextlowest), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
+    love.graphics.printf('next highets x: ' ..tostring(nexthighest_x), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
+    love.graphics.printf('next highets y: ' ..tostring(nexthighest_y), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 350, 400)
+    love.graphics.printf('next highets width: ' ..tostring(nexthighest_width), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
+    love.graphics.printf('next highets height: ' ..tostring(nexthighest_height), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 250, 400)
 
 end
