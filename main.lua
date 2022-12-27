@@ -15,6 +15,11 @@ function love.load()
 
     require 'src/Dependencies'
 
+    playercollider_boxheight = 0
+    playercollider_width = 0
+    playercollider_x = 0
+    playercollider_y = 0
+
     -- seeded the math.random function so they alwas random
     math.randomseed(os.time())
 

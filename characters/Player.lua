@@ -95,16 +95,19 @@ function Player:update(dt)
     --decrease cd for 10sec
     self.slidecd = self.slidecd - dt
 
-    currentcollider_x = select(1, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_y = select(2, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_width = select(3, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_boxheight = select(4, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_nextheighest = select(5, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    currentcollider_nextlowest = select(6, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-    nexthighest_x = select(1, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
-    nexthighest_y = select(2, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
-    nexthighest_width = select(3, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
-    nexthighest_height = select(4, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
+    player = {
+        x = self.x,
+        y = self.y,
+        width = self.width,
+        height = self.height
+    }
+
+    playerplatform = {
+        x = select(1, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height)),
+        y = select(2, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height)),
+        width = select(3, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height)),
+        boxheight = select(4, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
+        }
 
     if self.incombattimer > 0.6 or isMoving == true then
         self.attackcounter = 0
@@ -341,15 +344,10 @@ end
 --Renders Player img at position
 function Player:render()
     self.anim:draw(self.spriteSheet, self.image_x, self.image_y)
-    love.graphics.printf('collider x: ' ..tostring(currentcollider_x), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 150, 400)
-    love.graphics.printf('collider y: ' ..tostring(currentcollider_y), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 200, 400)
-    love.graphics.printf('collider width: ' ..tostring(currentcollider_width), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 250, 400)
-    love.graphics.printf('collider box height: ' ..tostring(currentcollider_boxheight), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
+    love.graphics.printf('collider x: ' ..tostring(playerplatform.x), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 150, 400)
+    love.graphics.printf('collider y: ' ..tostring(playerplatform.y), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 200, 400)
+    love.graphics.printf('collider width: ' ..tostring(playerplatform.width), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 250, 400)
+    love.graphics.printf('distance to next collider above: ' ..tostring(playerplatform.boxheight), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
     love.graphics.printf('next heighest: ' ..tostring(currentcollider_nextheighest), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 350, 400)
     love.graphics.printf('next lowest: ' ..tostring(currentcollider_nextlowest), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
-    love.graphics.printf('next highets x: ' ..tostring(nexthighest_x), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
-    love.graphics.printf('next highets y: ' ..tostring(nexthighest_y), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 350, 400)
-    love.graphics.printf('next highets width: ' ..tostring(nexthighest_width), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
-    love.graphics.printf('next highets height: ' ..tostring(nexthighest_height), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 250, 400)
-
 end

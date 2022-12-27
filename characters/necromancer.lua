@@ -85,7 +85,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
     if self.collidercheck == 2 then
         dx , dy = self.collider:getLinearVelocity()
 
-        --setting Skeletons x and y to collider box
+        --setting Necromancers x and y to collider box
         self.image_x = self.collider:getX() - 80
         self.image_y = self.collider:getY() - 95
 

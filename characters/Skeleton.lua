@@ -45,7 +45,14 @@ function Skeleton:init(necrox, necroy, playery)
     --getting width and height depending on spriteSheets charackter (hardcoded for now change later!!!)
     self.width = 8
     self.height = 24
-    self.spawnx = math.random(necrox + 100, necrox - 100)
+
+
+
+
+    --self.spawnx = math.random(necrox + 100, necrox - 100)
+    self.spawnx = math.random(0, 100)
+
+
 
     --spawns at ground based on position x
     self.spawn = GroundAI:highestGroundColliderOnX(self.spawnx)
@@ -77,6 +84,7 @@ function Skeleton:init(necrox, necroy, playery)
     self.collidercheck = 3
     self.fallingAfterDead = 0
     self.doublejumptimer = 0
+    self.jumpHeight = 120
 
     drawHitbox = true
 end
@@ -103,6 +111,12 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 10, 10, 0, 0, 0, 0)}
 
 
+        nexthighest_x = select(1, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
+        nexthighest_y = select(2, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
+        nexthighest_width = select(3, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
+        nexthighest_height = select(4, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
+    
+
         if self.hitbox[3] == true then
             self.collider:applyLinearImpulse(100, -30)
         elseif self.hitbox[3] == false then
@@ -126,55 +140,13 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
             ModelSetup:AnimationState(self, 'hitl')
         end
 
-        --go to player based on position x and y
-        if playerx - (playerwidth / 2) - 10 > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
-            self.collider:setLinearVelocity(40, dy)
-            ModelSetup:AnimationState(self, 'walkr')
-            self.isMoving = true
-            self.image_x = self.collider:getX() - 8
-        elseif playerx + (playerwidth / 2) + 10 < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false then
-            self.collider:setLinearVelocity(-40, dy)
-            ModelSetup:AnimationState(self, 'walkl')
-            self.isMoving = true
-            self.image_x = self.collider:getX() -14
-        end
 
-        --makes sure the skeleton doublejumps imediatly
+        self.jumpHeight = 50
         self.doublejumptimer = self.doublejumptimer + dt
-        --allows the skeleton to jump
-        if playery + 10 < self.y and self.doublejump < 2 and ((playerx - self.x < 150 and playerx - self.x > 0) or (playerx - self.x > -150 and playerx - self.x < 0)) and self.isDead == false and self.outmap == false and self.isSpawning == false and self.doublejumptimer > 0.4 then
-            self.collider:setLinearVelocity(dx, -400)
-            self.doublejump = self.doublejump + 1
-            self.doublejumptimer = 0
-        end
+        --go to player based on position x and y
+        GroundAI:movement(self, dt, self.x, self.y, self.width ,self.height, self.jumpHeight, self.doublejump, self.doublejumptimer)
 
-        --attack if player is close enought
-        if AI:attack(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, self.isDead, self.hit, self.outmap, 10, 5) == false and self.isSpawning == false then
-            self.image_y = self.collider:getY() - 24
-            ModelSetup:AnimationState(self, 'attackr')
-            self.collider:setLinearVelocity(0, dy)
-            self.isMoving = false
-            self.attacktimer = self.attacktimer + dt
-            if self.attacktimer >= 0.675 then
-                self.attacktimer = -0.675
-                playerhealth = playerhealth -20
-            end
-        elseif AI:attack(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, self.isDead, self.hit, self.outmap, 10, 5) == true and self.isSpawning == false then
-            self.image_y = self.collider:getY() - 24
-            self.image_x = self.collider:getX() - 32
-            ModelSetup:AnimationState(self, 'attackl')
-            self.collider:setLinearVelocity(0, dy)
-            self.isMoving = false
-            self.attacktimer = self.attacktimer + dt
-            if self.attacktimer >= 0.675 then
-                self.attacktimer = -0.675
-                playerhealth = playerhealth -20
-            end
-        else
-            --reset timer for attack to player
-            self.attacktimer = 0
-        end
-
+        --SKeleton Attack here
 
         --resets doublejump after hitting Platform
         if self.collider:enter('Platform') and self.outmap == false then
@@ -251,4 +223,12 @@ function Skeleton:render()
     else
         self.anim:draw(self.attackSheet, self.image_x, self.image_y)
     end
+
+    love.graphics.printf('next highets x: ' ..tostring(nexthighest_x), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
+    love.graphics.printf('next highets y: ' ..tostring(nexthighest_y), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 350, 400)
+    love.graphics.printf('next highets width: ' ..tostring(nexthighest_width), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
+    love.graphics.printf('next highets height: ' ..tostring(nexthighest_height), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 250, 400)
+    love.graphics.printf('selfx: ' ..tostring(self.x), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 200, 400)
+    love.graphics.printf('selfy: ' ..tostring(self.y), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 150, 400)
+
 end
