@@ -47,6 +47,7 @@ function Player:init()
     self.animations['slider'] = anim8.newAnimation(self.grid('4-7', 4), 0.15)
     self.animations['slidel'] = anim8.newAnimation(self.grid('4-7', 4), 0.15):flipH()
 
+
     self.movingDirection = true
     self.inJump = false
     --timer and combat variable so the player cant move while attacking
@@ -115,11 +116,13 @@ function Player:update(dt)
     --movement with a (left) and d (right)
     if love.keyboard.isDown('d') and self.inCombat == false and self.isSliding == false then
         self.collider:setLinearVelocity(300, dy)
-        self.movingDirection = true
         isMoving = true
+        self.movingDirection = true
         if self.inJump == false then
             ModelSetup:AnimationState(self, 'moveright')
         end
+    elseif love.keyboard.isDown('d') then
+        self.movingDirection = true
     elseif love.keyboard.isDown('a') and self.inCombat == false and self.isSliding == false then
         self.collider:setLinearVelocity(-300, dy)
         self.movingDirection = false
@@ -127,8 +130,9 @@ function Player:update(dt)
         if self.inJump == false then
             ModelSetup:AnimationState(self, 'moveleft')
         end
+    elseif love.keyboard.isDown('a') then
+        self.movingDirection = false
     end
-
 
     --checks if player isnt moving and dependig on direction set idle if not
     if isMoving == false and self.movingDirection == true and self.inJump == false then
@@ -183,7 +187,7 @@ function Player:update(dt)
         elseif self.inCombat == false then
             ModelSetup:AnimationState(self, 'idlercombat')
         end
-    end 
+    end
         
     if isMoving == false and self.movingDirection == false and self.inJump == false then
         if self.attackcounter == 2 and self.inCombat == true then
@@ -234,7 +238,7 @@ function Player:update(dt)
             ModelSetup:AnimationState(self, 'idlel')
         elseif self.outcombattimer > 9.05 and self.inCombat == false then
             ModelSetup:AnimationState(self, 'swordbackl')
-        elseif self.inCombat == false then
+        else
             ModelSetup:AnimationState(self, 'idlelcombat')
         end
     end
