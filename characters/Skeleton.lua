@@ -104,9 +104,9 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
 
 
         if self.hitbox[3] == true then
-            self.collider:applyLinearImpulse(5, -5)
+            self.collider:applyLinearImpulse(100, -30)
         elseif self.hitbox[3] == false then
-            self.collider:applyLinearImpulse(-5, -5)
+            self.collider:applyLinearImpulse(-100, -30)
         end
 
         --knockback while sliding trough enemys
