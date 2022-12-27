@@ -55,6 +55,8 @@ function Player:init()
     self.incombattimer = 1.5
     self.outcombattimer = 10
     self.slidecd = 0
+    self.combocounter = 0
+    self.playonce = 1
 
     --getting width and height depending on spriteSheets charackter (hardcoded for now change later!!!)
     self.width = 19
@@ -92,16 +94,16 @@ function Player:update(dt)
     --decrease cd for 10sec
     self.slidecd = self.slidecd - dt
 
-    if self.incombattimer > 1 then
+    if self.incombattimer > 0.6 or isMoving == true then
         self.attackcounter = 0
+        self.playonce = 1
     end
 
     -- if q was pressed reset outcombat so the player cant move while combat is true
-    if love.keyboard.wasPressed('q') and self.incombattimer > 0.3 and self.attackcounter < 3 and self.isSliding == false then
+    if love.keyboard.wasPressed('q') and self.isSliding == false then
         self.inCombat = true
-        self.incombattimer = 0
         self.outcombattimer = 0
-        self.attackcounter = self.attackcounter + 1
+        self.combocounter = self.combocounter + 1
         playerattackcd = true
     elseif self.incombattimer <= 0 then
         playerattackcd = false
@@ -127,19 +129,53 @@ function Player:update(dt)
         end
     end
 
+
     --checks if player isnt moving and dependig on direction set idle if not
     if isMoving == false and self.movingDirection == true and self.inJump == false then
-        if self.attackcounter == 3 and self.inCombat == true then
+        if self.attackcounter == 2 and self.inCombat == true then
             ModelSetup:AnimationState(self, 'combat3r')
-            self.collider:applyLinearImpulse(400, 0)
-            sounds['sword3']:play()
-            self.attackcounter = 0
-        elseif self.attackcounter == 2 and self.inCombat == true then
-            ModelSetup:AnimationState(self, 'combat2r')
-            sounds['sword2']:play()
+            if self.playonce == 1 then
+                self.collider:setLinearVelocity(0, dy)
+                self.collider:applyLinearImpulse(400, 0)
+                sounds['sword3']:play()
+                self.playonce = 0
+            end
+            if self.combocounter > 0 and self.incombattimer > 0.3  then
+                self.combocounter = 0
+                self.incombattimer = 0
+                self.attackcounter = 0
+                self.playonce = 1
+            end
         elseif self.attackcounter == 1 and self.inCombat == true then
+            ModelSetup:AnimationState(self, 'combat2r')
+            if self.playonce == 1 then
+                self.collider:setLinearVelocity(0, dy)
+                sounds['sword2']:play()
+                self.collider:applyLinearImpulse(150, 0)
+                self.playonce = 0
+            end
+            if self.combocounter > 0 and self.incombattimer > 0.3  then
+                self.attackcounter = self.attackcounter + 1
+                self.incombattimer = 0
+                self.combocounter = self.combocounter - 1
+                self.outcombattimer = 0
+                self.playonce = 1
+            end
+        elseif self.inCombat == true then
             ModelSetup:AnimationState(self, 'combat1r')
-            sounds['sword1']:play()
+            if self.playonce == 1 then
+                self.collider:setLinearVelocity(0, dy)
+                sounds['sword1']:play()
+                self.collider:applyLinearImpulse(150, 0)
+                self.playonce = 0
+            end
+            if self.combocounter > 0 and self.incombattimer > 0.3  then
+                self.incombattimer = 0
+                self.combocounter = self.combocounter - 1
+                self.outcombattimer = 0
+                self.attackcounter = self.attackcounter + 1
+                self.playonce = 1
+            end
         elseif self.outcombattimer > 10 and self.inCombat == false then
             ModelSetup:AnimationState(self, 'idler')
         elseif self.outcombattimer > 9.05 and self.inCombat == false then
@@ -150,17 +186,50 @@ function Player:update(dt)
     end 
         
     if isMoving == false and self.movingDirection == false and self.inJump == false then
-        if self.attackcounter == 3 and self.inCombat == true then
+        if self.attackcounter == 2 and self.inCombat == true then
             ModelSetup:AnimationState(self, 'combat3l')
-            sounds['sword3']:play()
-            self.collider:applyLinearImpulse(-400, 0)
-            self.attackcounter = 0
-        elseif self.attackcounter == 2 and self.inCombat == true then
-            ModelSetup:AnimationState(self, 'combat2l')
-            sounds['sword2']:play()
+            if self.playonce == 1 then
+                self.collider:setLinearVelocity(0, dy)
+                self.collider:applyLinearImpulse(-400, 0)
+                sounds['sword3']:play()
+                self.playonce = 0
+            end
+            if self.combocounter > 0 and self.incombattimer > 0.3  then
+                self.combocounter = 0
+                self.incombattimer = 0
+                self.attackcounter = 0
+                self.playonce = 1
+            end
         elseif self.attackcounter == 1 and self.inCombat == true then
+            ModelSetup:AnimationState(self, 'combat2l')
+            if self.playonce == 1 then
+                self.collider:setLinearVelocity(0, dy)
+                sounds['sword2']:play()
+                self.collider:applyLinearImpulse(-150, 0)
+                self.playonce = 0
+            end
+            if self.combocounter > 0 and self.incombattimer > 0.3  then
+                self.attackcounter = self.attackcounter + 1
+                self.incombattimer = 0
+                self.combocounter = self.combocounter - 1
+                self.outcombattimer = 0
+                self.playonce = 1
+            end
+        elseif self.inCombat == true then
             ModelSetup:AnimationState(self, 'combat1l')
-            sounds['sword1']:play()
+            if self.playonce == 1 then
+                self.collider:setLinearVelocity(0, dy)
+                sounds['sword1']:play()
+                self.collider:applyLinearImpulse(-150, 0)
+                self.playonce = 0
+            end
+            if self.combocounter > 0 and self.incombattimer > 0.3  then
+                self.incombattimer = 0
+                self.combocounter = self.combocounter - 1
+                self.outcombattimer = 0
+                self.attackcounter = self.attackcounter + 1
+                self.playonce = 1
+            end
         elseif self.outcombattimer > 10 and self.inCombat == false then
             ModelSetup:AnimationState(self, 'idlel')
         elseif self.outcombattimer > 9.05 and self.inCombat == false then

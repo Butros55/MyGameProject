@@ -23,7 +23,7 @@ function PlayState:init()
     Necromancers = {}
 
     sounds['music']:setLooping(true)
-    sounds['music']:play()
+
 end
 
 
