@@ -222,9 +222,6 @@ function GroundAI:movement(self, dt)
             self.doublejump = self.doublejump + 1
             self.doublejumptimer = 0
         end
-    elseif self.isSpawning == false then
-        self.collider:setLinearVelocity(0, dy)
-        ModelSetup:AnimationState(self, 'attackr')
     end
 end
 

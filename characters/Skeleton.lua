@@ -105,9 +105,9 @@ function Skeleton:update(dt)
         self.draw = {AI:drawHitbox(self, 10, 10)}
 
         if self.hitbox[3] == true then
-            self.collider:applyLinearImpulse(500, -30)
+            self.collider:applyLinearImpulse(50, -30)
         elseif self.hitbox[3] == false then
-            self.collider:applyLinearImpulse(-500, -30)
+            self.collider:applyLinearImpulse(-50, -30)
         end
 
         --nexthighest_x = select(1, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
@@ -134,12 +134,11 @@ function Skeleton:update(dt)
             ModelSetup:AnimationState(self, 'hitl')
         end
 
-
-        self.jumpHeight = 50
-        self.doublejumptimer = self.doublejumptimer + dt
         --go to player based on position x and y
         GroundAI:movement(self)
 
+        self.jumpHeight = 50
+        self.doublejumptimer = self.doublejumptimer + dt
         --SKeleton Attack here
     
         --resets doublejump after hitting Platform
