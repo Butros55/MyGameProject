@@ -139,7 +139,35 @@ function Skeleton:update(dt)
 
         self.jumpHeight = 50
         self.doublejumptimer = self.doublejumptimer + dt
+
         --SKeleton Attack here
+                --attack if player is close enought
+                self.attack = AI:attack(self, 10, 5)
+                if self.attack == true and self.isSpawning == false and self.hit == false then
+                    self.image_y = self.collider:getY() - 24
+                    ModelSetup:AnimationState(self, 'attackr')
+                    self.collider:setLinearVelocity(0, dy)
+                    self.isMoving = false
+                    self.attacktimer = self.attacktimer + dt
+                    if self.attacktimer >= 0.675 then
+                        self.attacktimer = -0.675
+                        player.health = player.health -20
+                    end
+                elseif self.attack == false and self.isSpawning == false and self.hit == false then
+                    self.image_y = self.collider:getY() - 24
+                    self.image_x = self.collider:getX() - 32
+                    ModelSetup:AnimationState(self, 'attackl')
+                    self.collider:setLinearVelocity(0, dy)
+                    self.isMoving = false
+                    self.attacktimer = self.attacktimer + dt
+                    if self.attacktimer >= 0.675 then
+                        self.attacktimer = -0.675
+                        player.health = player.health -20
+                    end
+                else
+                    --reset timer for attack to player
+                    self.attacktimer = 0
+                end
     
         --resets doublejump after hitting Platform
         if self.collider:enter('Platform') and self.outmap == false then
