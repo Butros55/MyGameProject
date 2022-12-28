@@ -348,6 +348,4 @@ function Player:render()
     love.graphics.printf('collider y: ' ..tostring(playerplatform.y), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 200, 400)
     love.graphics.printf('collider width: ' ..tostring(playerplatform.width), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 250, 400)
     love.graphics.printf('distance to next collider above: ' ..tostring(playerplatform.boxheight), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
-    love.graphics.printf('next heighest: ' ..tostring(currentcollider_nextheighest), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 350, 400)
-    love.graphics.printf('next lowest: ' ..tostring(currentcollider_nextlowest), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
 end
