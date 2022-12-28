@@ -59,9 +59,9 @@ function AI:attack(self, boxSize_x, boxSize_y, adjustemt_top, adjustemt_bot, adj
 
     --get hit if player i close enough and in combat
     if player.x + (player.width / 2) > self.x - (self.width / 2) - boxSize_x - (adjustment_left or 0) and player.x + (player.width / 2) < self.x + (self.width / 2) and player.y + (player.height / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and player.y - (player.height / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and self.hit == false and self.isDead == false and self.outmap == false then
-        return false
-    elseif player.x - (player.width / 2) < self.x + (self.width / 2) + boxSize_x + (adjustment_right or 0) and player.x + (player.width / 2) > self.x + (self.width / 2) and player.y + (player.height / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and player.y - (player.height / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and self.hit == false and self.isDead == false and self.outmap == false then
         return true
+    elseif player.x - (player.width / 2) < self.x + (self.width / 2) + boxSize_x + (adjustment_right or 0) and player.x + (player.width / 2) > self.x + (self.width / 2) and player.y + (player.height / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and player.y - (player.height / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and self.hit == false and self.isDead == false and self.outmap == false then
+        return false
     end
     return nil
 end
@@ -212,7 +212,7 @@ function GroundAI:movement(self, dt)
             self.doublejump = self.doublejump + 1
             self.doublejumptimer = 0
         end
-    elseif player.x + (player.width / 2) < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
+    elseif player.x + (player.width / 2) + 10 < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
         self.collider:setLinearVelocity(-40, dy)
         ModelSetup:AnimationState(self, 'walkl')
         self.isMoving = true

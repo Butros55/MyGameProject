@@ -143,7 +143,7 @@ function Skeleton:update(dt)
         --SKeleton Attack here
                 --attack if player is close enought
                 self.attack = AI:attack(self, 10, 5)
-                if self.attack == true and self.isSpawning == false and self.hit == false then
+                if self.attack == false and self.isSpawning == false and self.hit == false then
                     self.image_y = self.collider:getY() - 24
                     ModelSetup:AnimationState(self, 'attackr')
                     self.collider:setLinearVelocity(0, dy)
@@ -153,7 +153,7 @@ function Skeleton:update(dt)
                         self.attacktimer = -0.675
                         player.health = player.health -20
                     end
-                elseif self.attack == false and self.isSpawning == false and self.hit == false then
+                elseif self.attack == true and self.isSpawning == false and self.hit == false then
                     self.image_y = self.collider:getY() - 24
                     self.image_x = self.collider:getX() - 32
                     ModelSetup:AnimationState(self, 'attackl')
