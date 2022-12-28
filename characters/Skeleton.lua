@@ -81,10 +81,9 @@ function Skeleton:init(necrox, necroy, playery)
     self.jumpHeight = 110
     self.PlayerOnHigherPlatfom = false
 
-    drawHitbox = true
 end
 
-function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
+function Skeleton:update(dt)
 
 
     self.hit = AI:hitTimer(self, dt, self.hit, self.hittimer)
@@ -99,11 +98,11 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         self.x = self.collider:getX()
         self.y = self.collider:getY()
 
-        self.hitbox = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 10, 10, 0, 0, 0, 0)}
+        self.hitbox = {AI:hitbox(self, 10, 10, 0, 0, 0, 0)}
         self.hit = self.hitbox[1]
         self.health = self.hitbox[2]
 
-        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 10, 10, 0, 0, 0, 0)}
+        self.draw = {AI:drawHitbox(self, 10, 10, 0, 0, 0, 0)}
 
         if self.hitbox[3] == true then
             self.collider:applyLinearImpulse(100, -30)
@@ -119,19 +118,19 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
         --currenty = select(2, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
 
         --knockback while sliding trough enemys
-        if playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
+        if player.x - self.x < 10 and player.x - self.x > -self.width and player.sliding == true and player.direction == false and (player.y > self.y - (self.height / 2) and player.y < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
             self.hit = true
             self.collider:applyLinearImpulse(-5, -10)
             self.health = self.health - 10
-        elseif playerx - self.x < 10 and playerx - self.x > -self.width and playersliding == true and playerdirection == true and (playery > self.y - (self.height / 2) and playery < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
+        elseif player.x - self.x < 10 and player.x - self.x > -self.width and player.sliding == true and player.direction == true and (player.y > self.y - (self.height / 2) and player.y < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
             self.hit = true
             self.collider:applyLinearImpulse(5, -10)
             self.health = self.health - 10
         end
 
-        if self.hit == true and playerdirection == false and self.isDead == false and self.isSpawning == false then
+        if self.hit == true and player.direction == false and self.isDead == false and self.isSpawning == false then
             ModelSetup:AnimationState(self, 'hitr')
-        elseif self.hit == true and playerdirection == true and self.isDead == false and self.isSpawning == false then
+        elseif self.hit == true and player.direction == true and self.isDead == false and self.isSpawning == false then
             ModelSetup:AnimationState(self, 'hitl')
         end
 
@@ -177,9 +176,9 @@ function Skeleton:update(dt, playerx, playery, playerwidth, playerheight, player
     end
 
     if self.collidercheck == 2 then
-        if playerdirection == false then
+        if player.direction == false then
             ModelSetup:AnimationState(self, 'deadr')
-        elseif playerdirection == true then
+        elseif player.direction == true then
             ModelSetup:AnimationState(self, 'deadl')
         end
         self.collidercheck = 1

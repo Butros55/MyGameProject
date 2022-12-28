@@ -69,7 +69,7 @@ function PlayState:render()
         love.graphics.printf('Necromancer Spawned: ' ..tostring(necromancercounter), 0, 10, VIRTUAL_WIDTH, 'center')
         love.graphics.printf('Skeletontimer: ' ..tostring(math.floor(skeletontimer)).. 'sec', 0, 50, VIRTUAL_WIDTH, 'center')
         love.graphics.printf('Necromancertimer: ' ..tostring(math.floor(necromancertimer)).. 'sec', 0, 70, VIRTUAL_WIDTH, 'center')
-        love.graphics.printf('Health Left: ' ..tostring(playerhealth), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 100, 100)
+        love.graphics.printf('Health Left: ' ..tostring(player.health), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 100, 100)
     end
 
     local function draw_bg0(l,t,w,h)

@@ -10,7 +10,7 @@
 
 Necromancer = Class{}
 
-function Necromancer:init(playerx)
+function Necromancer:init()
     --initilase all pngs from Skeleton
     self.spriteSheet = love.graphics.newImage('graphics/enemys/necromancer.png')
 
@@ -39,9 +39,9 @@ function Necromancer:init(playerx)
     --get random negative or positiv from number
     --spawns necro left or right from players screen
     if math.random(0, 2) > 1 then
-        self.necrospawn = playerx + VIRTUAL_WIDTH
+        self.necrospawn = player.x + VIRTUAL_WIDTH
     else
-        self.necrospawn = -playerx - VIRTUAL_WIDTH
+        self.necrospawn = -player.x - VIRTUAL_WIDTH
     end
 
     --sets up collider for Necromancer
@@ -80,7 +80,7 @@ function Necromancer:init(playerx)
     self.collidercheck = 2
 end
 
-function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
+function Necromancer:update(dt)
  
     if self.collidercheck == 2 then
         dx , dy = self.collider:getLinearVelocity()
@@ -95,25 +95,25 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         self.hit = AI:hitTimer(self, dt, self.hit, self.hittimer)
 
         --get hit if player i close enough and in combat
-        self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 10, 5, 0, 0, 0)}
+        self.test = {AI:hitbox(self, 20, 10, 5, 0, 0, 0)}
         self.hit = self.test[1]
         self.health = self.test[2]
 
-        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 10, 5, 0, 0, 0)}
+        self.draw = {AI:drawHitbox(self, 20, 10, 5, 0, 0, 0)}
         
         --damage while sliding trough enemys
-        if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
+        if player.x - self.x - 76 < 2 and player.x - self.x - 76 > -self.width and player.sliding == true and player.direction == false and (player.y > self.y - (self.height * 2) and player.y < self.y + (self.height * 2)) and self.isDead == false then
             self.hit = true
             self.health = self.health - 10
-        elseif playerx - self.x - 76 < -4 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == true and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
+        elseif player.x - self.x - 76 < -4 and player.x - self.x - 76 > -self.width and player.sliding == true and player.direction == true and (player.y > self.y - (self.height * 2) and player.y < self.y + (self.height * 2)) and self.isDead == false then
             self.hit = true
             self.health = self.health - 10
         end
 
         --plays animation on hit
-        if self.hit == true and playerdirection == false and self.isDead == false then
+        if self.hit == true and player.direction == false and self.isDead == false then
             self.anim = self.animations.hitr
-        elseif self.hit == true and playerdirection == true and self.isDead == false then
+        elseif self.hit == true and player.direction == true and self.isDead == false then
             self.anim = self.animations.hitl
         end
         
@@ -128,9 +128,9 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         end
 
 
-        if self.y < playery - self.randomnecroy and self.isSpawning == false then
+        if self.y < player.y - self.randomnecroy and self.isSpawning == false then
             self.dy = 25
-        elseif self.y > playery - self.randomnecroy and self.isSpawning == false then
+        elseif self.y > player.y - self.randomnecroy and self.isSpawning == false then
             self.dy = -30
         else
             self.dy = -15
@@ -148,7 +148,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
                 self.collider:setLinearVelocity(-80, self.dy) --set to -15 y for no gravity!!!
                 self.anim = self.animations.walkl
             else
-                self.randomnecro = math.floor(math.random(playerx + (VIRTUAL_WIDTH / 2), playerx - (VIRTUAL_WIDTH / 2)))
+                self.randomnecro = math.floor(math.random(player.x + (VIRTUAL_WIDTH / 2), player.x - (VIRTUAL_WIDTH / 2)))
             end
         else
             self.collider:setLinearVelocity(0, self.dy)
@@ -168,9 +168,9 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
     
     --removes selfcollider if necro is dead
     if self.collidercheck == 1 then
-        if playerdirection == false then
+        if player.direction == false then
             self.anim = self.animations.deadr
-        elseif playerdirection == true then
+        elseif player.direction == true then
             self.anim = self.animations.deadl
         end
         self.collider:destroy()
@@ -190,9 +190,9 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         table.insert(self.Skeletons, Skeleton(self.x, self.y, playery))
         self.spawnTimer = 0
         self.fasterSpawn = self.fasterSpawn + 0.05
-        if playerdirection == false then
+        if player.direction == false then
             self.anim = self.animations.spawnr
-        elseif playerdirection == true then
+        elseif player.direction == true then
             self.anim = self.animations.spawnl
         end
         --counts how many skeletons spawned in round
@@ -203,7 +203,7 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
 
     --updates all skeletons based on players x and y
     for k, skeleton in pairs(self.Skeletons) do
-        skeleton:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat, self.x)
+        skeleton:update(dt, self.x)
 
         if skeleton.isDead == true and skeleton.deadcounter > 5 then
             table.remove(self.Skeletons, k)

@@ -28,17 +28,17 @@ function AI:LowestWorldCollider()
 end
 
 --checks if enemy got hitted if so set hit to true for 0.5sec
-function AI:hitbox(self, dt, x, y, width, height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, health, isDead, hittimer, boxSize_x, boxSize_y, adjustemt_top, adjustemt_bot, adjustment_right, adjustment_left)
+function AI:hitbox(self, boxSize_x, boxSize_y, adjustemt_top, adjustemt_bot, adjustment_right, adjustment_left)
 
     --get hit if player i close enough and in combat
-    if playerx + (playerwidth / 2) > self.x - (self.width / 2) - boxSize_x - (adjustment_left or 0) and playerx + (playerwidth / 2) < self.x + (self.width / 2) and playery + (playerheight / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and playery - (playerheight / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and playerdirection == true and self.isDead == false then
+    if player.x + (player.width / 2) > self.x - (self.width / 2) - boxSize_x - (adjustment_left or 0) and player.x + (player.width / 2) < self.x + (self.width / 2) and player.y + (player.height / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and player.y - (player.height / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and player.direction == true and self.isDead == false then
         if love.keyboard.wasPressed('q') and playerattackcd == true then
             self.hit = true
             self.health = self.health - 10
             return self.hit, self.health, true
         end
-    elseif playerx - (playerwidth / 2) < self.x + (self.width / 2) + boxSize_x + (adjustment_right or 0) and playerx + (playerwidth / 2) > self.x + (self.width / 2) and playery + (playerheight / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and playery - (playerheight / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and playerdirection == false and self.isDead == false then
-        if love.keyboard.wasPressed('q') and playerattackcd == true then
+    elseif player.x - (player.width / 2) < self.x + (self.width / 2) + boxSize_x + (adjustment_right or 0) and player.x + (player.width / 2) > self.x + (self.width / 2) and player.y + (player.height / 2) > self.y - (self.height / 2) - boxSize_y - (adjustemt_top or 0) and player.y - (player.height / 2) < self.y + (self.height / 2) + boxSize_y + (adjustemt_bot or 0) and player.direction == false and self.isDead == false then
+        if love.keyboard.wasPressed('q') and player.attackcd == true then
             self.hit = true
             self.health = self.health - 10
             return self.hit, self.health, false
@@ -47,7 +47,7 @@ function AI:hitbox(self, dt, x, y, width, height, playerx, playery, playerwidth,
     return self.hit, self.health, nil
 end
 
-function AI:drawHitbox(self, dt, x, y, width, height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, health, isDead, hittimer, boxSize_x, boxSize_y, adjustemt_top, adjustemt_bot, adjustment_right, adjustment_left)
+function AI:drawHitbox(self, boxSize_x, boxSize_y, adjustemt_top, adjustemt_bot, adjustment_right, adjustment_left)
     self.draw_x = self.x - (self.width / 2) - boxSize_x - (adjustment_left or 0)
     self.draw_y = self.y - (self.height / 2) - boxSize_y - (adjustment_top or 0)
     self.draw_width = self.width + (boxSize_x * 2) + (adjustment_left or 0) + (adjustment_right or 0)
@@ -102,7 +102,7 @@ end
 
 
 --returns the next higher collider from position x and y
-local function nextLowestGroundColliderOnX(self, x, y, height)
+local function nextLowestGroundColliderOnX(self)
     if GameMap.layers['Ground'] then
         --set self.y to some low number so the firts is definitely higher than that
         self.colliderLow_y = VIRTUAL_HEIGHT * 2
@@ -118,7 +118,7 @@ local function nextLowestGroundColliderOnX(self, x, y, height)
 end
 
 --returns the next higher collider from position x and y
-local function nextHighestGroundColliderOnX(self, x, y, height)
+local function nextHighestGroundColliderOnX(self)
     if GameMap.layers['Ground'] then
         --set self.y to some low number so the firts is definitely higher than that
         self.colliderHigh_y = -VIRTUAL_HEIGHT * 2
@@ -135,15 +135,13 @@ end
 
 
 --returns the current GroundCollider the AI is on at the moment
-function GroundAI:currentGroundColliderOnX(self, x, y, height)
+function GroundAI:currentGroundColliderOnX(self)
     if GameMap.layers['Ground'] then
         for i, obj in pairs(GameMap.layers['Ground'].objects) do
-            self.nextHighestGroundColliderOnX = nextHighestGroundColliderOnX(self, self.x , self.y, self.height)
-            self.nextLowestGroundColliderOnX = nextLowestGroundColliderOnX(self, self.x , self.y, self.height)
+            self.nextHighestGroundColliderOnX = nextHighestGroundColliderOnX(self)
+            self.nextLowestGroundColliderOnX = nextLowestGroundColliderOnX(self)
             if self.x > obj.x and self.x < obj.x + obj.width then
-
                 self.collider_height_box = self.y - self.nextHighestGroundColliderOnX
-
                 if self.y + self.height - 10 < obj.y + (obj.height / 2) and obj.y > self.nextHighestGroundColliderOnX and obj.y < self.nextLowestGroundColliderOnX then
                     self.collider_x = obj.x
                     self.collider_y = obj.y

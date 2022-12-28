@@ -66,10 +66,6 @@ function Player:init()
     --setting collider for character
     self.collider = ModelSetup:newCollider(0, 0, self.width, self.height, 'Player')
 
-    self.isSliding = false
-
-    playerhealth = 100
-
 end
 
 
@@ -85,7 +81,6 @@ function Player:update(dt)
     self.image_y = math.floor(self.collider:getY() - ((self.height * 2) - 37))
     
     local isMoving = false
-    playerattackcd = false
 
     dx , dy = self.collider:getLinearVelocity()
 
@@ -99,7 +94,11 @@ function Player:update(dt)
         x = self.x,
         y = self.y,
         width = self.width,
-        height = self.height
+        height = self.height,
+        health = 100,
+        playerattackcd = false,
+        sliding = false
+
     }
 
     self.playerPlatformTable = { GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height) }
@@ -117,20 +116,20 @@ function Player:update(dt)
     end
 
     -- if q was pressed reset outcombat so the player cant move while combat is true
-    if love.keyboard.wasPressed('q') and self.isSliding == false then
+    if love.keyboard.wasPressed('q') and player.sliding == false then
         self.inCombat = true
         self.outcombattimer = 0
         self.combocounter = self.combocounter + 1
-        playerattackcd = true
+        player.playerattackcd = true
     elseif self.incombattimer <= 0 then
-        playerattackcd = false
-    elseif self.outcombattimer > 0.3 and self.isSliding == false then
+        player.playerattackcd = false
+    elseif self.outcombattimer > 0.3 and player.sliding == false then
         self.collider:setLinearVelocity(0, dy)
         self.inCombat = false
     end
 
     --movement with a (left) and d (right)
-    if love.keyboard.isDown('d') and self.inCombat == false and self.isSliding == false then
+    if love.keyboard.isDown('d') and self.inCombat == false and player.sliding == false then
         self.collider:setLinearVelocity(300, dy)
         isMoving = true
         self.movingDirection = true
@@ -139,7 +138,7 @@ function Player:update(dt)
         end
     elseif love.keyboard.isDown('d') then
         self.movingDirection = true
-    elseif love.keyboard.isDown('a') and self.inCombat == false and self.isSliding == false then
+    elseif love.keyboard.isDown('a') and self.inCombat == false and player.sliding == false then
         self.collider:setLinearVelocity(-300, dy)
         self.movingDirection = false
         isMoving = true
@@ -280,15 +279,15 @@ function Player:update(dt)
         dx , dy = self.collider:getLinearVelocity()
         if self.movingDirection == true then
             ModelSetup:AnimationState(self, 'slider')
-            self.isSliding = true
+            player.sliding = true
             self.collider:setCollisionClass('Ghost')
         else
             ModelSetup:AnimationState(self, 'slidel')
-            self.isSliding = true
+            player.sliding = true
             self.collider:setCollisionClass('Ghost')
         end
     else
-        self.isSliding = false
+        player.sliding = false
     end
 
     --set slide velocitiy if c was pressed
