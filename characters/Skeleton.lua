@@ -10,7 +10,7 @@
 
 Skeleton = Class{}
 
-function Skeleton:init(necrox, necroy, playery)
+function Skeleton:init(necro_x, necro_y)
     --initilase all pngs from Skeleton
     self.attackSheet = love.graphics.newImage('graphics/enemys/Skeleton Attack.png')
     self.deadSheet = love.graphics.newImage('graphics/enemys/Skeleton Dead.png')
@@ -46,25 +46,25 @@ function Skeleton:init(necrox, necroy, playery)
     self.width = 8
     self.height = 24
 
-    self.spawnx = math.random(necrox + 100, necrox - 100)
-    --self.spawnx = math.random(0, 100)
-
+    --sets Skeletons Spawn based on Necromancers x
+    -----self.x = math.random(necro_x + 100, necro_x - 100)
+    self.x = 50 --temporär
     --spawns at ground based on position x
-    self.spawn = GroundAI:highestGroundColliderOnX(self)
+    self.spawny = GroundAI:highestGroundColliderOnX(self) - self.height
+
 
     --checks if skeleton is under map
     self.autodead = AI:LowestWorldCollider()
 
-    self.spawny = self.spawn - self.height - 1
-
     --sets up collider for Skeleton
-    self.collider = ModelSetup:newCollider(self, self.spawnx, self.spawny, 'Skeleton')
+    self.collider = ModelSetup:newCollider(self, 'Skeleton', self.x, self.spawny)
 
     self.doublejump = 0
     --sets if hittet and timer after hit for knockback
     self.hit = false
     self.hittimer = 0
     self.attacktimer = 0
+    self.attackrange_x = 10
 
     --checking if enemy is dead
     self.health = 34
@@ -110,13 +110,6 @@ function Skeleton:update(dt)
             self.collider:applyLinearImpulse(-50, -30)
         end
 
-        --nexthighest_x = select(1, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
-        --nexthighest_y = select(2, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
-        --nexthighest_width = select(3, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
-        --nexthighest_height = select(4, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
-        --currentx = select(1, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-        --currenty = select(2, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
-
         --knockback while sliding trough enemys
         if player.x - self.x < 10 and player.x - self.x > -self.width and player.sliding == true and player.direction == false and (player.y > self.y - (self.height / 2) and player.y < self.y + (self.height / 2)) and self.isDead == false and self.isSpawning == false then
             self.hit = true
@@ -142,7 +135,7 @@ function Skeleton:update(dt)
 
         --SKeleton Attack here
                 --attack if player is close enought
-                self.attack = AI:attack(self, 10, 5)
+                self.attack = AI:attack(self, self.attackrange_x, 5)
                 if self.attack == false and self.isSpawning == false and self.hit == false then
                     self.image_y = self.collider:getY() - 24
                     ModelSetup:AnimationState(self, 'attackr')
@@ -200,6 +193,15 @@ function Skeleton:update(dt)
             self.collider:setCollisionClass('Skeleton')
         end
 
+        nexthighest_x = select(1, GroundAI:nextHighestGroundCollider(self))
+        nexthighest_y = select(2, GroundAI:nextHighestGroundCollider(self))
+        nexthighest_width = select(3, GroundAI:nextHighestGroundCollider(self))
+        nexthighest_height = select(4, GroundAI:nextHighestGroundCollider(self))
+        currentx = select(1, GroundAI:currentGroundColliderOnX(self))
+        currenty = select(2, GroundAI:currentGroundColliderOnX(self))
+        currentwidth = select(3, GroundAI:currentGroundColliderOnX(self))
+        currentheight = select(4, GroundAI:currentGroundColliderOnX(self))
+
     end
 
     if self.collidercheck == 2 then
@@ -248,13 +250,16 @@ function Skeleton:render()
     love.graphics.setColor(1,1,1,0.5)
     love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
 
-    --love.graphics.printf('next highets x: ' ..tostring(nexthighest_x), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
-    --love.graphics.printf('next highets y: ' ..tostring(nexthighest_y), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 350, 400)
-    --love.graphics.printf('next highets width: ' ..tostring(nexthighest_width), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
-    --love.graphics.printf('next highets height: ' ..tostring(nexthighest_height), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 250, 400)
-    --love.graphics.printf('selfx: ' ..tostring(self.x), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 200, 400)
-    --love.graphics.printf('selfy: ' ..tostring(self.y), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 150, 400)
-    --love.graphics.printf('collider skeleton x: ' ..tostring(currentx), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 350, 400)
-    --love.graphics.printf('collider skeleton y: ' ..tostring(currenty), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
+    love.graphics.printf('selfx: ' ..tostring(self.x), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
+    love.graphics.printf('selfy: ' ..tostring(self.y), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 380, 400)
+    love.graphics.printf('collider skeleton x: ' ..tostring(currentx), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 360, 400)
+    love.graphics.printf('collider skeleton y: ' ..tostring(currenty), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 340, 400)
+    love.graphics.printf('collider skeleton width: ' ..tostring(currentwidth), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 320, 400)
+    love.graphics.printf('collider skeleton height: ' ..tostring(currentheight), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
+    love.graphics.printf('next highets x: ' ..tostring(nexthighest_x), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 280, 400)
+    love.graphics.printf('next highets y: ' ..tostring(nexthighest_y), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 260, 400)
+    love.graphics.printf('next highest width: ' ..tostring(nexthighest_width), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 240, 400)
+    love.graphics.printf('next highest height: ' ..tostring(nexthighest_height), camx - (VIRTUAL_WIDTH / 2) + 600, camy + (VIRTUAL_HEIGHT / 2) - 220, 400)
+
 
 end

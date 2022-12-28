@@ -45,7 +45,7 @@ function Necromancer:init()
     end
 
     --sets up collider for Necromancer
-    self.collider = ModelSetup:newCollider(self, 0, -300, 'Necromancer')
+    self.collider = ModelSetup:newCollider(self, 'Necromancer', 0, -300)
 
     --sets if hittet and timer after hit for knockback
     self.hit = false
@@ -187,7 +187,7 @@ function Necromancer:update(dt)
     --spawns in random time and every sec faster skeletons if necrro is alive
     if self.spawnTimer > 10 and self.isDead == false and self.hit == false then
         self.isSpawning = true
-        table.insert(self.Skeletons, Skeleton(self.x, self.y, playery))
+        table.insert(self.Skeletons, Skeleton(self.x, self.y))
         self.spawnTimer = 0
         self.fasterSpawn = self.fasterSpawn + 0.05
         if player.direction == false then

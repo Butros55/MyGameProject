@@ -21,10 +21,10 @@ function PlayState:init()
     self.player = Player()
 
 
-    --self.skeleton = Skeleton()
+    self.skeleton = Skeleton()
 
 
-    self.spawner = Spawner()
+    ------self.spawner = Spawner()
     Necromancers = {}
 
     sounds['music']:setLooping(true)
@@ -43,8 +43,8 @@ function PlayState:update(dt)
     skeletontimer = skeletontimer + dt
     roundTimer = roundTimer + dt
     self.player:update(dt)
-    self.spawner:update(dt)
-    --self.skeleton:update(dt)
+    ------self.spawner:update(dt)
+    self.skeleton:update(dt)
 
     --setting camera to playercharacter
     camera:setPosition(math.floor(self.player.x), math.floor(self.player.y))
@@ -59,11 +59,11 @@ function PlayState:render()
     function draw_game(l,t,w,h)
         GameMap:drawLayer(GameMap.layers['neue'])
 
-        --world:draw()
+        world:draw()
 
         self.player:render()
-        --self.skeleton:render()
-        self.spawner:render()
+        self.skeleton:render()
+        -----self.spawner:render()
         love.graphics.printf('Time Passed: ' ..tostring(math.floor(roundTimer)).. 'sec', camx - (VIRTUAL_WIDTH / 2) + 150, camy - (VIRTUAL_HEIGHT / 2) + 80, 150)
         love.graphics.printf('Skeleton Spawned: ' ..tostring(skeletoncounter), 0, 30, VIRTUAL_WIDTH, 'center')
         love.graphics.printf('Necromancer Spawned: ' ..tostring(necromancercounter), 0, 10, VIRTUAL_WIDTH, 'center')

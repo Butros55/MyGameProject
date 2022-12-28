@@ -89,14 +89,14 @@ function GroundAI:highestGroundColliderOnX(self)
         self.objy = VIRTUAL_HEIGHT * 2
         self.collider_y = 0
         for i, obj in pairs(GameMap.layers['Ground'].objects) do
-            if self.spawnx > obj.x and self.spawnx < obj.x + obj.width then
+            if self.x > obj.x and self.x < obj.x + obj.width then
                 if obj.y < self.objy then
                     self.collider_y = obj.y
                 end
                 self.objy = obj.y
             end
         end
-        return self.collider_y or player.y
+        return self.collider_y
     end
 end
 
@@ -118,7 +118,7 @@ local function nextLowestGroundColliderOnX(self)
 end
 
 --returns the next higher collider from position x and y
-local function nextHighestGroundColliderOnX(self)
+local function nextHighestGroundColliderOnX(self, y_parameter)
     if GameMap.layers['Ground'] then
         --set self.y to some low number so the firts is definitely higher than that
         self.colliderHigh_y = -VIRTUAL_HEIGHT * 2
@@ -196,13 +196,14 @@ function GroundAI:movement(self, dt)
     self.currentPlatform_height = self.currentPlatform[4]
 
 
-    if self.y + self.height > player.y + player.height and self.currentPlatform_y > playerplatform.y + 100 then
-        self.PlayerOnHigherPlatfom = true
-    else
-        self.PlayerOnHigherPlatfom = false
-    end
+    --returns true if player is on higher Platform then self
+    -- if self.y + self.height > player.y + player.height and self.currentPlatform_y > playerplatform.y then
+    --     self.PlayerOnHigherPlatfom = true
+    -- else
+    --     self.PlayerOnHigherPlatfom = false
+    -- end
 
-    if player.x - (player.width / 2) - 10 > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
+    if player.x - (player.width / 2) - self.attackrange_x > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
         self.collider:setLinearVelocity(40, dy)
         ModelSetup:AnimationState(self, 'walkr')
         self.isMoving = true
@@ -212,7 +213,7 @@ function GroundAI:movement(self, dt)
             self.doublejump = self.doublejump + 1
             self.doublejumptimer = 0
         end
-    elseif player.x + (player.width / 2) + 10 < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
+    elseif player.x + (player.width / 2) + self.attackrange_x < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
         self.collider:setLinearVelocity(-40, dy)
         ModelSetup:AnimationState(self, 'walkl')
         self.isMoving = true
@@ -229,7 +230,7 @@ end
 ModelSetup = {}
 
 --sets up the collider
-function ModelSetup:newCollider(self, spawn_x, spawn_y, colliderType)
+function ModelSetup:newCollider(self, colliderType, spawn_x, spawn_y)
     --setting collider for character
     collider = world:newRectangleCollider(spawn_x or self.x, spawn_y or self.y, self.width, self.height)
     collider:setCollisionClass(colliderType)
