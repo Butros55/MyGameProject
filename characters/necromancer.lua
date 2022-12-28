@@ -95,11 +95,9 @@ function Necromancer:update(dt)
         self.hit = AI:hitTimer(self, dt)
 
         --get hit if player i close enough and in combat
-        self.test = {AI:hitbox(self, 20, 10, 5, 0, 0, 0)}
+        self.test = {AI:hitbox(self, 20, 10, 5)}
         self.hit = self.test[1]
         self.health = self.test[2]
-
-        self.draw = {AI:drawHitbox(self, 20, 10, 5, 0, 0, 0)}
         
         --damage while sliding trough enemys
         if player.x - self.x - 76 < 2 and player.x - self.x - 76 > -self.width and player.sliding == true and player.direction == false and (player.y > self.y - (self.height * 2) and player.y < self.y + (self.height * 2)) and self.isDead == false then
@@ -127,7 +125,7 @@ function Necromancer:update(dt)
             end
         end
 
-
+        --go to random y pos based on player y
         if self.y < player.y - self.randomnecroy and self.isSpawning == false then
             self.dy = 25
         elseif self.y > player.y - self.randomnecroy and self.isSpawning == false then
@@ -221,7 +219,4 @@ function Necromancer:render()
     for k, skeleton in pairs(self.Skeletons) do
         skeleton:render()
     end
-    --renders hitbox
-    -- love.graphics.setColor(1,1,1,0.5)
-    -- love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
 end
