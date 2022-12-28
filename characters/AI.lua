@@ -96,7 +96,7 @@ function GroundAI:highestGroundColliderOnX(self)
                 self.objy = obj.y
             end
         end
-        return self.collider_y or self.y
+        return self.collider_y or player.y
     end
 end
 
@@ -163,7 +163,7 @@ function GroundAI:nextHighestGroundCollider(self, x, y, height)
         --set self.y to some low number so the firts is definitely higher than that
         for i, obj in pairs(GameMap.layers['Ground'].objects) do
             if self.x + 100 > obj.x and self.x - 100 < obj.x + obj.width then
-                if self.y + (self.height / 2) > obj.y and self.collider_y < obj.y then
+                if self.y + self.height - 15 > obj.y and self.collider_y < obj.y then
                     self.collider_y = obj.y
                     self.collider_x = obj.x
                     self.collider_width = obj.width
@@ -171,25 +171,10 @@ function GroundAI:nextHighestGroundCollider(self, x, y, height)
                 end
             end
         end
-        return self.collider_x or self.currentPlatform_x, self.collider_y or self.currentPlatform_y, self.collider_width or self.currentPlatform_width, self.collider_height or self.currentPlatform_height
-    end
-end
-
---returns the next higher collider
-function GroundAI:nextHighestGroundColliderJumpOn(self, x, y, height, jumpHeight)
-    if GameMap.layers['Ground'] then
-        --set self.y to some low number so the firts is definitely higher than that
-        for i, obj in pairs(GameMap.layers['Ground'].objects) do
-            if self.x + 100 > obj.x and self.x - 100 < obj.x + obj.width and self.y - self.jumpHeight < obj.y and self.collider_y > obj.y then
-                    self.collider_y = obj.y
-                    self.collider_x = obj.x
-                    self.collider_width = obj.width
-                    self.collider_height = obj.height
-            end
-        end
         return self.collider_x or self.x, self.collider_y or self.y, self.collider_width or self.width, self.collider_height or self.height
     end
 end
+
 
 function GroundAI:movement(self, dt, x, y, width ,height, jumpHeight, doublejump, doublejumptimer)
 
@@ -199,48 +184,50 @@ function GroundAI:movement(self, dt, x, y, width ,height, jumpHeight, doublejump
     self.nexthighest_width = self.nexthighest[3]
     self.nexthighest_height = self.nexthighest[4]
 
-    self.nexthighestjumpOn = { GroundAI:nextHighestGroundColliderJumpOn(self, self.x, self.y, self.height, self.jumpHeight) }
-    self.nexthighestjumpOn_x = self.nexthighestjumpOn[1]
-    self.nexthighestjumpOn_y = self.nexthighestjumpOn[2]
-    self.nexthighestjumpOn_width = self.nexthighestjumpOn[3]
-    self.nexthighestjumpOn_height = self.nexthighestjumpOn[4]
+    -- deactivated for now needs new function
+    -- self.nexthighestjumpOn = { GroundAI:nextHighestGroundColliderJumpOn(self, self.x, self.y, self.height, self.jumpHeight) }
+    -- self.nexthighestjumpOn_x = self.nexthighestjumpOn[1]
+    -- self.nexthighestjumpOn_y = self.nexthighestjumpOn[2]
+    -- self.nexthighestjumpOn_width = self.nexthighestjumpOn[3]
+    -- self.nexthighestjumpOn_height = self.nexthighestjumpOn[4]
 
-    self.currentPlatform = { GroundAI:currentGroundColliderOnX(self, self.x ,self.y, self.height) }
-    self.currentPlatform_x = self.currentPlatform[1]
-    self.currentPlatform_y = self.currentPlatform[2]
-    self.currentPlatform_width = self.currentPlatform[3]
-    self.currentPlatform_height = self.currentPlatform[4]
+    -- self.currentPlatform = { GroundAI:currentGroundColliderOnX(self, self.x ,self.y, self.height) }
+    -- self.currentPlatform_x = self.currentPlatform[1]
+    -- self.currentPlatform_y = self.currentPlatform[2]
+    -- self.currentPlatform_width = self.currentPlatform[3]
+    -- self.currentPlatform_height = self.currentPlatform[4]
 
-    self.y = self.y + (self.height * 0.6)
-    self.x = self.x + (self.width / 2)
 
-    if self.y + self.height > player.y + player.height and self.currentPlatform_y > playerplatform.y + 100 then
-        self.PlayerOnHigherPlatfom = true
-    else
-        self.PlayerOnHigherPlatfom = false
-    end
+    -- if self.y + self.height > player.y + player.height and self.currentPlatform_y > playerplatform.y + 100 then
+    --     self.PlayerOnHigherPlatfom = true
+    -- else
+    --     self.PlayerOnHigherPlatfom = false
+    -- end
 
-    if player.x - (player.width / 2) - 10 > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
-        self.collider:setLinearVelocity(40, dy)
-        ModelSetup:AnimationState(self, 'walkr')
-        self.isMoving = true
-        self.image_x = self.collider:getX() - 8
-        if self.x > self.nexthighest_x - 20 and self.x < self.nexthighest_x and self.y > self.nexthighest_y then
-            self.collider:setLinearVelocity(dx, -300)
-            self.doublejump = self.doublejump + 1
-            self.doublejumptimer = 0
-        end
-    elseif player.x + (player.width / 2) < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
-        self.collider:setLinearVelocity(-40, dy)
-        ModelSetup:AnimationState(self, 'walkl')
-        self.isMoving = true
-        self.image_x = self.collider:getX() -14
-        if self.x < self.nexthighest_x + self.nexthighest_width + 20 and self.x > self.nexthighest_x + self.nexthighest_width and self.y > self.nexthighest_y then
-            self.collider:setLinearVelocity(dx, -300)
-            self.doublejump = self.doublejump + 1
-            self.doublejumptimer = 0
-        end
-    end
+    -- if player.x - (player.width / 2) - 10 > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
+    --     self.collider:setLinearVelocity(40, dy)
+    --     ModelSetup:AnimationState(self, 'walkr')
+    --     self.isMoving = true
+    --     self.image_x = self.collider:getX() - 8
+    --     if self.x > self.nexthighest_x - 20 and self.x < self.nexthighest_x and self.y > self.nexthighest_y then
+    --         self.collider:setLinearVelocity(dx, -300)
+    --         self.doublejump = self.doublejump + 1
+    --         self.doublejumptimer = 0
+    --     end
+    -- elseif player.x + (player.width / 2) < self.x - (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
+    --     self.collider:setLinearVelocity(-40, dy)
+    --     ModelSetup:AnimationState(self, 'walkl')
+    --     self.isMoving = true
+    --     self.image_x = self.collider:getX() -14
+    --     if self.x < self.nexthighest_x + self.nexthighest_width + 20 and self.x > self.nexthighest_x + self.nexthighest_width and self.y > self.nexthighest_y then
+    --         self.collider:setLinearVelocity(dx, -300)
+    --         self.doublejump = self.doublejump + 1
+    --         self.doublejumptimer = 0
+    --     end
+    -- elseif self.isSpawning == false then
+    --     self.collider:setLinearVelocity(0, dy)
+    --     ModelSetup:AnimationState(self, 'attackr')
+    -- end
 end
 
 

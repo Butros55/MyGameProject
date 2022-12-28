@@ -46,13 +46,8 @@ function Skeleton:init(necrox, necroy, playery)
     self.width = 8
     self.height = 24
 
-
-
-
-    --self.spawnx = math.random(necrox + 100, necrox - 100)
-    self.spawnx = math.random(0, 100)
-
-
+    self.spawnx = math.random(necrox + 100, necrox - 100)
+    --self.spawnx = math.random(0, 100)
 
     --spawns at ground based on position x
     self.spawn = GroundAI:highestGroundColliderOnX(self)
@@ -64,7 +59,6 @@ function Skeleton:init(necrox, necroy, playery)
 
     --sets up collider for Skeleton
     self.collider = ModelSetup:newCollider(self.spawnx, self.spawny, self.width, self.height, 'Skeleton')
-
 
     self.doublejump = 0
     --sets if hittet and timer after hit for knockback
