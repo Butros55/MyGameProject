@@ -34,6 +34,7 @@ layers.near = parallax.new(camera, 2.5, 0.35)
 --Add colission classes
 world:addCollisionClass('Player')
 world:addCollisionClass('Platform')
+world:addCollisionClass('Wall')
 world:addCollisionClass('worldBorder')
 world:addCollisionClass('Skeleton', {ignores = {'Skeleton', 'worldBorder'}})
 world:addCollisionClass('Necromancer', {ignores = {'Skeleton', 'worldBorder'}})
@@ -68,6 +69,16 @@ if GameMap.layers['Ground'] then
         ground:setType('static')
         ground:setCollisionClass('Platform')
         table.insert(grounds, ground)
+    end
+end
+
+walls = {}
+if GameMap.layers['Wall'] then
+    for i, obj in pairs(GameMap.layers['Wall'].objects) do
+        local wall = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+        wall:setType('static')
+        wall:setCollisionClass('Wall')
+        table.insert(walls, wall)
     end
 end
 

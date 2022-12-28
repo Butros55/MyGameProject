@@ -102,11 +102,13 @@ function Player:update(dt)
         height = self.height
     }
 
+    self.playerPlatformTable = { GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height) }
     playerplatform = {
-        x = select(1, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height)),
-        y = select(2, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height)),
-        width = select(3, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height)),
-        boxheight = select(4, GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height))
+        x = self.playerPlatformTable[1],
+        y = self.playerPlatformTable[2],
+        width = self.playerPlatformTable[3],
+        height = self.playerPlatformTable[4],
+        boxheight = self.playerPlatformTable[5]
         }
 
     if self.incombattimer > 0.6 or isMoving == true then

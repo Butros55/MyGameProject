@@ -98,6 +98,8 @@ function Necromancer:update(dt, playerx, playery, playerwidth, playerheight, pla
         self.test = {AI:hitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 10, 5, 0, 0, 0)}
         self.hit = self.test[1]
         self.health = self.test[2]
+
+        self.draw = {AI:drawHitbox(self, dt, self.x, self.y, self.width, self.height, playerx, playery, playerwidth, playerheight, playerdirection, playerincombat, self.health, self.isDead, self.hittimer, 20, 10, 5, 0, 0, 0)}
         
         --damage while sliding trough enemys
         if playerx - self.x - 76 < 2 and playerx - self.x - 76 > -self.width and playersliding == true and playerdirection == false and (playery > self.y - (self.height * 2) and playery < self.y + (self.height * 2)) and self.isDead == false then
@@ -219,4 +221,7 @@ function Necromancer:render()
     for k, skeleton in pairs(self.Skeletons) do
         skeleton:render()
     end
+    --renders hitbox
+    love.graphics.setColor(1,1,1,0.5)
+    love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
 end

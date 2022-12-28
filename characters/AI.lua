@@ -14,11 +14,11 @@ AI = {}
 
 
 --returns bottom of Lowest GroundCollider in Map
-function AI:LowestGroundCollider()
-    if GameMap.layers['Ground'] then
+function AI:LowestWorldCollider()
+    if GameMap.layers['worldBorder'] then
         --sets start value to some low y
         LowestCollider = -1000
-        for k, GroundCollider in pairs(GameMap.layers['Ground'].objects) do
+        for k, GroundCollider in pairs(GameMap.layers['worldBorder'].objects) do
             if GroundCollider.y > LowestCollider then
                  LowestCollider = GroundCollider.y + GroundCollider.height
             end
@@ -84,19 +84,19 @@ end
 GroundAI = {}
 
 --returns highest collider from position x if nothing ther set 0
-function GroundAI:highestGroundColliderOnX(x)
+function GroundAI:highestGroundColliderOnX(self)
     if GameMap.layers['Ground'] then
         self.objy = VIRTUAL_HEIGHT * 2
         self.collider_y = 0
         for i, obj in pairs(GameMap.layers['Ground'].objects) do
-            if x > obj.x and x < obj.x + obj.width then
+            if self.spawnx > obj.x and self.spawnx < obj.x + obj.width then
                 if obj.y < self.objy then
                     self.collider_y = obj.y
                 end
                 self.objy = obj.y
             end
         end
-        return self.collider_y
+        return self.collider_y or self.y
     end
 end
 
@@ -108,12 +108,12 @@ local function nextLowestGroundColliderOnX(self, x, y, height)
         self.colliderLow_y = VIRTUAL_HEIGHT * 2
         for i, obj in pairs(GameMap.layers['Ground'].objects) do
             if self.x > obj.x and self.x < obj.x + obj.width then
-                if self.y + height < obj.y and self.colliderLow_y > obj.y then
+                if self.y + self.height < obj.y + (obj.height / 2) and self.colliderLow_y > obj.y then
                     self.colliderLow_y = obj.y
                 end
             end
         end
-        return self.colliderLow_y
+        return self.colliderLow_y or self.y
     end
 end
 
@@ -129,7 +129,7 @@ local function nextHighestGroundColliderOnX(self, x, y, height)
                 end
             end
         end
-        return self.colliderHigh_y
+        return self.colliderHigh_y or self.y
     end
 end
 
@@ -141,15 +141,18 @@ function GroundAI:currentGroundColliderOnX(self, x, y, height)
             self.nextHighestGroundColliderOnX = nextHighestGroundColliderOnX(self, self.x , self.y, self.height)
             self.nextLowestGroundColliderOnX = nextLowestGroundColliderOnX(self, self.x , self.y, self.height)
             if self.x > obj.x and self.x < obj.x + obj.width then
+
                 self.collider_height_box = self.y - self.nextHighestGroundColliderOnX
+
                 if self.y + self.height - 10 < obj.y + (obj.height / 2) and obj.y > self.nextHighestGroundColliderOnX and obj.y < self.nextLowestGroundColliderOnX then
                     self.collider_x = obj.x
                     self.collider_y = obj.y
                     self.collider_width = obj.width
+                    self.collider_height = obj.height
                 end
             end
         end
-        return self.collider_x or self.x, self.collider_y or self.y, self.collider_width or self.width, self.collider_height_box or self.height
+        return self.collider_x or self.x, self.collider_y or self.y, self.collider_width or self.width, self.collider_height or self.height, self.collider_height_box or self.height
     end
 end
 
@@ -168,7 +171,7 @@ function GroundAI:nextHighestGroundCollider(self, x, y, height)
                 end
             end
         end
-        return self.collider_x, self.collider_y, self.collider_width, self.collider_height
+        return self.collider_x or self.currentPlatform_x, self.collider_y or self.currentPlatform_y, self.collider_width or self.currentPlatform_width, self.collider_height or self.currentPlatform_height
     end
 end
 
@@ -184,32 +187,34 @@ function GroundAI:nextHighestGroundColliderJumpOn(self, x, y, height, jumpHeight
                     self.collider_height = obj.height
             end
         end
-        return self.collider_x, self.collider_y, self.collider_width, self.collider_height
+        return self.collider_x or self.x, self.collider_y or self.y, self.collider_width or self.width, self.collider_height or self.height
     end
 end
 
 function GroundAI:movement(self, dt, x, y, width ,height, jumpHeight, doublejump, doublejumptimer)
 
-    self.nexthighest_x = select(1, GroundAI:nextHighestGroundCollider(self, self.x, self.y, self.height))
-    self.nexthighest_y = select(2, GroundAI:nextHighestGroundCollider(self, self.x, self.y, self.height))
-    self.nexthighest_width = select(3, GroundAI:nextHighestGroundCollider(self, self.x, self.y, self.height))
-    self.nexthighest_height = select(4, GroundAI:nextHighestGroundCollider(self, self.x, self.y, self.height))
+    self.nexthighest= { GroundAI:nextHighestGroundCollider(self, self.x, self.y, self.height) }
+    self.nexthighest_x = self.nexthighest[1]
+    self.nexthighest_y = self.nexthighest[2]
+    self.nexthighest_width = self.nexthighest[3]
+    self.nexthighest_height = self.nexthighest[4]
 
-    self.nexthighestjumpOn_x = select(1, GroundAI:nextHighestGroundColliderJumpOn(self, self.x, self.y, self.height, self.jumpHeight))
-    self.nexthighestjumpOn_y = select(2, GroundAI:nextHighestGroundColliderJumpOn(self, self.x, self.y, self.height, self.jumpHeight))
-    self.nexthighestjumpOn_width = select(3, GroundAI:nextHighestGroundColliderJumpOn(self, self.x, self.y, self.height, self.jumpHeight))
-    self.nexthighestjumpOn_height = select(4, GroundAI:nextHighestGroundColliderJumpOn(self, self.x, self.y, self.height, self.jumpHeight))
+    self.nexthighestjumpOn = { GroundAI:nextHighestGroundColliderJumpOn(self, self.x, self.y, self.height, self.jumpHeight) }
+    self.nexthighestjumpOn_x = self.nexthighestjumpOn[1]
+    self.nexthighestjumpOn_y = self.nexthighestjumpOn[2]
+    self.nexthighestjumpOn_width = self.nexthighestjumpOn[3]
+    self.nexthighestjumpOn_height = self.nexthighestjumpOn[4]
 
-
-    self.currentPlatform_x = select(1, GroundAI:currentGroundColliderOnX(self, self.x ,self.y, self.height))
-    self.currentPlatform_y = select(2, GroundAI:currentGroundColliderOnX(self, self.x ,self.y, self.height))
-    self.currentPlatform_width = select(3, GroundAI:currentGroundColliderOnX(self, self.x ,self.y, self.height))
-    self.currentPlatform_height = select(4, GroundAI:currentGroundColliderOnX(self, self.x ,self.y, self.height))
+    self.currentPlatform = { GroundAI:currentGroundColliderOnX(self, self.x ,self.y, self.height) }
+    self.currentPlatform_x = self.currentPlatform[1]
+    self.currentPlatform_y = self.currentPlatform[2]
+    self.currentPlatform_width = self.currentPlatform[3]
+    self.currentPlatform_height = self.currentPlatform[4]
 
     self.y = self.y + (self.height * 0.6)
     self.x = self.x + (self.width / 2)
 
-    if self.y > player.y + player.height and self.currentPlatform_y > playerplatform.y + self.jumpHeight then
+    if self.y + self.height > player.y + player.height and self.currentPlatform_y > playerplatform.y + 100 then
         self.PlayerOnHigherPlatfom = true
     else
         self.PlayerOnHigherPlatfom = false
@@ -234,42 +239,6 @@ function GroundAI:movement(self, dt, x, y, width ,height, jumpHeight, doublejump
             self.collider:setLinearVelocity(dx, -300)
             self.doublejump = self.doublejump + 1
             self.doublejumptimer = 0
-        end
-    end
-
-    if self.PlayerOnHigherPlatfom == true then
-        if self.x < self.nexthighestjumpOn_x + 20 then
-            if self.x > self.nexthighest_x - 20 and self.x < self.nexthighest_x and self.y > self.nexthighest_y then
-                self.collider:setLinearVelocity(dx, -300)
-                self.doublejump = self.doublejump + 1
-                self.doublejumptimer = 0
-            elseif self.x < self.nexthighest_x + self.nexthighest_width + 20 and self.x > self.nexthighest_x + self.nexthighest_width and self.y > self.nexthighest_y then
-                self.collider:setLinearVelocity(dx, -300)
-                self.doublejump = self.doublejump + 1
-                self.doublejumptimer = 0
-            end
-            self.collider:setLinearVelocity(40, dy)
-            if self.x < self.nexthighestjumpOn_x - 20 then
-                self.collider:setLinearVelocity(dx, -300)
-            elseif self.x > self.nexthighestjumpOn_x + self.nexthighestjumpOn_width + 20 then
-                self.collider:setLinearVelocity(dx, -300)
-            end
-        elseif self.x > self.nexthighestjumpOn_x + self.nexthighestjumpOn_width - 20 then
-            if self.x > self.nexthighest_x - 20 and self.x < self.nexthighest_x and self.y > self.nexthighest_y then
-                self.collider:setLinearVelocity(dx, -300)
-                self.doublejump = self.doublejump + 1
-                self.doublejumptimer = 0
-            elseif self.x < self.nexthighest_x + self.nexthighest_width + 20 and self.x > self.nexthighest_x + self.nexthighest_width and self.y > self.nexthighest_y then
-                self.collider:setLinearVelocity(dx, -300)
-                self.doublejump = self.doublejump + 1
-                self.doublejumptimer = 0
-            end
-            self.collider:setLinearVelocity(-40, dy)
-            if self.x < self.nexthighestjumpOn_x - 20 then
-                self.collider:setLinearVelocity(dx, -300)
-            elseif self.x > self.nexthighestjumpOn_x + self.nexthighestjumpOn_width + 20 then
-                self.collider:setLinearVelocity(dx, -300)
-            end
         end
     end
 end
