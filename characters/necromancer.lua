@@ -45,7 +45,7 @@ function Necromancer:init()
     end
 
     --sets up collider for Necromancer
-    self.collider = ModelSetup:newCollider(0, -300, self.width, self.height, 'Necromancer')
+    self.collider = ModelSetup:newCollider(self, 0, -300, 'Necromancer')
 
     --sets if hittet and timer after hit for knockback
     self.hit = false
@@ -92,7 +92,7 @@ function Necromancer:update(dt)
         self.x = self.collider:getX()
         self.y = self.collider:getY()
 
-        self.hit = AI:hitTimer(self, dt, self.hit, self.hittimer)
+        self.hit = AI:hitTimer(self, dt)
 
         --get hit if player i close enough and in combat
         self.test = {AI:hitbox(self, 20, 10, 5, 0, 0, 0)}
@@ -222,6 +222,6 @@ function Necromancer:render()
         skeleton:render()
     end
     --renders hitbox
-    love.graphics.setColor(1,1,1,0.5)
-    love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
+    -- love.graphics.setColor(1,1,1,0.5)
+    -- love.graphics.rectangle('fill', self.draw[1], self.draw[2], self.draw[3], self.draw[4])
 end

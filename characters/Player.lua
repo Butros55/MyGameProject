@@ -47,8 +47,6 @@ function Player:init()
     self.animations['slider'] = anim8.newAnimation(self.grid('4-7', 4), 0.15)
     self.animations['slidel'] = anim8.newAnimation(self.grid('4-7', 4), 0.15):flipH()
 
-
-    self.movingDirection = true
     self.inJump = false
     --timer and combat variable so the player cant move while attacking
     inCombat = false
@@ -64,7 +62,28 @@ function Player:init()
     self.height = 29
 
     --setting collider for character
-    self.collider = ModelSetup:newCollider(0, 0, self.width, self.height, 'Player')
+    self.collider = ModelSetup:newCollider(self, 0, 0, 'Player')
+
+    player = {
+        x = self.x,
+        y = self.y,
+        width = self.width,
+        height = self.height,
+        health = 100,
+        attackcd = false,
+        sliding = false,
+        direction = false,
+        inCombat = false
+    }
+
+
+    playerplatform = {
+        x = 0,
+        y = 0,
+        width = 0,
+        height = 0,
+        boxheight = 0
+    }
 
 end
 
@@ -84,31 +103,23 @@ function Player:update(dt)
 
     dx , dy = self.collider:getLinearVelocity()
 
+    self.playerPlatformTable = { GroundAI:currentGroundColliderOnX(self) }
+    playerplatform.x = self.playerPlatformTable[1]
+    playerplatform.y = self.playerPlatformTable[2]
+    playerplatform.width = self.playerPlatformTable[3]
+    playerplatform.height = self.playerPlatformTable[4]
+    playerplatform.boxheight = self.playerPlatformTable[5]
+
+    player.x = self.x
+    player.y = self.y
+    player.width = self.width
+    player.height = self.height
+
     --increasing timer every second by 1
     self.incombattimer = self.incombattimer + dt
     self.outcombattimer = self.outcombattimer + dt
     --decrease cd for 10sec
     self.slidecd = self.slidecd - dt
-
-    player = {
-        x = self.x,
-        y = self.y,
-        width = self.width,
-        height = self.height,
-        health = 100,
-        playerattackcd = false,
-        sliding = false
-
-    }
-
-    self.playerPlatformTable = { GroundAI:currentGroundColliderOnX(self, self.x, self.y, self.height) }
-    playerplatform = {
-        x = self.playerPlatformTable[1],
-        y = self.playerPlatformTable[2],
-        width = self.playerPlatformTable[3],
-        height = self.playerPlatformTable[4],
-        boxheight = self.playerPlatformTable[5]
-        }
 
     if self.incombattimer > 0.6 or isMoving == true then
         self.attackcounter = 0
@@ -117,41 +128,41 @@ function Player:update(dt)
 
     -- if q was pressed reset outcombat so the player cant move while combat is true
     if love.keyboard.wasPressed('q') and player.sliding == false then
-        self.inCombat = true
+        player.inCombat = true
         self.outcombattimer = 0
         self.combocounter = self.combocounter + 1
-        player.playerattackcd = true
+        player.attackcd = true
     elseif self.incombattimer <= 0 then
-        player.playerattackcd = false
+        player.attackcd = false
     elseif self.outcombattimer > 0.3 and player.sliding == false then
         self.collider:setLinearVelocity(0, dy)
-        self.inCombat = false
+        player.inCombat = false
     end
 
     --movement with a (left) and d (right)
-    if love.keyboard.isDown('d') and self.inCombat == false and player.sliding == false then
+    if love.keyboard.isDown('d') and player.inCombat == false and player.sliding == false then
         self.collider:setLinearVelocity(300, dy)
         isMoving = true
-        self.movingDirection = true
+        player.direction = true
         if self.inJump == false then
             ModelSetup:AnimationState(self, 'moveright')
         end
     elseif love.keyboard.isDown('d') then
-        self.movingDirection = true
-    elseif love.keyboard.isDown('a') and self.inCombat == false and player.sliding == false then
+        player.direction = true
+    elseif love.keyboard.isDown('a') and player.inCombat == false and player.sliding == false then
         self.collider:setLinearVelocity(-300, dy)
-        self.movingDirection = false
+        player.direction = false
         isMoving = true
         if self.inJump == false then
             ModelSetup:AnimationState(self, 'moveleft')
         end
     elseif love.keyboard.isDown('a') then
-        self.movingDirection = false
+        player.direction = false
     end
 
     --checks if player isnt moving and dependig on direction set idle if not
-    if isMoving == false and self.movingDirection == true and self.inJump == false then
-        if self.attackcounter == 2 and self.inCombat == true then
+    if isMoving == false and player.direction == true and self.inJump == false then
+        if self.attackcounter == 2 and player.inCombat == true then
             ModelSetup:AnimationState(self, 'combat3r')
             if self.playonce == 1 then
                 self.collider:setLinearVelocity(0, dy)
@@ -165,7 +176,7 @@ function Player:update(dt)
                 self.attackcounter = 0
                 self.playonce = 1
             end
-        elseif self.attackcounter == 1 and self.inCombat == true then
+        elseif self.attackcounter == 1 and player.inCombat == true then
             ModelSetup:AnimationState(self, 'combat2r')
             if self.playonce == 1 then
                 self.collider:setLinearVelocity(0, dy)
@@ -180,7 +191,7 @@ function Player:update(dt)
                 self.outcombattimer = 0
                 self.playonce = 1
             end
-        elseif self.inCombat == true then
+        elseif player.inCombat == true then
             ModelSetup:AnimationState(self, 'combat1r')
             if self.playonce == 1 then
                 self.collider:setLinearVelocity(0, dy)
@@ -195,17 +206,17 @@ function Player:update(dt)
                 self.attackcounter = self.attackcounter + 1
                 self.playonce = 1
             end
-        elseif self.outcombattimer > 10 and self.inCombat == false then
+        elseif self.outcombattimer > 10 and player.inCombat == false then
             ModelSetup:AnimationState(self, 'idler')
-        elseif self.outcombattimer > 9.05 and self.inCombat == false then
+        elseif self.outcombattimer > 9.05 and player.inCombat == false then
             ModelSetup:AnimationState(self, 'swordbackr')
-        elseif self.inCombat == false then
+        elseif player.inCombat == false then
             ModelSetup:AnimationState(self, 'idlercombat')
         end
     end
         
-    if isMoving == false and self.movingDirection == false and self.inJump == false then
-        if self.attackcounter == 2 and self.inCombat == true then
+    if isMoving == false and player.direction == false and self.inJump == false then
+        if self.attackcounter == 2 and player.inCombat == true then
             ModelSetup:AnimationState(self, 'combat3l')
             if self.playonce == 1 then
                 self.collider:setLinearVelocity(0, dy)
@@ -219,7 +230,7 @@ function Player:update(dt)
                 self.attackcounter = 0
                 self.playonce = 1
             end
-        elseif self.attackcounter == 1 and self.inCombat == true then
+        elseif self.attackcounter == 1 and player.inCombat == true then
             ModelSetup:AnimationState(self, 'combat2l')
             if self.playonce == 1 then
                 self.collider:setLinearVelocity(0, dy)
@@ -234,7 +245,7 @@ function Player:update(dt)
                 self.outcombattimer = 0
                 self.playonce = 1
             end
-        elseif self.inCombat == true then
+        elseif player.inCombat == true then
             ModelSetup:AnimationState(self, 'combat1l')
             if self.playonce == 1 then
                 self.collider:setLinearVelocity(0, dy)
@@ -249,9 +260,9 @@ function Player:update(dt)
                 self.attackcounter = self.attackcounter + 1
                 self.playonce = 1
             end
-        elseif self.outcombattimer > 10 and self.inCombat == false then
+        elseif self.outcombattimer > 10 and player.inCombat == false then
             ModelSetup:AnimationState(self, 'idlel')
-        elseif self.outcombattimer > 9.05 and self.inCombat == false then
+        elseif self.outcombattimer > 9.05 and player.inCombat == false then
             ModelSetup:AnimationState(self, 'swordbackl')
         else
             ModelSetup:AnimationState(self, 'idlelcombat')
@@ -277,7 +288,7 @@ function Player:update(dt)
     --animation while sliding
     if love.keyboard.isDown('c') and self.inJump == false and self.slidecd <= 0 then
         dx , dy = self.collider:getLinearVelocity()
-        if self.movingDirection == true then
+        if player.direction == true then
             ModelSetup:AnimationState(self, 'slider')
             player.sliding = true
             self.collider:setCollisionClass('Ghost')
@@ -292,7 +303,7 @@ function Player:update(dt)
 
     --set slide velocitiy if c was pressed
     if love.keyboard.wasPressed('c') and self.inJump == false and self.slidecd <= 0 then
-        if self.movingDirection == true then
+        if player.direction == true then
             self.collider:applyLinearImpulse(150, dy)
         else
             self.collider:applyLinearImpulse(-150, dy)
@@ -300,13 +311,13 @@ function Player:update(dt)
     end
 
 
-    if self.movingDirection == true and self.inJump == true then
+    if player.direction == true and self.inJump == true then
         if dy > 0 then
             ModelSetup:AnimationState(self, 'jumpdownr')
         else
             ModelSetup:AnimationState(self, 'jumpupr')
         end
-    elseif self.movingDirection == false and self.inJump == true then 
+    elseif player.direction == false and self.inJump == true then 
         if dy > 0 then
             ModelSetup:AnimationState(self, 'jumpdownl')
         else

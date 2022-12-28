@@ -58,7 +58,7 @@ function Skeleton:init(necrox, necroy, playery)
     self.spawny = self.spawn - self.height - 1
 
     --sets up collider for Skeleton
-    self.collider = ModelSetup:newCollider(self.spawnx, self.spawny, self.width, self.height, 'Skeleton')
+    self.collider = ModelSetup:newCollider(self, self.spawnx, self.spawny, 'Skeleton')
 
     self.doublejump = 0
     --sets if hittet and timer after hit for knockback
@@ -98,16 +98,16 @@ function Skeleton:update(dt)
         self.x = self.collider:getX()
         self.y = self.collider:getY()
 
-        self.hitbox = {AI:hitbox(self, 10, 10, 0, 0, 0, 0)}
+        self.hitbox = {AI:hitbox(self, 10, 10)}
         self.hit = self.hitbox[1]
         self.health = self.hitbox[2]
 
-        self.draw = {AI:drawHitbox(self, 10, 10, 0, 0, 0, 0)}
+        self.draw = {AI:drawHitbox(self, 10, 10)}
 
         if self.hitbox[3] == true then
-            self.collider:applyLinearImpulse(100, -30)
+            self.collider:applyLinearImpulse(500, -30)
         elseif self.hitbox[3] == false then
-            self.collider:applyLinearImpulse(-100, -30)
+            self.collider:applyLinearImpulse(-500, -30)
         end
 
         --nexthighest_x = select(1, GroundAI:nextHighestGroundCollider(self, self.x, self.y))
@@ -138,10 +138,10 @@ function Skeleton:update(dt)
         self.jumpHeight = 50
         self.doublejumptimer = self.doublejumptimer + dt
         --go to player based on position x and y
-        GroundAI:movement(self, dt, self.x, self.y, self.width ,self.height, self.jumpHeight, self.doublejump, self.doublejumptimer)
+        GroundAI:movement(self)
 
         --SKeleton Attack here
-
+    
         --resets doublejump after hitting Platform
         if self.collider:enter('Platform') and self.outmap == false then
             self.doublejump = 0

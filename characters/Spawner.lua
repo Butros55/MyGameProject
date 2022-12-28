@@ -8,14 +8,14 @@ function Spawner:init()
     self.necroCurrentSize = 0
 end
 
-function Spawner:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat)
+function Spawner:update(dt)
    
 
     --timer for necromancerspawn
     self.spawnTimer = self.spawnTimer + dt * math.min(self.fasterSpawn, 2)
     --spawns in random time and every sec faster necromancer if necrro is alive
     if self.spawnTimer > 50 and self.necroCurrentSize < 5 then
-        table.insert(self.necromancers, Necromancer(playerx))
+        table.insert(self.necromancers, Necromancer())
         self.spawnTimer = 0
         self.fasterSpawn = self.fasterSpawn + 0.5
         self.necroCurrentSize = self.necroCurrentSize + 1
@@ -25,7 +25,7 @@ function Spawner:update(dt, playerx, playery, playerwidth, playerheight, players
 
     --updates all necromancer based on players x and y
     for k, necro in pairs(self.necromancers) do
-        necro:update(dt, playerx, playery, playerwidth, playerheight, playersliding, playercollider, playerdirection, playerincombat, self.x)
+        necro:update(dt, self.x)
         if necro.deadcounter > 5 then
             table.remove(self.necromancers, k)
             self.necroCurrentSize = self.necroCurrentSize - 1
