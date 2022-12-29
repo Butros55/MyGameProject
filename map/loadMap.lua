@@ -14,7 +14,7 @@ wf = require 'lib/windfield'
 world = wf.newWorld(0, 900, true)
 
 --loading tiled map into
-GameMap = sti('map/underground/underground.lua')
+GameMap = sti('map/testmap/test.lua')
 mapW = GameMap.width * GameMap.tilewidth
 mapH = GameMap.height * GameMap.tileheight
 
