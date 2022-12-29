@@ -47,8 +47,7 @@ function Skeleton:init(necro_x, necro_y)
     self.height = 24
 
     --sets Skeletons Spawn based on Necromancers x
-    -----self.x = math.random(necro_x + 100, necro_x - 100)
-    self.x = 50 --temporär
+    self.x = math.random(necro_x + 100, necro_x - 100)
     --spawns at ground based on position x
     self.spawny = GroundAI:highestGroundColliderOnX(self) - self.height
 
