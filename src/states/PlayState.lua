@@ -92,7 +92,7 @@ function PlayState:render()
     end
 
     local function draw_bg5(l,t,w,h)
-        local x,y = -80, -20
+        local x,y = -80, -15
         layers.close:draw_tiled_single_axis(x, y, gbackgrounds['cave_1_layer_6'] ,'x')
     end
 
