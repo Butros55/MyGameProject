@@ -77,7 +77,8 @@ end
 local cache = { -- cache to avoid per-frame table creation
     pos = {}, min = {}, max = {}, size = {}
 }
-function parallax:draw_tiled_single_axis(x, y, image, axis)
+function parallax:draw_tiled_single_axis(x, y, image, axis, repeat_img)
+    local repeat_img = repeat_img
     local pos, min, max, art_pixels = cache.pos, cache.min, cache.max, cache.size
     pos.x,pos.y = x,y
     art_pixels.x,art_pixels.y = image:getDimensions()
@@ -85,20 +86,23 @@ function parallax:draw_tiled_single_axis(x, y, image, axis)
     max.x,max.y = love.graphics.inverseTransformPoint(love.window.getMode())
 
     assert(pos[axis], "axis must be x or y")
+        -- Offset in steps of image width to first visible.
+        local num_before_pos = math.floor((min[axis] - pos[axis]) / art_pixels[axis])
+        pos[axis] = pos[axis] + (art_pixels[axis] * num_before_pos)
 
-    -- Offset in steps of image width to first visible.
-    local num_before_pos = math.floor((min[axis] - pos[axis]) / art_pixels[axis])
-    pos[axis] = pos[axis] + (art_pixels[axis] * num_before_pos)
-
-    local count = 0
-    repeat
-        love.graphics.draw(image, pos.x, pos.y)
-        count = count + 1
-        -- DEBUG: Indicate where image starts to help debug gaps/mismatch.
-        --~ love.graphics.rectangle('fill', pos.x, pos.y, 50, max.y)
-        --~ love.graphics.rectangle('fill', pos.x, pos.y, max.x, 50)
-        pos[axis] = pos[axis] + art_pixels[axis]
-    until pos[axis] > max[axis]
+        local count = 0
+    if repeat_img == false then
+        love.graphics.draw(image, x, y)
+    else
+        repeat
+            love.graphics.draw(image, pos.x, pos.y)
+            count = count + 1
+            -- DEBUG: Indicate where image starts to help debug gaps/mismatch.
+            --~ love.graphics.rectangle('fill', pos.x, pos.y, 50, max.y)
+            --~ love.graphics.rectangle('fill', pos.x, pos.y, max.x, 50)
+            pos[axis] = pos[axis] + art_pixels[axis]
+        until pos[axis] > max[axis]
+    end
 
     --~ -- DEBUG: Show screen left/right to show we can draw without moving.
     --~ local w,h = 100,2000

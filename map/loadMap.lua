@@ -26,9 +26,14 @@ camera:setScale(1.4)
 
 --layers list for parallax layers
 layers = {}
-layers.far = parallax.new(camera, 2, 0.2)
-layers.middle = parallax.new(camera, 2.5, 0.23)
-layers.near = parallax.new(camera, 2.5, 0.35)
+local scaling = 1
+layers.static = parallax.new(camera, scaling * 1.5, 0)
+layers.furthest = parallax.new(camera, scaling * 2, 0.2)
+layers.far = parallax.new(camera, scaling * 2, 0.3)
+layers.middle = parallax.new(camera, scaling * 1.3, 0.025)
+layers.near = parallax.new(camera, scaling * 0.5, 0.01)
+layers.close = parallax.new(camera, scaling * 1, 0.025)
+layers.nearest = parallax.new(camera, scaling * 4, 0.01)
 
 
 --Add colission classes
@@ -45,9 +50,14 @@ world:addCollisionClass('OutMap', {ignores = {'Skeleton', 'Player', 'Ghost', 'Ne
 -- loads graphic Elements and assets
 love.graphics.setDefaultFilter('nearest', 'nearest')
 gbackgrounds = {
-    ['background_0'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_0.png'),
-    ['background_1'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_1.png'),
-    ['background_2'] = love.graphics.newImage('graphics/worldtheme/backgrounds/background_2.png')
+    ['static'] = love.graphics.newImage('graphics/worldtheme/backgrounds/static.png'),
+    ['cave_1_layer_1'] = love.graphics.newImage('graphics/worldtheme/backgrounds/cave_1_layer 1.png'),
+    ['cave_1_layer_2'] = love.graphics.newImage('graphics/worldtheme/backgrounds/cave_1_layer 2.png'),
+    ['cave_1_layer_3'] = love.graphics.newImage('graphics/worldtheme/backgrounds/cave_1_layer 3.png'),
+    ['cave_1_layer_4'] = love.graphics.newImage('graphics/worldtheme/backgrounds/cave_1_layer 4.png'),
+    ['cave_1_layer_5'] = love.graphics.newImage('graphics/worldtheme/backgrounds/cave_1_layer 5.png'),
+    ['cave_1_layer_6'] = love.graphics.newImage('graphics/worldtheme/backgrounds/cave_1_layer 6.png'),
+    ['cave_1_layer_7'] = love.graphics.newImage('graphics/worldtheme/backgrounds/cave_1_layer 7.png')
 }
 
 
