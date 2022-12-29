@@ -26,14 +26,15 @@ camera:setScale(1.4)
 
 --layers list for parallax layers
 layers = {}
-local scaling = 1
-layers.static = parallax.new(camera, scaling * 3, 0.04)
-layers.furthest = parallax.new(camera, scaling * 1, 0.02)
-layers.far = parallax.new(camera, scaling * 1.5, 0.022)
-layers.middle = parallax.new(camera, scaling * 1.5, 0.028)
-layers.near = parallax.new(camera, scaling * 2, 0.032)
-layers.close = parallax.new(camera, scaling * 1.5, 0.06)
-layers.nearest = parallax.new(camera, scaling * 3, 0.04)
+local img_scaling = 1
+local speed_scaling = 1
+layers.static = parallax.new(camera, img_scaling * 3, 0.04 * speed_scaling)
+layers.furthest = parallax.new(camera, img_scaling * 1, 0.02 * speed_scaling)
+layers.far = parallax.new(camera, img_scaling * 1.5, 0.022 * speed_scaling)
+layers.middle = parallax.new(camera, img_scaling * 1.5, 0.028 * speed_scaling)
+layers.near = parallax.new(camera, img_scaling * 2, 0.032 * speed_scaling)
+layers.close = parallax.new(camera, img_scaling * 1.5, 0.06 * speed_scaling)
+layers.nearest = parallax.new(camera, img_scaling * 3, 0.04 * speed_scaling)
 
 
 --Add colission classes
