@@ -60,45 +60,47 @@ function PlayState:render()
         love.graphics.printf('Health Left: ' ..tostring(player.health), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 100, 100)
     end
 
+    local adjustemt_x, adjustemt_y = 0, 0
+
     local function draw_static(l,t,w,h)
         local x,y = 0, 0
-        layers.static:draw_tiled_xy(x, y, gbackgrounds['static'])
+        layers.static:draw_tiled_xy(x + adjustemt_x, y + adjustemt_y, gbackgrounds['static'])
     end
 
 
     local function draw_bg0(l,t,w,h)
         local x,y = -85, -40
-        layers.furthest:draw_tiled_single_axis(x, y, gbackgrounds['cave_1_layer_1'] ,'x')
+        layers.furthest:draw_tiled_single_axis(x + adjustemt_x, y + adjustemt_y, gbackgrounds['cave_1_layer_1'] ,'x')
     end
 
     local function draw_bg1(l,t,w,h)
         local x,y = -85, -40
-        layers.furthest:draw_tiled_single_axis(x, y, gbackgrounds['cave_1_layer_2'] ,'x')
+        layers.furthest:draw_tiled_single_axis(x + adjustemt_x, y + adjustemt_y, gbackgrounds['cave_1_layer_2'] ,'x')
     end
 
     local function draw_bg2(l,t,w,h)
         local x,y = -85, -40
-        layers.far:draw_tiled_single_axis(x, y, gbackgrounds['cave_1_layer_3'] ,'x')
+        layers.far:draw_tiled_single_axis(x + adjustemt_x, y + adjustemt_y, gbackgrounds['cave_1_layer_3'] ,'x')
     end
 
     local function draw_bg3(l,t,w,h)
         local x,y = -90, -40
-        layers.middle:draw_tiled_single_axis(x, y, gbackgrounds['cave_1_layer_4'] ,'x')
+        layers.middle:draw_tiled_single_axis(x + adjustemt_x, y + adjustemt_y, gbackgrounds['cave_1_layer_4'] ,'x')
     end
 
     local function draw_bg4(l,t,w,h)
         local x,y = -80, -40
-        layers.near:draw_tiled_single_axis(x, y, gbackgrounds['cave_1_layer_5'] ,'x')
+        layers.near:draw_tiled_single_axis(x + adjustemt_x, y + adjustemt_y, gbackgrounds['cave_1_layer_5'] ,'x')
     end
 
     local function draw_bg5(l,t,w,h)
         local x,y = -80, -15
-        layers.close:draw_tiled_single_axis(x, y, gbackgrounds['cave_1_layer_6'] ,'x')
+        layers.close:draw_tiled_single_axis(x + adjustemt_x, y + adjustemt_y, gbackgrounds['cave_1_layer_6'] ,'x')
     end
 
     local function draw_bg6(l,t,w,h)
         local x,y = -380, -50
-        layers.nearest:draw_tiled_single_axis(x, y, gbackgrounds['cave_1_layer_7'] ,'x', false)
+        layers.nearest:draw_tiled_single_axis(x + adjustemt_x, y + adjustemt_y, gbackgrounds['cave_1_layer_7'] ,'x', false)
     end
 
     function draw_all(l,t,w,h)
