@@ -103,7 +103,7 @@ function Player:update(dt)
 
     dx , dy = self.collider:getLinearVelocity()
 
-    self.playerPlatformTable = { GroundAI:currentGroundColliderOnX(self) }
+    self.playerPlatformTable = { GroundAI:currentPlatformColliderOnX(self) }
     playerplatform.x = self.playerPlatformTable[1]
     playerplatform.y = self.playerPlatformTable[2]
     playerplatform.width = self.playerPlatformTable[3]

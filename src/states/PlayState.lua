@@ -19,7 +19,6 @@ function PlayState:init()
     skeletontimer = 0
     necromancertimer = 0
     self.player = Player()
-
     self.spawner = Spawner()
     Necromancers = {}
 
@@ -29,12 +28,9 @@ end
 
 
 function PlayState:update(dt)
-
-
     camPos = { camera:getPosition() }
     camx = math.floor(camPos[1])
     camy = camPos[2]
-
     necromancertimer = necromancertimer + dt
     skeletontimer = skeletontimer + dt
     roundTimer = roundTimer + dt
@@ -52,7 +48,14 @@ end
 function PlayState:render()
 
     function draw_game(l,t,w,h)
-        GameMap:drawLayer(GameMap.layers['neue'])
+
+        if GameMap.layers['WorldBack'] then
+            GameMap:drawLayer(GameMap.layers['WorldBack'])
+        end
+
+        if GameMap.layers['WorldFront'] then
+            GameMap:drawLayer(GameMap.layers['WorldFront'])
+        end
 
         self.player:render()
         self.spawner:render()
@@ -84,7 +87,7 @@ function PlayState:render()
     end
 
     local function draw_bg3(l,t,w,h)
-        local x,y = -90, -40
+        local x,y = -90, -100
         layers.middle:draw_tiled_single_axis(x + adjustemt_x, y + adjustemt_y, gbackgrounds['cave_1_layer_4'] ,'x')
     end
 

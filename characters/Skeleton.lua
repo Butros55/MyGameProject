@@ -49,11 +49,11 @@ function Skeleton:init(necro_x, necro_y)
     --sets Skeletons Spawn based on Necromancers x
     self.x = math.random(necro_x + 100, necro_x - 100)
     --spawns at ground based on position x
-    self.spawny = GroundAI:highestGroundColliderOnX(self) - self.height
+    self.spawny = GroundAI:highestPlatformColliderOnX(self) - self.height
 
 
     --checks if skeleton is under map
-    self.autodead = AI:LowestWorldCollider()
+    self.autodead = AI:LowestPlatformCollider() or mapH
 
     --sets up collider for Skeleton
     self.collider = ModelSetup:newCollider(self, 'Skeleton', self.x, self.spawny)

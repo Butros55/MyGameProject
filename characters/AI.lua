@@ -14,7 +14,7 @@ AI = {}
 
 
 --returns bottom of Lowest GroundCollider in Map
-function AI:LowestWorldCollider()
+function AI:LowestPlatformCollider()
     if GameMap.layers['worldBorder'] then
         --sets start value to some low y
         LowestCollider = -1000
@@ -84,11 +84,11 @@ end
 GroundAI = {}
 
 --returns highest collider from position x if nothing ther set 0
-function GroundAI:highestGroundColliderOnX(self)
-    if GameMap.layers['Ground'] then
+function GroundAI:highestPlatformColliderOnX(self)
+    if GameMap.layers['Platform'] then
         self.objy = VIRTUAL_HEIGHT * 2
         self.collider_y = 0
-        for i, obj in pairs(GameMap.layers['Ground'].objects) do
+        for i, obj in pairs(GameMap.layers['Platform'].objects) do
             if self.x > obj.x and self.x < obj.x + obj.width then
                 if obj.y < self.objy then
                     self.collider_y = obj.y
@@ -96,17 +96,17 @@ function GroundAI:highestGroundColliderOnX(self)
                 self.objy = obj.y
             end
         end
-        return self.collider_y
     end
+    return self.collider_y or 0
 end
 
 
 --returns the next higher collider from position x and y
-local function nextLowestGroundColliderOnX(self)
-    if GameMap.layers['Ground'] then
+local function nextLowestPlatformColliderOnX(self)
+    if GameMap.layers['Platform'] then
         --set self.y to some low number so the firts is definitely higher than that
         self.colliderLow_y = VIRTUAL_HEIGHT * 2
-        for i, obj in pairs(GameMap.layers['Ground'].objects) do
+        for i, obj in pairs(GameMap.layers['Platform'].objects) do
             if self.x > obj.x and self.x < obj.x + obj.width then
                 if self.y + self.height < obj.y + (obj.height / 2) and self.colliderLow_y > obj.y then
                     self.colliderLow_y = obj.y
@@ -118,11 +118,11 @@ local function nextLowestGroundColliderOnX(self)
 end
 
 --returns the next higher collider from position x and y
-local function nextHighestGroundColliderOnX(self, y_parameter)
-    if GameMap.layers['Ground'] then
+local function nextHighestPlatformColliderOnX(self, y_parameter)
+    if GameMap.layers['Platform'] then
         --set self.y to some low number so the firts is definitely higher than that
         self.colliderHigh_y = -VIRTUAL_HEIGHT * 2
-        for i, obj in pairs(GameMap.layers['Ground'].objects) do
+        for i, obj in pairs(GameMap.layers['Platform'].objects) do
             if self.x > obj.x and self.x < obj.x + obj.width then
                 if self.y + (self.height / 2) > obj.y + (obj.height / 2) and self.colliderHigh_y < obj.y then
                     self.colliderHigh_y = obj.y
@@ -135,11 +135,11 @@ end
 
 
 --returns the current GroundCollider the AI is on at the moment
-function GroundAI:currentGroundColliderOnX(self)
-    if GameMap.layers['Ground'] then
-        for i, obj in pairs(GameMap.layers['Ground'].objects) do
-            self.nextHighestGroundColliderOnX = nextHighestGroundColliderOnX(self)
-            self.nextLowestGroundColliderOnX = nextLowestGroundColliderOnX(self)
+function GroundAI:currentPlatformColliderOnX(self)
+    if GameMap.layers['Platform'] then
+        for i, obj in pairs(GameMap.layers['Platform'].objects) do
+            self.nextHighestGroundColliderOnX = nextHighestPlatformColliderOnX(self)
+            self.nextLowestGroundColliderOnX = nextLowestPlatformColliderOnX(self)
             if self.x > obj.x and self.x < obj.x + obj.width then
                 self.collider_height_box = self.y - self.nextHighestGroundColliderOnX
                 if self.y + self.height - 10 < obj.y + (obj.height / 2) and obj.y > self.nextHighestGroundColliderOnX and obj.y < self.nextLowestGroundColliderOnX then
@@ -155,11 +155,11 @@ function GroundAI:currentGroundColliderOnX(self)
 end
 
 --returns the next higher collider
-function GroundAI:nextHighestGroundCollider(self)
-    if GameMap.layers['Ground'] then
+function GroundAI:nextHighestPlatformCollider(self)
+    if GameMap.layers['Platform'] then
         self.collider_y = 0
         --set self.y to some low number so the firts is definitely higher than that
-        for i, obj in pairs(GameMap.layers['Ground'].objects) do
+        for i, obj in pairs(GameMap.layers['Platform'].objects) do
             if self.x + 100 > obj.x and self.x - 100 < obj.x + obj.width then
                 if self.y + self.height - 15 > obj.y and self.collider_y < obj.y then
                     self.collider_y = obj.y
@@ -176,7 +176,7 @@ end
 
 function GroundAI:movement(self, dt)
 
-    self.nexthighest= { GroundAI:nextHighestGroundCollider(self) }
+    self.nexthighest= { GroundAI:nextHighestPlatformCollider(self) }
     self.nexthighest_x = self.nexthighest[1]
     self.nexthighest_y = self.nexthighest[2]
     self.nexthighest_width = self.nexthighest[3]
@@ -189,7 +189,7 @@ function GroundAI:movement(self, dt)
     -- self.nexthighestjumpOn_width = self.nexthighestjumpOn[3]
     -- self.nexthighestjumpOn_height = self.nexthighestjumpOn[4]
 
-    self.currentPlatform = { GroundAI:currentGroundColliderOnX(self) }
+    self.currentPlatform = { GroundAI:currentPlatformColliderOnX(self) }
     self.currentPlatform_x = self.currentPlatform[1]
     self.currentPlatform_y = self.currentPlatform[2]
     self.currentPlatform_width = self.currentPlatform[3]

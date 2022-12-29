@@ -14,7 +14,7 @@ wf = require 'lib/windfield'
 world = wf.newWorld(0, 900, true)
 
 --loading tiled map into
-GameMap = sti('map/test.lua')
+GameMap = sti('map/underground/underground.lua')
 mapW = GameMap.width * GameMap.tilewidth
 mapH = GameMap.height * GameMap.tileheight
 
@@ -73,8 +73,8 @@ sounds = {
 
 
 grounds = {}
-if GameMap.layers['Ground'] then
-    for i, obj in pairs(GameMap.layers['Ground'].objects) do
+if GameMap.layers['Platform'] then
+    for i, obj in pairs(GameMap.layers['Platform'].objects) do
         local ground = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
         ground:setType('static')
         ground:setCollisionClass('Platform')
