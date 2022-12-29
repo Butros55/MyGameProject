@@ -53,7 +53,7 @@ function Skeleton:init(necro_x, necro_y)
 
 
     --checks if skeleton is under map
-    self.autodead = AI:LowestPlatformCollider() or mapH
+    self.autodead = AI:LowestWorldCollider()
 
     --sets up collider for Skeleton
     self.collider = ModelSetup:newCollider(self, 'Skeleton', self.x, self.spawny)

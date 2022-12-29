@@ -14,7 +14,7 @@ AI = {}
 
 
 --returns bottom of Lowest GroundCollider in Map
-function AI:LowestPlatformCollider()
+function AI:LowestWorldCollider()
     if GameMap.layers['worldBorder'] then
         --sets start value to some low y
         LowestCollider = -1000
@@ -23,8 +23,8 @@ function AI:LowestPlatformCollider()
                  LowestCollider = GroundCollider.y + GroundCollider.height
             end
         end
-        return LowestCollider
     end
+    return LowestCollider or mapH
 end
 
 --checks if enemy got hitted if so set hit to true for 0.5sec
@@ -113,34 +113,32 @@ local function nextLowestPlatformColliderOnX(self)
                 end
             end
         end
-        return self.colliderLow_y or self.y
     end
+    return self.colliderLow_y or self.y
 end
 
---returns the next higher collider
-function GroundAI:nextHighestPlatformCollider(self, x_parameter, x_parameter_left, x_parameter_right)
+--returns the next higher collider from position x and y
+local function nextHighestPlatformColliderOnX(self, y_parameter)
     if GameMap.layers['Platform'] then
-        self.collider_y = 0
         --set self.y to some low number so the firts is definitely higher than that
+        self.colliderHigh_y = -VIRTUAL_HEIGHT * 2
         for i, obj in pairs(GameMap.layers['Platform'].objects) do
-            if self.x - (self.width / 2) - (x_parameter or 0) - (x_parameter_left or 0) > obj.x and self.x + (self.width / 2) + (x_parameter or 0) + (x_parameter_right or 0) < obj.x + obj.width then
-                if self.y + (self.height / 2) > obj.y + (obj.height / 2) and self.collider_y < obj.y then
-                    self.collider_y = obj.y
-                    self.collider_x = obj.x
-                    self.collider_width = obj.width
-                    self.collider_height = obj.height
+            if self.x > obj.x and self.x < obj.x + obj.width then
+                if self.y + (self.height / 2) > obj.y + (obj.height / 2) and self.colliderHigh_y < obj.y then
+                    self.colliderHigh_y = obj.y
                 end
             end
         end
-        return self.collider_x or self.x, self.collider_y or self.y, self.collider_width or self.width, self.collider_height or self.height
     end
+    return self.colliderHigh_y or self.y
 end
+
 
 --returns the current GroundCollider the AI is on at the moment
 function GroundAI:currentPlatformColliderOnX(self)
     if GameMap.layers['Platform'] then
         for i, obj in pairs(GameMap.layers['Platform'].objects) do
-            self.nextHighestGroundColliderOnX = select(2, GroundAI:nextHighestPlatformCollider(self))
+            self.nextHighestGroundColliderOnX = nextHighestPlatformColliderOnX(self)
             self.nextLowestGroundColliderOnX = nextLowestPlatformColliderOnX(self)
             if self.x > obj.x and self.x < obj.x + obj.width then
                 self.collider_height_box = self.y - self.nextHighestGroundColliderOnX
@@ -153,6 +151,25 @@ function GroundAI:currentPlatformColliderOnX(self)
             end
         end
         return self.collider_x or self.x, self.collider_y or self.y, self.collider_width or self.width, self.collider_height or self.height, self.collider_height_box or self.height
+    end
+end
+
+--returns the next higher collider
+function GroundAI:nextHighestPlatformCollider(self, x_parameter, x_parameter_right, x_parameter_left)
+    if GameMap.layers['Platform'] then
+        self.collider_y = 0
+        --set self.y to some low number so the firts is definitely higher than that
+        for i, obj in pairs(GameMap.layers['Platform'].objects) do
+            if self.x - (self.width / 2) - (x_parameter or 0) - (x_parameter_left or 0) > obj.x and self.x + (self.width / 2) + (x_parameter or 0) + (x_parameter_right or 0) < obj.x + obj.width then
+                if self.y + self.height - 15 > obj.y and self.collider_y < obj.y then
+                    self.collider_y = obj.y
+                    self.collider_x = obj.x
+                    self.collider_width = obj.width
+                    self.collider_height = obj.height
+                end
+            end
+        end
+        return self.collider_x or self.x, self.collider_y or self.y, self.collider_width or self.width, self.collider_height or self.height
     end
 end
 
