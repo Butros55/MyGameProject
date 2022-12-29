@@ -23,8 +23,8 @@ function AI:LowestWorldCollider()
                  LowestCollider = GroundCollider.y + GroundCollider.height
             end
         end
-        return LowestCollider
     end
+    return LowestCollider or mapH
 end
 
 --checks if enemy got hitted if so set hit to true for 0.5sec
@@ -96,8 +96,8 @@ function GroundAI:highestGroundColliderOnX(self)
                 self.objy = obj.y
             end
         end
-        return self.collider_y
     end
+    return self.collider_y or 0
 end
 
 
@@ -113,8 +113,8 @@ local function nextLowestGroundColliderOnX(self)
                 end
             end
         end
-        return self.colliderLow_y or self.y
     end
+    return self.colliderLow_y or self.y
 end
 
 --returns the next higher collider from position x and y
@@ -129,8 +129,8 @@ local function nextHighestGroundColliderOnX(self, y_parameter)
                 end
             end
         end
-        return self.colliderHigh_y or self.y
     end
+    return self.colliderHigh_y or self.y
 end
 
 
