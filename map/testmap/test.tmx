@@ -4,7 +4,7 @@
   <export target="../../Documents/CS50G/MyGameProject/map/test.lua" format="lua"/>
  </editorsettings>
  <tileset firstgid="1" name="JUngletiles" tilewidth="16" tileheight="16" tilecount="198" columns="18">
-  <image source="../../Documents/CS50G/MyGameProject/map/tileset.png" width="288" height="176"/>
+  <image source="tileset.png" width="288" height="176"/>
  </tileset>
  <layer id="5" name="neue" width="70" height="31">
   <data encoding="csv">
@@ -41,7 +41,7 @@
 163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163,163
 </data>
  </layer>
- <objectgroup id="6" name="Ground">
+ <objectgroup id="6" name="Platform">
   <object id="95" x="929" y="416" width="110" height="16"/>
   <object id="104" x="32" y="416" width="44" height="16"/>
   <object id="108" x="16" y="288" width="205" height="9"/>
