@@ -63,8 +63,8 @@ sounds = {
 
 
 grounds = {}
-if GameMap.layers['Ground'] then
-    for i, obj in pairs(GameMap.layers['Ground'].objects) do
+if GameMap.layers['Platform'] then
+    for i, obj in pairs(GameMap.layers['Platform'].objects) do
         local ground = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
         ground:setType('static')
         ground:setCollisionClass('Platform')
