@@ -57,7 +57,14 @@ end
 function PlayState:render()
 
     function draw_game(l,t,w,h)
-        GameMap:drawLayer(GameMap.layers['neue'])
+
+        if GameMap.layers['WorldBack'] then
+            GameMap:drawLayer(GameMap.layers['WorldBack'])
+        end
+
+        if GameMap.layers['WorldFront'] then
+            GameMap:drawLayer(GameMap.layers['WorldFront'])
+        end
 
         world:draw()
 
