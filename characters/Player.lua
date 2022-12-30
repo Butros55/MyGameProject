@@ -361,4 +361,12 @@ end
 --Renders Player img at position
 function Player:render()
     self.anim:draw(self.spriteSheet, self.image_x, self.image_y)
+
+    love.graphics.printf('self x: ' ..tostring(self.x), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 380, 400)
+    love.graphics.printf('self y: ' ..tostring(self.y), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 400, 400)
+    love.graphics.printf('collider x: ' ..tostring(playerplatform.x), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 360, 400)
+    love.graphics.printf('collider y: ' ..tostring(playerplatform.y), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 340, 400)
+    love.graphics.printf('collider width: ' ..tostring(playerplatform.width), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 320, 400)
+    love.graphics.printf('collider width: ' ..tostring(playerplatform.height), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 300, 400)
+    love.graphics.printf('distance to next collider above: ' ..tostring(playerplatform.boxheight), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 280, 400)
 end
