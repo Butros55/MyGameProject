@@ -84,12 +84,12 @@ end
 GroundAI = {}
 
 --returns highest collider from position x if nothing ther set 0
-function GroundAI:highestPlatformColliderOnX(self)
+function GroundAI:highestPlatformColliderOnX(self, set_x)
     if GameMap.layers['Platform'] then
         self.objy = VIRTUAL_HEIGHT * 2
         self.collider_y = 0
         for i, obj in pairs(GameMap.layers['Platform'].objects) do
-            if self.x > obj.x and self.x < obj.x + obj.width then
+            if (set_x or self.x) > obj.x and (set_x or self.x) < obj.x + obj.width then
                 if obj.y < self.objy then
                     self.collider_y = obj.y
                 end
@@ -197,11 +197,11 @@ function GroundAI:movement(self, dt)
 
 
     --returns true if player is on higher Platform then self
-    -- if self.y + self.height > player.y + player.height and self.currentPlatform_y > playerplatform.y then
-    --     self.PlayerOnHigherPlatfom = true
-    -- else
-    --     self.PlayerOnHigherPlatfom = false
-    -- end
+    if self.y + (self.height / 2) > player.y + (player.height / 2) and self.currentPlatform_y > playerplatform.y then
+        self.PlayerOnHigherPlatfom = true
+    else
+        self.PlayerOnHigherPlatfom = false
+    end
 
     if player.x - (player.width / 2) - self.attackrange_x > self.x + (self.width / 2) and self.hit == false and self.isDead == false and self.outmap == false and self.isSpawning == false and self.PlayerOnHigherPlatfom == false then
         self.collider:setLinearVelocity(40, dy)

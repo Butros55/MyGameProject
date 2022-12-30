@@ -14,7 +14,7 @@ wf = require 'lib/windfield'
 world = wf.newWorld(0, 900, true)
 
 --loading tiled map into
-GameMap = sti('map/testmap/test.lua')
+GameMap = sti('map/underground/cave.lua')
 mapW = GameMap.width * GameMap.tilewidth
 mapH = GameMap.height * GameMap.tileheight
 
@@ -27,7 +27,7 @@ camera:setScale(1.4)
 --layers list for parallax layers
 layers = {}
 local img_scaling = 1
-local speed_scaling = 1
+local speed_scaling = 0.5
 layers.static = parallax.new(camera, img_scaling * 3, 0.04 * speed_scaling)
 layers.furthest = parallax.new(camera, img_scaling * 1, 0.02 * speed_scaling)
 layers.far = parallax.new(camera, img_scaling * 1.5, 0.022 * speed_scaling)
@@ -41,12 +41,12 @@ layers.nearest = parallax.new(camera, img_scaling * 3, 0.04 * speed_scaling)
 world:addCollisionClass('Player')
 world:addCollisionClass('Platform')
 world:addCollisionClass('Wall')
-world:addCollisionClass('worldBorder')
-world:addCollisionClass('Skeleton', {ignores = { 'worldBorder'}})
-world:addCollisionClass('Necromancer', {ignores = {'Skeleton', 'worldBorder'}})
+world:addCollisionClass('WorldBorder')
+world:addCollisionClass('Skeleton', {ignores = { 'WorldBorder'}})
+world:addCollisionClass('Necromancer', {ignores = {'Skeleton', 'WorldBorder'}})
 world:addCollisionClass('Ghost', {ignores = {'Skeleton', 'Necromancer'}})
-world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead', 'worldBorder'}})
-world:addCollisionClass('OutMap', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead', 'Platform', 'worldBorder'}})
+world:addCollisionClass('Dead', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead', 'WorldBorder'}})
+world:addCollisionClass('OutMap', {ignores = {'Skeleton', 'Player', 'Ghost', 'Necromancer', 'Dead', 'Platform', 'WorldBorder'}})
 
 -- loads graphic Elements and assets
 love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -94,11 +94,11 @@ if GameMap.layers['Wall'] then
 end
 
 worldBorder = {}
-if GameMap.layers['worldBorder'] then
-    for i, obj in pairs(GameMap.layers['worldBorder'].objects) do
+if GameMap.layers['WorldBorder'] then
+    for i, obj in pairs(GameMap.layers['WorldBorder'].objects) do
         local border = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
         border:setType('static')
-        border:setCollisionClass('worldBorder')
+        border:setCollisionClass('WorldBorder')
         table.insert(worldBorder, border)
     end
 end

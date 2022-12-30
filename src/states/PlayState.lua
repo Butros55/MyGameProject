@@ -40,6 +40,7 @@ function PlayState:update(dt)
     --setting camera to playercharacter
     camera:setPosition(math.floor(self.player.x), math.floor(self.player.y))
 
+
 end
 
 
@@ -63,7 +64,7 @@ function PlayState:render()
         love.graphics.printf('Health Left: ' ..tostring(player.health), camx - (VIRTUAL_WIDTH / 2) + 150, camy + (VIRTUAL_HEIGHT / 2) - 100, 100)
     end
 
-    local adjustemt_x, adjustemt_y = -10, 0
+    local adjustemt_x, adjustemt_y = 50, -20
 
     local function draw_static(l,t,w,h)
         local x,y = 0, 0

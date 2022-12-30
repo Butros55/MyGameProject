@@ -61,8 +61,13 @@ function Player:init()
     self.width = 19
     self.height = 29
 
+    --spawns at ground based on position x
+    self.spawny = GroundAI:highestPlatformColliderOnX(self, 100) - self.height
+
+
+
     --setting collider for character
-    self.collider = ModelSetup:newCollider(self, 'Player', 0, 0)
+    self.collider = ModelSetup:newCollider(self, 'Player', 2000, self.spawny)
 
     player = {
         x = self.x,

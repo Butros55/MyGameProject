@@ -44,8 +44,11 @@ function Necromancer:init()
         self.necrospawn = -player.x - VIRTUAL_WIDTH
     end
 
+    --spawns at ground based on position x
+    self.spawny = GroundAI:highestPlatformColliderOnX(self, 100) - self.height
+
     --sets up collider for Necromancer
-    self.collider = ModelSetup:newCollider(self, 'Necromancer', 0, -300)
+    self.collider = ModelSetup:newCollider(self, 'Necromancer', self.necrospawn, self.spawny)
 
     --sets if hittet and timer after hit for knockback
     self.hit = false
@@ -132,7 +135,7 @@ function Necromancer:update(dt)
             self.dy = -30
         else
             self.dy = -15
-            self.randomnecroy = math.random(0, 150)
+            self.randomnecroy = math.random(20, 250)
         end
 
 
