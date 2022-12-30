@@ -50,7 +50,7 @@ function Skeleton:init(necro_x, necro_y)
     -----self.x = math.random(necro_x + 100, necro_x - 100)
     self.x = 50 --temporär
     --spawns at ground based on position x
-    self.spawny = GroundAI:highestGroundColliderOnX(self) - self.height
+    self.spawny = GroundAI:highestPlatformColliderOnX(self) - self.height
 
 
     --checks if skeleton is under map
@@ -193,14 +193,14 @@ function Skeleton:update(dt)
             self.collider:setCollisionClass('Skeleton')
         end
 
-        nexthighest_x = select(1, GroundAI:nextHighestGroundCollider(self))
-        nexthighest_y = select(2, GroundAI:nextHighestGroundCollider(self))
-        nexthighest_width = select(3, GroundAI:nextHighestGroundCollider(self))
-        nexthighest_height = select(4, GroundAI:nextHighestGroundCollider(self))
-        currentx = select(1, GroundAI:currentGroundColliderOnX(self))
-        currenty = select(2, GroundAI:currentGroundColliderOnX(self))
-        currentwidth = select(3, GroundAI:currentGroundColliderOnX(self))
-        currentheight = select(4, GroundAI:currentGroundColliderOnX(self))
+        nexthighest_x = select(1, GroundAI:nextHighestPlatformCollider(self, 100))
+        nexthighest_y = select(2, GroundAI:nextHighestPlatformCollider(self, 100))
+        nexthighest_width = select(3, GroundAI:nextHighestPlatformCollider(self, 100))
+        nexthighest_height = select(4, GroundAI:nextHighestPlatformCollider(self, 100))
+        currentx = select(1, GroundAI:currentPlatformColliderOnX(self))
+        currenty = select(2, GroundAI:currentPlatformColliderOnX(self))
+        currentwidth = select(3, GroundAI:currentPlatformColliderOnX(self))
+        currentheight = select(4, GroundAI:currentPlatformColliderOnX(self))
 
     end
 
