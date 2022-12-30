@@ -160,7 +160,7 @@ function GroundAI:nextHighestPlatformCollider(self, x_parameter, x_parameter_rig
         self.collider_y = 0
         --set self.y to some low number so the firts is definitely higher than that
         for i, obj in pairs(GameMap.layers['Platform'].objects) do
-            if self.x - (self.width / 2) - (x_parameter or 0) - (x_parameter_left or 0) > obj.x and self.x + (self.width / 2) + (x_parameter or 0) + (x_parameter_right or 0) < obj.x + obj.width then
+            if self.x + (x_parameter or 0) + (x_parameter_right or 0) > obj.x and self.x - (x_parameter or 0) - (x_parameter_left or 0) < obj.x + obj.width then
                 if self.y + self.height - 15 > obj.y and self.collider_y < obj.y then
                     self.collider_y = obj.y
                     self.collider_x = obj.x
