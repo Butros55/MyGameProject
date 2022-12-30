@@ -58,6 +58,10 @@ function PlayState:render()
             GameMap:drawLayer(GameMap.layers['WorldFront'])
         end
 
+        if GameMap.layers['WorldFront'] then
+            GameMap:drawLayer(GameMap.layers['WorldFront'])
+        end
+
         self.player:render()
         self.spawner:render()
         love.graphics.printf('Time Passed: ' ..tostring(math.floor(roundTimer)).. 'sec', camx - (VIRTUAL_WIDTH / 2) + 150, camy - (VIRTUAL_HEIGHT / 2) + 80, 150)

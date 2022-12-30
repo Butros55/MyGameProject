@@ -190,6 +190,15 @@ function Skeleton:update(dt)
             self.collider:setCollisionClass('Skeleton')
         end
 
+        nexthighest_x = select(1, GroundAI:nextHighestPlatformCollider(self, 100))
+        nexthighest_y = select(2, GroundAI:nextHighestPlatformCollider(self, 100))
+        nexthighest_width = select(3, GroundAI:nextHighestPlatformCollider(self, 100))
+        nexthighest_height = select(4, GroundAI:nextHighestPlatformCollider(self, 100))
+        currentx = select(1, GroundAI:currentPlatformColliderOnX(self))
+        currenty = select(2, GroundAI:currentPlatformColliderOnX(self))
+        currentwidth = select(3, GroundAI:currentPlatformColliderOnX(self))
+        currentheight = select(4, GroundAI:currentPlatformColliderOnX(self))
+
     end
 
     if self.collidercheck == 2 then
